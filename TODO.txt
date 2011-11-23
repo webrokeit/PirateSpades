@@ -24,6 +24,6 @@ dd.mm.yyyy
 
 23.11.2011
 ==========
-[TODO]	Implement Fisher-Yates shuffle algorithm for a
-done	generic list. http://eli.thegreenplace.net/2010/05/28/the-intuition-behind-fisher-yates-shuffling/ 
-	
+[HCLK]	Implement Fisher-Yates shuffle algorithm for a
+	generic list. http://eli.thegreenplace.net/2010/05/28/the-intuition-behind-fisher-yates-shuffling/ 
+[MCHE] Started working on bon
