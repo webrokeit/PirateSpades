@@ -1,0 +1,23 @@
+Remember to keep the to do list tidy, clean and easy readable.
+We use a template. For each day specify the day, underline 
+the date with = and type the to dos. When a task is not done
+mark it with [TODO], if you're working on a task mark it with
+[WORK] and when a task is done mark it with your name 
+(AHAL, HCLK, MCHE). Two line breaks between each day.
+Days are appended at the bottom.
+
+Example:
+
+dd.mm.yyyy
+==========
+[WORK]	Make to do list.
+[TODO] 	Make class X.
+[TODO] 	Some long task that must be done but no one wants to
+	because it's boring.
+[NAME]	Create a readme.
+
+
+21.11.2011
+==========
+[AHAL]	Create a GitHub repository.
+[AHAL]	Create Visual Studio Solution.

@@ -1,0 +1,50 @@
+-- System description for PirateSpades
+-- Helena Charlotte Lyn Krüger (hclk@itu.dk)
+-- Andreas Hallberg Kjeldsen (ahal@itu.dk)
+-- Morten Chabert Eskesen (mche@itu.dk)
+-- 15 December 2011
+
+system_chart PIRATESPADES
+indexing
+	author: "Helena Krüger, Andreas Kjeldsen, Morten Eskesen";
+	course: "BDSA";
+	university: "IT University of Copenhagen";
+	created: "15 December 2011"
+explanation
+	"Our project for the course BDSA"
+cluster GAMELOGIC description "PirateSpades' gamelogic."
+end
+
+cluster_chart GAMELOGIC
+explanation "The gamelogic"
+class CARD description "A playing card."
+class PLAYER description "A player."
+class SUIT description "A card's suit."
+class CARDVALUE description "A card's value."
+class DECK description "A deck of cards."
+end
+
+class_chart SUIT
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"Describes the suit of the card."
+query
+	"May I have the value 'v'?"
+constraint
+	"The values permitted for this class are exactly one of 'Hearts' \
+	\ 'Spades', 'Diamonds' or 'Clubs'"
+end
+
+class_chart CARDVALUE
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"Describes the value of the card."
+query
+	"May I have the value 'v'?"
+constraint
+	"The values permitted for this class are exactly one of '2' \
+	\ '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen' \
+	\ 'King' or 'Ace'"
+end
