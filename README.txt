@@ -26,8 +26,10 @@ Requirements (Mandatory):
 » Must involve at least two players.
 » Must have an interactive user interface.
 » Must store player state between games.
-» Must accurately model players and non-player/non-card entities relevant to the game.
+» Must accurately model players and non-player/non-card entities 
+  relevant to the game.
 
 Requirements (Secondary):
 » Should be playable over network.
-» Should support different rulesets (only minor modifications to the main ruleset).
+» Should support different rulesets (only minor modifications to the 
+  main ruleset).
