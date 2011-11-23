@@ -1,0 +1,124 @@
+-- System description for PirateSpades
+-- Helena Charlotte Lyn Krüger (hclk@itu.dk)
+-- Andreas Hallberg Kjeldsen (ahal@itu.dk)
+-- Morten Chabert Eskesen (mche@itu.dk)
+-- 15 December 2011
+
+system_chart PIRATESPADES
+indexing
+	authors "Helena Krüger, Andreas Kjeldsen, Morten Eskesen";
+	course: "BDSA";
+	university: "IT University of Copenhagen";
+	created: "15 December 2011"
+explanation
+	"Our project for the course BDSA"
+cluster GAMELOGIC description "PirateSpades' gamelogic."
+end
+
+cluster_chart GAMELOGIC
+explanation "The gamelogic"
+class CARD description "A playing card."
+class PLAYER description "A player."
+class HAND description "A player's hand."
+class SUIT description "A card's suit."
+class CARDVALUE description "A card's value."
+class DECK description "A deck of cards."
+class TABLE description "A table."
+end
+
+class_chart SUIT
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"Describes the suit of the card."
+query
+	"May I have the value 'v'?"
+constraint
+	"The values permitted for this class are exactly one of 'Hearts' \
+	\ 'Spades', 'Diamonds' or 'Clubs'"
+end
+
+class_chart CARDVALUE
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"Describes the value of the card."
+query
+	"May I have the value 'v'?"
+constraint
+	"The values permitted for this class are exactly one of '2' \
+	\ '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen' \
+	\ 'King' or 'Ace'"
+end
+
+class_chart CARD
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"The specific playing card like 'King of Hearts'."
+query
+	"What is your suit?",
+	"What is your value?",
+	"May I have a new card with this suit and value?"
+constraint
+	"The suit of the card can only be a value of the class Suit.",
+	"The value of the card can only be a value of the class CardValue."
+end
+
+class_chart PLAYER
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"The player in the game"
+query
+	"Are you the dealer?",
+	"What cards do you have?",
+	"Can this card be played?"
+command
+	"Receive these cards.",
+	"Play this card.",
+	"Deal cards."
+end
+
+class_chart HAND
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"The hand of a player in the game."
+query
+	"What cards do you hold?",
+	"Do you have any cards of this suit?"
+command
+	"Add this card.",
+	"Add these cards.",
+	"Remove this card."
+end
+
+class_chart DECK
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"The deck containing all the cards in the game"
+query
+	"How many cards do you hold?"
+command
+	"Shuffle this deck.",
+	"Remove top card.",
+	"Add card."
+constraint
+	"A deck contains at most 52 cards."
+end
+
+class_chart TABLE
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"The physical table in the game." 
+query
+	"Is this card the same suit as the opening card?",
+	"How many players are at this table?"
+command
+	"Receive played card."
+constraint
+	"There can only be 5 players at the same table."
+end
