@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// -----------------------------------------------------------------------
+// <copyright file="Program.cs" company="">
+// TODO: Update copyright text.
+// </copyright>
+// -----------------------------------------------------------------------
 
-namespace PirateSpades {
-    class Program {
-        static void Main(string[] args) {
-            // Let's rock an roll!
-        }
-    }
+namespace PirateSpades
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+
+
+    public static void Main(string[] args){}
 }
