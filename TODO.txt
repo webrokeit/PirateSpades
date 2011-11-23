@@ -21,3 +21,7 @@ dd.mm.yyyy
 ==========
 [AHAL]	Create a GitHub repository.
 [AHAL]	Create Visual Studio Solution.
+
+23.11.2011
+==========
+[MCHE] Started working on bon
