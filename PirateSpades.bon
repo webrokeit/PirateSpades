@@ -19,11 +19,12 @@ cluster_chart GAMELOGIC
 explanation "The gamelogic"
 class CARD description "A playing card."
 class PLAYER description "A player."
-class HAND description "A player's hand."
 class SUIT description "A card's suit."
 class CARDVALUE description "A card's value."
 class DECK description "A deck of cards."
 class TABLE description "A table."
+class GAME description "A game."
+class ROUND description "A round."
 end
 
 class_chart SUIT
@@ -59,7 +60,9 @@ explanation
 query
 	"What is your suit?",
 	"What is your value?",
-	"May I have a new card with this suit and value?"
+	"May I have a new card with this suit and value?",
+	"Is this card the same suit as that one?",
+	"Is this card greater than that one?"
 constraint
 	"The suit of the card can only be a value of the class Suit.",
 	"The value of the card can only be a value of the class CardValue."
@@ -73,25 +76,17 @@ explanation
 query
 	"Are you the dealer?",
 	"What cards do you have?",
-	"Can this card be played?"
+	"Can this card be played?",
+	"Do you have any of cards of this suit left?",
+	"May I have a new player?",
+	"What card do you want to play?",
+	"Do you have this card?",
+	"What is your bet?"
 command
 	"Receive these cards.",
 	"Play this card.",
-	"Deal cards."
-end
-
-class_chart HAND
-indexing
-	in_cluster: "GAMELOGIC"
-explanation
-	"The hand of a player in the game."
-query
-	"What cards do you hold?",
-	"Do you have any cards of this suit?"
-command
-	"Add this card.",
-	"Add these cards.",
-	"Remove this card."
+	"Deal cards.",
+	"Make bet."
 end
 
 class_chart DECK
@@ -100,7 +95,8 @@ indexing
 explanation
 	"The deck containing all the cards in the game"
 query
-	"How many cards do you hold?"
+	"How many cards do you hold?",
+	"May I have a new deck with all the 52 cards?"
 command
 	"Shuffle this deck.",
 	"Remove top card.",
@@ -116,9 +112,227 @@ explanation
 	"The physical table in the game." 
 query
 	"Is this card the same suit as the opening card?",
-	"How many players are at this table?"
+	"How many players are at this table?",
+	"May I have a table with these players?",
+	"What is the opening card?",
+	"What cards have been played?",
+	"Have all players played a card?",
+	"Who has the highest card?",
+	"Whose turn is it?",
+	"Who is the starting player?",
 command
-	"Receive played card."
+	"Receive played card.",
+	"Give winner the played cards."
 constraint
 	"There can only be 5 players at the same table."
+end
+
+class_chart GAME
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"Represents the game being played"
+query
+	"How many points does this player have?",
+	"May I have a new game?",
+	"How many players are in this game?",
+	"How many rounds are left?",
+	"Is the game finished?",
+command
+	"Add player.",
+	"Give points to player.",
+	"Receive end-of-round stats."
+end
+
+class_chart ROUND
+indexing
+	in_cluster: "GAMELOGIC"
+explanation
+	"Represents a round in the game."
+query
+	"Is the round finished?",
+	"How many cards is each player supposed to have this round?",
+	"May I have a new round with this number of cards for each player?",
+	"How many players are in the game?",
+	"How many bets have been placed this round?",
+	"How many tricks does this player have?",
+	"Does the number of tricks match the player's bet?",
+	"What has this player bet?"
+command
+	"Take bet."
+	"Remove bets."
+end
+
+static diagram CLASS_INTERFACES
+component
+	cluster GAMELOGIC
+		component
+		class TABLE
+			feature
+				make : TABLE
+					-> players : SET[PLAYER]
+				require
+					players /= Void;
+					players.Count >= 2;
+					player.Count <= 5;
+				end
+				OpeningCard : CARD
+				SameSuit : BOOLEAN
+					-> player : PLAYER
+				require
+					player.PlayedCard /= Void;
+					OpeningCard /= Void
+				ensure
+					result -> player.CardToPlay.Suit = OpeningCard.Suit or
+					result -> not player.AnyCard(OpeningCard.Suit)
+				end
+				ReceiveCard : void
+					-> player : PLAYER
+				require
+					SameSuit(player) or StartingPlayer = PlayerTurn; 
+					not RoundFinished;
+					PlayerTurn = player
+				end
+				StartingPlayer : PLAYER
+				PlayerTurn : PLAYER
+				AmountOfPlayers : INT
+				AmountOfCards : INT
+				RoundFinished : BOOLEAN
+				ensure
+					result -> AmountOfPlayers = AmountOfCards
+				end
+				WinningPlayer : PLAYER
+				require
+					OpeningCard /= Void;
+				end
+				FinishRound : void
+				require
+					RoundFinished;
+					WinningPlayer /= Void
+				ensure
+					OpeningCard = Void;
+					WinningPlayer = StartingPlayer;
+					WinningPlayer = PlayerTurn
+				end
+				invariant
+					AmountOfPlayers >= 2;
+					AmountOfPlayer <= 5;
+					AmountOfCards >= 0;
+					AmountOfCards <= AmountOfPlayers
+		end
+		class GAME
+			feature
+				make : GAME
+				CollectBet : void
+					-> bet : INT
+					-> player : PLAYER
+				require
+					bet >= 0
+				end
+				PlayerBet : INT
+					-> player : PLAYER
+				require
+					player /= Void
+				end
+		end
+		class PLAYER
+			feature
+				make : PLAYER
+				IsDealer : BOOLEAN
+				NumberOfCards : INT
+				ensure
+					NumberOfCards >= 0
+				end
+				CardToPlay : CARD
+				Bet : INT
+				ensure
+					Bet >= 0
+				end
+				AmountOfTricks : INT
+				ensure
+					AmountOfTricks >= 0
+				end
+				AnyCard : BOOLEAN
+					-> suit : SUIT
+				require
+					suit /= Void
+				end
+				HaveCard : BOOLEAN
+					-> card : CARD
+				require
+					card /= Void
+				end
+				Playable : BOOLEAN
+					-> card : CARD
+				require
+					card /= Void
+				end
+				PlayCard : void
+					-> card : CARD
+				require
+					HaveCard(card);
+					Playable(card);
+					card /= Void
+				ensure
+					not HaveCard(card)
+					NumberOfCards = (old NumberOfCards) - 1
+				end
+				ReceiveCard : void
+					-> card : CARD
+				require
+					card /= Void
+				ensure
+					HaveCard(card);
+					NumberOfCards = (old NumberOfCards) + 1
+				end
+				MakeBet : void
+					-> bet : INT
+				require
+					bet >= 0
+				end
+				DealCards : void
+					-> deck : DECK
+					-> amountToDeal : INT
+				require
+					deck /= Void;
+					deck.Holds(52);
+					IsDealer
+				ensure
+					NumberOfCards = amountToDeal
+				end
+				invariant
+					NumberOfCards >= 0;
+					AmountOfTricks >= 0
+		end
+		class CARD
+			feature
+				make : CARD
+					-> suit : SUIT
+					-> value : CARDVALUE
+				Value : CARDVALUE
+				Suit : SUIT
+				Greater : BOOLEAN
+					-> card : CARD
+				require
+					card /= Void
+				ensure
+					result -> Current > card
+				end
+				SameSuit : BOOLEAN
+					-> card : CARD
+				require
+					card /= Void
+				ensure
+					result -> Suit = card.Suit
+				end
+				invariant
+					value > 1 and value < 15
+		end
+		class DECK
+			feature
+				Holds : INT
+				invariant
+					Holds >= 0 and Holds <= 52
+		end
+	end
 end
