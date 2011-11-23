@@ -21,3 +21,8 @@ dd.mm.yyyy
 ==========
 [AHAL]	Create a GitHub repository.
 [AHAL]	Create Visual Studio Solution.
+
+23.11.2011
+==========
+[TODO]	Implement Fisher-Yates shuffle algorithm for a
+	generic list.
