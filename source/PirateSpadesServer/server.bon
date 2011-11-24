@@ -16,8 +16,6 @@ static_diagram PIRATE_SPADES_SERVER
 					feature
 						Start
 						Stop
-						PlayerConnect : BOOLEAN
-						PlayerDisconnect : BOOLEAN
 						CreateGame : GAME
 						JoinGame : BOOLEAN
 							-> game : GAME
@@ -37,8 +35,6 @@ static_diagram PIRATE_SPADES_SERVER
 					feature {NONE}
 						socket : SOCKET
 						name : STRING
-
-					
 				end
 				class SCOREBOARD
 					feature {NONE}
@@ -47,6 +43,16 @@ static_diagram PIRATE_SPADES_SERVER
 					features
 						Leader : PLAYER
 						Overview : MAP[PLAYER, INTEGER]
+				end
+				class GAME_MESSAGE
+					features
+						ToByteArray : BYTE[]
+						FromByteArray : GAME_MESSAGE
+							-> bytes : BYTE[]
+						Head : STRING
+							-> head : STRING
+						Body : STRING
+							-> body : STRING
 				end
 		end
 		cluster NETWORKING_CLASSES
