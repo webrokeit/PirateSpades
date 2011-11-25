@@ -82,12 +82,14 @@ query
 	"What card do you want to play?",
 	"Do you have this card?",
 	"What is your bet?",
-	"What is at this index of your hand?"
+	"What is at this index of your hand?",
+	"How many tricks do you have?"
 command
-	"Receive these cards.",
+	"Receive this trick.",
 	"Play this card.",
 	"Deal cards.",
-	"Make bet."
+	"Make bet.",
+	"Clear tricks."
 end
 
 class_chart DECK
@@ -370,6 +372,17 @@ component
 				require
 					idx >= 0;
 					idx < NumberOfCards
+				end
+				ReceiveTrick : void
+					-> trick : SET[CARD]
+				require
+					trick /= Void
+				ensure
+					AmountOfTricks = (old AmountOfTricks) + 1
+				end
+				ClearTricks : void
+				ensure
+					AmountOfTricks = 0
 				end
 				AmountOfTricks : INT
 				ensure
