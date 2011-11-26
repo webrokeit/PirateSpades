@@ -1,0 +1,121 @@
+<Configuration>
+  <RecentFiles>
+    <RecentFiles>
+      <File id="0C7FB77C-E876-4975-A4DB-6AB31C657398/f:Program.cs" caret="0" fromTop="0" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/f:Program.cs" caret="422" fromTop="14" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="1" fromTop="0" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Bet/f:Betting.cs" caret="3" fromTop="0" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="593" fromTop="20" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="593" fromTop="14" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="593" fromTop="19" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="929" fromTop="13" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="1059" fromTop="11" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="558" fromTop="16" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/f:Program.cs" caret="429" fromTop="14" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="751" fromTop="11" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="63" fromTop="2" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="398" fromTop="5" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Func/f:Fisher-Yates-Alg.cs" caret="1" fromTop="0" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Bet/f:Betting.cs" caret="300" fromTop="13" />
+      <File id="E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387/d:Bet/f:Betting.cs" caret="3" fromTop="0" />
+    </RecentEdits>
+  </RecentFiles>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="CSharpCodeCompletionContext">
+      <Item value="public" priority="95" />
+      <Item value="void" priority="127" />
+      <Item value="using" priority="123" />
+      <Item value="System" priority="154" />
+      <Item value="T`0" priority="221" />
+      <Item value="T" priority="31" />
+      <Item value="K`0" priority="30" />
+      <Item value="coll" priority="31" />
+      <Item value="coll1" priority="31" />
+      <Item value="if" priority="31" />
+      <Item value="coll_in" priority="63" />
+      <Item value="Length" priority="53" />
+      <Item value="while" priority="63" />
+      <Item value="int" priority="281" />
+      <Item value="sbyte" priority="31" />
+      <Item value="Microsoft" priority="30" />
+      <Item value="Collections" priority="53" />
+      <Item value="Diagnostics" priority="26" />
+      <Item value="Threading" priority="27" />
+      <Item value="Random`0" priority="31" />
+      <Item value="r" priority="63" />
+      <Item value="i" priority="159" />
+      <Item value="Generic" priority="26" />
+      <Item value="switch" priority="31" />
+      <Item value="return" priority="63" />
+      <Item value="collection" priority="159" />
+      <Item value="decimal" priority="31" />
+      <Item value="holder" priority="31" />
+      <Item value="Random" priority="58" />
+      <Item value="Fisher_Yates_Alg`0" priority="31" />
+      <Item value="this" priority="127" />
+      <Item value="new" priority="127" />
+      <Item value="ThreadStaticAttribute`0" priority="30" />
+      <Item value="static" priority="93" />
+      <Item value="string" priority="93" />
+      <Item value="a" priority="159" />
+      <Item value="List" priority="31" />
+      <Item value="List&lt;int&gt;" priority="29" />
+      <Item value="Algorithm`1" priority="31" />
+      <Item value="Console`0" priority="63" />
+      <Item value="for" priority="31" />
+      <Item value="catch" priority="30" />
+      <Item value="Contract`0" priority="31" />
+      <Item value="c" priority="63" />
+      <Item value="class" priority="30" />
+      <Item value="private" priority="95" />
+      <Item value="bool" priority="31" />
+      <Item value="Betting`0" priority="31" />
+      <Item value="bet" priority="63" />
+      <Item value="default" priority="63" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Diagnostics.Contracts.Contract">
+      <Item value="Requires`0" priority="27" />
+      <Item value="Ensures`0" priority="26" />
+      <Item value="OldValue`1" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Random">
+      <Item value="Next`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:PirateSpades.Func.Fisher_Yates_Alg">
+      <Item value="r" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Collections.Generic.List`1">
+      <Item value="Count" priority="53" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Console">
+      <Item value="Write`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Collections.Generic.IList`1">
+      <Item value="Count" priority="53" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:PirateSpades.Bet.Betting">
+      <Item value="bet" priority="26" />
+      <Item value="showBet" priority="26" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <UnitTestRunner>
+    <Providers />
+  </UnitTestRunner>
+  <UnitTestRunnerNUnit>
+    <NUnitInstallDir IsNull="False">
+    </NUnitInstallDir>
+    <UseAddins>Never</UseAddins>
+  </UnitTestRunnerNUnit>
+  <SettingsComponent>
+    <string />
+    <integer />
+    <boolean>
+      <setting name="SolutionAnalysisEnabled">False</setting>
+    </boolean>
+  </SettingsComponent>
+</Configuration>

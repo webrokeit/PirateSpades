@@ -1,0 +1,5 @@
+C:\Users\Helena\Desktop\ITU\BDSA Project\PirateSpades\source\PirateSpadesServer\bin\Debug\PirateSpadesServer.exe
+C:\Users\Helena\Desktop\ITU\BDSA Project\PirateSpades\source\PirateSpadesServer\bin\Debug\PirateSpadesServer.pdb
+C:\Users\Helena\Desktop\ITU\BDSA Project\PirateSpades\source\PirateSpadesServer\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Helena\Desktop\ITU\BDSA Project\PirateSpades\source\PirateSpadesServer\obj\x86\Debug\PirateSpadesServer.exe
+C:\Users\Helena\Desktop\ITU\BDSA Project\PirateSpades\source\PirateSpadesServer\obj\x86\Debug\PirateSpadesServer.pdb
