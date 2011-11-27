@@ -390,9 +390,6 @@ component
 				end
 				AnyCard : BOOLEAN
 					-> suit : SUIT
-				require
-					suit /= Void
-				end
 				HaveCard : BOOLEAN
 					-> card : CARD
 				require
@@ -402,6 +399,9 @@ component
 					-> card : CARD
 				require
 					card /= Void
+				ensure
+					result -> card.Suit = table.OpeningCard.Suit or
+					result -> not AnyCard(table.OpeningCard.Suit)
 				end
 				PlayCard : void
 					-> card : CARD
@@ -427,18 +427,18 @@ component
 					bet >= 0
 				end
 				DealCards : void
-					-> deck : DECK
 					-> amountToDeal : INT
 					-> players : SET[PLAYER]
 				require
-					deck /= Void;
 					deck.Count(52);
-					IsDealer
+					IsDealer;
+					players /= void;
+					amountToDeal > 0
 				ensure
 					NumberOfCards = amountToDeal
 				end
 				invariant
-					NumberOfCards >= 0;
+					NumberOfCards >= 0 and NumberOfCards <= 10;
 					AmountOfTricks >= 0
 		end
 		class CARD
@@ -467,7 +467,7 @@ component
 		end
 		class DECK
 			feature
-				make : DECK
+				getDeck : DECK
 				RemoveTopCard : CARD
 				require
 					Count > 0
@@ -479,7 +479,7 @@ component
 					-> card : CARD
 				require
 					card /= Void;
-					Count /= 52
+					Count < 52
 				ensure
 					Count = (old Count) - 1
 				end
@@ -501,7 +501,7 @@ component
 			feature
 				CardValue : STRING
 				invariant
-					CardValue in { ''2', '3', '4', '5', '6',
+					CardValue in { '2', '3', '4', '5', '6',
 					'7', '8', '9', '10', 'Jack', 'Queen',
 					'King', 'Ace' }
 		end
