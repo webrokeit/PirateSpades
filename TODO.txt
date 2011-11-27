@@ -36,3 +36,9 @@ dd.mm.yyyy
 	- Make the players have a rum (perhaps drink when they win)
 	- Joe as Ace, Helena as Queen, Andreas as King, Morten as Jack
 	- 2D view from an 45 angle
+
+27.11.2011
+==========
+[MCHE]	Implementing GameLogic
+
+[TODO]	Sorting algorithm for cards.. Sort after suit then value
