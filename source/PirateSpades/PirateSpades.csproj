@@ -75,6 +75,7 @@
     <Compile Include="Func\Fisher-Yates-Alg.cs" />
     <Compile Include="GameLogic\Card.cs" />
     <Compile Include="GameLogic\Deck.cs" />
+    <Compile Include="GameLogic\Game.cs" />
     <Compile Include="GameLogic\Player.cs" />
     <Compile Include="GameLogic\Round.cs" />
     <Compile Include="GameLogic\Table.cs" />
