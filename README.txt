@@ -1,9 +1,9 @@
 Pirate Bridge
 
 Authors:
-» Helena Charlotte Lyn Krüger (hclk@itu.dk) 
-» Morten Chabert Eskesen (mche@itu.dk)
-» Andreas Hallberg Kjeldsen (ahal@itu.dk)
+» Helena Charlotte Lyn Krüger (hclk@itu.dk) - graphics
+» Morten Chabert Eskesen (mche@itu.dk) - Game logic
+» Andreas Hallberg Kjeldsen (ahal@itu.dk) - networking and database
 
 Abstract:
 Card game for two players and up. You can play for fun, for money or

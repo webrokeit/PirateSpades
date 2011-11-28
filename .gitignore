@@ -1,2 +1,7 @@
 
 /source/_ReSharper.PirateSpades
+/.gitignore
+/source/PirateSpades.1.1.dotCover
+/source/PirateSpades.6.0.ReSharper.user
+/source/PirateSpades/bin
+/source/PirateSpades/obj
