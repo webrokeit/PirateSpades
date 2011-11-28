@@ -1,0 +1,191 @@
+﻿-- System description for PirateSpades
+-- Helena Charlotte Lyn Krüger (hclk@itu.dk)
+-- Andreas Hallberg Kjeldsen (ahal@itu.dk)
+-- Morten Chabert Eskesen (mche@itu.dk)
+-- 15 December 2011
+
+static_diagram PIRATE_SPADES_SERVER
+	-- The game server specification
+	component
+		cluster SERVER
+			component
+				class GAME_SERVER
+					feature {NONE}
+						listener : SOCKET
+						clients : LIST[SOCKET]
+					feature
+						Start
+						Stop
+						CreateGame : GAME
+						JoinGame : BOOLEAN
+							-> game : GAME
+						EndGame : BOOLEAN
+							-> game : GAME
+				end
+				class GAME
+					feature {NONE}
+						players : LIST[PLAYER]
+					feature
+						NewRound
+						DealCards
+						Standing : SCOREBOARD
+
+				end
+				class PLAYER
+					feature {NONE}
+						socket : SOCKET
+						name : STRING
+				end
+				class SCOREBOARD
+					feature {NONE}
+						game : GAME
+						scores : MAP[PLAYER, INTEGER]
+					features
+						Leader : PLAYER
+						Overview : MAP[PLAYER, INTEGER]
+				end
+				class GAME_MESSAGE
+					features
+						ToByteArray : BYTE[]
+						GetMessage : GAME_MESSAGE
+							-> bytes : BYTE[]
+						Head : STRING
+							-> head : STRING
+						Body : STRING
+							-> body : STRING
+				end
+		end
+		cluster NETWORKING_CLASSES
+			component
+				class SOCKET
+					feature
+						address : STRING
+						port : INTEGER
+						read : STRING
+						write
+							-> str : STRING
+				end
+		end
+end
+
+static_diagram CLASS_INTERFACES
+	-- A formal specification of the enumerable collection classes
+	-- Bag, Set and Sequence.
+	component
+		cluster ASSIGNMENT_8
+			component
+				class BAG[T]
+					inherit
+						ENUMERABLE[T]; DELEGATE[T, U]
+					feature {NONE}
+						items : STACK[T]
+					feature
+						IsEmpty : BOOLEAN
+							ensure
+								Result -> (Size = 0)
+							end
+						Size : INTEGER
+						Clear
+							ensure
+								IsEmpty
+							end
+						Add : BOOLEAN
+							-> obj : T
+							ensure
+								Result -> (obj /= Void and Size > old size)
+							end
+						Remove : BOOLEAN
+							-> obj : T
+							ensure
+								Result -> (obj /= Void and old Size > 0 and Size < old Size) 
+							end
+						Contains : BOOLEAN
+							-> obj : T
+						Clone : BAG[T]
+						Map: BAG[U] -> f: FUNCTION[T, U]
+						ForAll: BOOLEAN -> p: PREDICATE[T]
+						Exists: BOOLEAN -> p: PREDICATE[T]
+						ExistsUnique: BOOLEAN -> p: PREDICATE[T]
+						ToString: VALUE
+						GetEnumerator: LIST[T]
+						Notify
+							-> sender: BAG[T]
+							-> item: T
+					invariant
+						Size >= 0;
+						for_all item member_of items it_holds
+							(item : T);
+				end
+				class ZET[T]
+					inherit BAG[T]
+					feature {NONE}
+						items : STACK[T]
+					feature
+						Add : BOOLEAN
+							-> obj : T
+							require
+								not Contains(obj)
+							ensure
+								Result -> Contains(obj)
+							end
+						Remove : BOOLEAN
+							-> obj : T
+							require
+								Contains(obj)
+							ensure
+								not Contains(obj)
+							end
+						Clone : ZET[T]
+						Map: ZET[U] -> f: FUNCTION[T, U]
+					invariant
+						Size >= 0;
+						for_all item member_of items it_holds
+							(item : T);
+						for_all item member_of items it_holds
+							(for_all itemx member_of (items - item) it_holds
+								(not item <-> itemx)
+							)
+				end
+				class SEQUENCE[T]
+					inherit BAG[T]
+					feature {NONE}
+						items : STACK[T]
+						holder : STACK[T]
+					feature
+						AddAtIndex
+							-> index : INTEGER
+							-> obj : T
+							require
+								index >= 0;
+								index <= Size
+							ensure
+								get(index) = obj;
+								Size > old Size;
+							end
+						RemoveAtIndex : T
+							-> index : INTEGER
+							require
+								index >= 0;
+								index < Size
+							ensure
+								Size < old Size
+							end
+						Get : T
+							-> index : INTEGER
+							require
+								index >= 0;
+								index < Size
+							end
+						Clone : SEQUENCE[T]
+						Map: SEQUENCE[U] -> f: FUNCTION[T, U]
+					invariant
+						Size >= 0;
+						for_all item member_of items it_holds
+							(item : T);
+				end
+				class ENUMERABLE[T]
+					feature
+						GetEnumerator: ENUMERABLE[T]
+				end
+		end
+end
