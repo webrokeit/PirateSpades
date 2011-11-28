@@ -220,8 +220,7 @@ component
 					WinningPlayer /= Void
 				ensure
 					OpeningCard = Void;
-					WinningPlayer = StartingPlayer;
-					WinningPlayer = PlayerTurn
+					AmountOfCards = 0
 				end
 				invariant
 					AmountOfPlayers >= 2 and AmountOfPlayers <= 5;
@@ -301,12 +300,12 @@ component
 				end
 				AmountOfPlayers : INT
 				AmountOfPlayerCards : INT
+				TotalCards : INT
 				NumberOfCardsInPlay : INT
 				AmountOfBets : INT
-				Finished : BOOLEAN
+				IsFinished : BOOLEAN
 				ensure
-					result -> AmountOfPlayers * AmountOfPlayerCards = \
-					\ NumberOfCardsInPlay
+					result -> NumberOfCardsInPlay = TotalCards
 				end
 				PlayerDealing : PLAYER
 				ensure
@@ -335,6 +334,8 @@ component
 				end
 				MatchTrick : BOOLEAN
 					-> player : PLAYER
+				require
+					player /= Void
 				ensure
 					result -> NumberOfTricksForPlayer(player) = \
 					\ PlayerBet(player)
@@ -345,8 +346,9 @@ component
 				end
 				invariant
 					AmountOfPlayers >= 2 and AmountOfPlayers <= 5;
-					AmountOfPlayerCards > 0;
-					NumberOfCardsInPlay >= AmountOfPlayers
+					AmountOfPlayerCards >= AmountOfPlayers;
+					TotalCards = AmountOfPlayers * AmountOfPlayerCards;
+					NumberOfCardsInPlay > 0
 		end
 		class PLAYER
 			feature
@@ -376,7 +378,8 @@ component
 				end
 				ClearTricks : void
 				ensure
-					AmountOfTricks = 0
+					AmountOfTricks = 0;
+					Bet = 0
 				end
 				AmountOfTricks : INT
 				ensure
@@ -457,28 +460,7 @@ component
 		end
 		class DECK
 			feature
-				getDeck : DECK
-				RemoveTopCard : CARD
-				require
-					Count > 0
-				ensure
-					Count = (old Count) - 1
-				end
-				Count : INT
-				AddCard : void
-					-> card : CARD
-				require
-					card /= Void;
-					Count < 52
-				ensure
-					Count = (old Count) - 1
-				end
-				Shuffle : void
-				require
-					Count = 52
-				end
-				invariant
-					Count >= 0 and Count <= 52
+				ShuffleDeck : DECK
 		end
 		class SUIT
 			feature

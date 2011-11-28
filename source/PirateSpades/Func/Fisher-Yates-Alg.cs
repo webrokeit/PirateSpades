@@ -12,26 +12,26 @@ namespace PirateSpades.Func
     /// </summary>
     public class FisherYatesAlg
     {
-        private Random r;
+        private static readonly Random r = new Random();
 
-        public FisherYatesAlg() {
-            this.r = new Random();
-        }
-
-        public void Algorithm<T>(IList<T> c) {
+        public static void Algorithm<T>(Stack<T> c) {
             Contract.Requires(c.Count != 0);
             Contract.Ensures(c.Count == Contract.OldValue(c.Count));
+
+            T[] arr = c.ToArray();
 
             if (c.Count > 1) {
                 int i = c.Count - 1;
                 while (i > 1) {
                     int s = r.Next(i);
-                    T holder = c[i];
-                    c[i] = c[s];
-                    c[s] = holder;
+                    T holder = arr[i];
+                    arr[i] = arr[s];
+                    arr[s] = holder;
                     i--;
                 }
             }
+
+            c = new Stack<T>(arr);
         }
     }
 }
