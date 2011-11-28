@@ -47,7 +47,7 @@ static_diagram PIRATE_SPADES_SERVER
 				class GAME_MESSAGE
 					features
 						ToByteArray : BYTE[]
-						FromByteArray : GAME_MESSAGE
+						GetMessage : GAME_MESSAGE
 							-> bytes : BYTE[]
 						Head : STRING
 							-> head : STRING

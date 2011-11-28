@@ -1,0 +1,6 @@
+As an enumerated set of any type.  E.g.,
+
+  my_enum: STRING
+  ...
+  invariant
+    my_enum in { 'a', 'b', 'c' }
