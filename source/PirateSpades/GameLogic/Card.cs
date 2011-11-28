@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics.Contracts;
+using System;
 
 namespace PirateSpades.GameLogic {
     
-    public class Card {
+    public class Card : IComparable {
         private readonly Suit s;
         private readonly CardValue v;
 
@@ -15,16 +16,19 @@ namespace PirateSpades.GameLogic {
 
         public Suit Suit { get { return s; } }
 
-        //Returns true if the card is greater than the card given as parameter
-        public bool Greater(Card c) {
-            Contract.Requires(c != null);
+        public int CompareTo(Object obj) {
+            Contract.Requires(obj != null && obj is Card);
+            var c = (Card)obj;
             if(c.Suit == Suit) {
-                return Value < c.Value;
+                if(Value < c.Value) {
+                    return -1;
+                }
+                return 1;
             }
             if(Suit == Suit.Spades) {
-                return true;
+                return 1;
             }
-            return false;
+            return -1;
         }
 
         public bool SameSuit(Card c) {
