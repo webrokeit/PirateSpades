@@ -8,11 +8,13 @@ namespace PirateSpades.Network {
 
     public class PirateClient : GameLogic.Player {
         public Socket Socket { get; set; }
-        public byte[] ReceiveBuffer = new byte[PirateMsg.BufferSize];
-        public byte[] SendBuffer = new byte[PirateMsg.BufferSize];
+        public byte[] ReceiveBuffer = new byte[PirateMessage.BufferSize];
+        public byte[] SendBuffer = new byte[PirateMessage.BufferSize];
 
         public PirateClient (Socket socket) {
             this.Socket = socket;
         }
+
+
     }
 }

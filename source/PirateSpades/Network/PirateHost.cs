@@ -32,35 +32,47 @@
         }
 
         private void WaitForSocket() {
-            this.Listener.BeginAcceptSocket(this.SocketConnected, null);
+            this.Listener.BeginAcceptSocket(SocketConnected, this);
         }
 
-        private void SocketConnected(IAsyncResult ar) {
-            var client = this.Listener.EndAcceptSocket(ar);
-            if(!Players.ContainsKey(client)) {
+        private static void SocketConnected(IAsyncResult ar) {
+            var host = (PirateHost)ar.AsyncState;
+            var client = host.Listener.EndAcceptSocket(ar);
+            
+            host.WaitForSocket(); // Wait for more
+
+            if(!host.Players.ContainsKey(client)) {
                 var pclient = new PirateClient(client);
-                Players.Add(client, pclient);
-                pclient.Socket.BeginReceive(
-                    pclient.ReceiveBuffer,
-                    0,
-                    pclient.ReceiveBuffer.Length,
-                    SocketFlags.None,
-                    this.SocketMessageReceived,
-                    pclient);
+                host.Players.Add(client, pclient);
+                SocketMessageReceive(pclient);
             }else {
                 // TODO: Notify client that they're already conncected.
             }
         }
 
-        private void SocketMessageReceived(IAsyncResult ar) {
+        private static void SocketMessageReceive(PirateClient pclient) {
+            pclient.Socket.BeginReceive(
+                    pclient.ReceiveBuffer,
+                    0,
+                    pclient.ReceiveBuffer.Length,
+                    SocketFlags.None,
+                    SocketMessageReceived,
+                    pclient
+            );
+        }
+
+        private static void SocketMessageReceived(IAsyncResult ar) {
             var pclient = (PirateClient)ar.AsyncState;
             var read = pclient.Socket.EndReceive(ar);
 
             if(read >= 4) {
-                var msg = PirateMsg.GetMessage(pclient.ReceiveBuffer, read);
+                var msg = PirateMessage.GetMessage(pclient.ReceiveBuffer, read);
+                MessageHandler.ReceivedMessage(pclient, msg);
             }
-            
 
+            if(pclient.Socket.Connected) {
+                SocketMessageReceive(pclient);
+            }
         }
     }
 }
