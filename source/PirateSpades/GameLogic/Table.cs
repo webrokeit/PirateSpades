@@ -6,9 +6,18 @@ using System.Text;
 namespace PirateSpades.GameLogic {
     public class Table {
         //MAKE SINGLETON
-        private static Card open;
+        private Card open;
+        private static readonly Table Me = new Table();
 
-        public static Card OpeningCard { get { return open; } }
+        private Table() {
+            
+        }
+
+        public static Table GetTable() {
+            return Me;
+        }
+
+        public Card OpeningCard { get { return open; } }
 
         public static void ReceiveCard(Player p) {
             

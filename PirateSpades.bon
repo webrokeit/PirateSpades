@@ -99,7 +99,7 @@ explanation
 	"The deck containing all the cards in the game"
 query
 	"How many cards do you hold?",
-	"May I have a new deck with all the 52 cards?"
+	"May I have the deck with all the 52 cards?"
 command
 	"Shuffle this deck.",
 	"Remove top card.",
@@ -116,7 +116,7 @@ explanation
 query
 	"Is this card the same suit as the opening card?",
 	"How many players are at this table?",
-	"May I have a table with these players?",
+	"May I have the table?",
 	"What is the opening card?",
 	"What cards have been played?",
 	"Have all players played a card?",
@@ -186,13 +186,7 @@ component
 		component
 		class TABLE
 			feature
-				make : TABLE
-					-> players : SET[PLAYER]
-				require
-					players /= Void;
-					players.Count >= 2;
-					player.Count <= 5;
-				end
+				GetTable : TABLE
 				OpeningCard : CARD
 				SameSuit : BOOLEAN
 					-> player : PLAYER
@@ -430,7 +424,6 @@ component
 					-> amountToDeal : INT
 					-> players : SET[PLAYER]
 				require
-					deck.Count(52);
 					IsDealer;
 					players /= void;
 					amountToDeal > 0
@@ -448,13 +441,10 @@ component
 					-> value : CARDVALUE
 				Value : CARDVALUE
 				Suit : SUIT
-				Greater : BOOLEAN
+				CompareTo : INT
 					-> card : CARD
 				require
 					card /= Void
-				ensure
-					result -> Current > card
-				end
 				SameSuit : BOOLEAN
 					-> card : CARD
 				require

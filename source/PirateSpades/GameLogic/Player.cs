@@ -5,30 +5,19 @@ using System.Linq;
 namespace PirateSpades.GameLogic {
     public class Player {
         private readonly List<Card> hand;
-        private bool dealer;
         private int bet;
         private readonly List<List<Card>> tricks;
-        private Card playCard;
-        private Deck deck = Deck.GetDeck();
+        private readonly Table table = Table.GetTable();
 
         public Player() {
             hand = new List<Card>();
-            dealer = false;
+            this.IsDealer = false;
             tricks = new List<List<Card>>();
         }
 
-        public bool IsDealer {
-            get {
-                return dealer;
-            } set { dealer = value; }
-        }
+        public bool IsDealer { get; set; }
 
-        public Card CardToPlay {
-            get {
-                return playCard;
-            }
-            set { playCard = value; }
-        }
+        public Card CardToPlay { get; set; }
 
         public int NumberOfCards {
             get {
@@ -67,11 +56,6 @@ namespace PirateSpades.GameLogic {
 
         public void ClearTricks() {
             Contract.Ensures(Tricks == 0);
-            foreach(var t in tricks) {
-                foreach(var card in t) {
-                    deck.AddCard(card);
-                }
-            }
             tricks.Clear();
         }
 
@@ -86,12 +70,12 @@ namespace PirateSpades.GameLogic {
 
         public bool Playable(Card c) {
             Contract.Requires(c != null);
-            Contract.Ensures(c.Suit == Table.OpeningCard.Suit ? Contract.Result<bool>() : true ||
-                !this.AnyCard(Table.OpeningCard.Suit) ? Contract.Result<bool>() : true);
-            if(c.Suit == Table.OpeningCard.Suit) {
+            Contract.Ensures(c.Suit == table.OpeningCard.Suit ? Contract.Result<bool>() : true ||
+                !this.AnyCard(table.OpeningCard.Suit) ? Contract.Result<bool>() : true);
+            if(c.Suit == table.OpeningCard.Suit) {
                 return true;
             }
-            return !this.AnyCard(Table.OpeningCard.Suit);
+            return !this.AnyCard(table.OpeningCard.Suit);
         }
 
         public void PlayCard(Card c) {
@@ -109,8 +93,9 @@ namespace PirateSpades.GameLogic {
         }
 
         public void DealCards(List<Player> players, int deal) {
-            Contract.Requires(players != null && deck.Count == 52 && deal > 0 && IsDealer);
+            Contract.Requires(players != null && deal > 0 && IsDealer);
             Contract.Ensures(NumberOfCards == deal);
+            Deck deck = Deck.GetDeck();
             deck.Shuffle();
             for(int i = 0; i < deal; i++) {
                 foreach(var p in players) {

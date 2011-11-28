@@ -1,7 +1,19 @@
+/source/_ReSharper.PirateSpades
+/source/PirateSpades.6.0.ReSharper.user
+/source/PirateSpades.1.1.dotCover
 
+<<<<<<< HEAD
 /source/_ReSharper.PirateSpades
 /.gitignore
 /source/PirateSpades.1.1.dotCover
 /source/PirateSpades.6.0.ReSharper.user
+=======
+/source/PirateSpades.6.0.ReSharper.user
+/source/PirateSpades.1.1.dotCover
+/source/PirateSpadesServer/bin
+/source/PirateSpadesServer/obj
+>>>>>>> e1fc302487a8c748d9563c5c1b4a50097beb6f29
 /source/PirateSpades/bin
 /source/PirateSpades/obj
+/source/PirateSpades/obj
+/source/PirateSpades/bin
