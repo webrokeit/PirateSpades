@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 /source/_ReSharper.PirateSpades
 /source/PirateSpades.1.1.dotCover
@@ -10,3 +11,15 @@
 /source/PirateSpadesServer/obj
 /source/PirateSpadesServer/bin
 /source/PirateSpades.6.0.ReSharper.user
+=======
+/source/_ReSharper.PirateSpades
+/source/PirateSpades.6.0.ReSharper.user
+/source/PirateSpades.1.1.dotCover
+
+/source/PirateSpades.6.0.ReSharper.user
+/source/PirateSpades.1.1.dotCover
+/source/PirateSpadesServer/bin
+/source/PirateSpadesServer/obj
+/source/PirateSpades/bin
+/source/PirateSpades/obj
+>>>>>>> e1fc302487a8c748d9563c5c1b4a50097beb6f29

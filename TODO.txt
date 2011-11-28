@@ -26,13 +26,18 @@ dd.mm.yyyy
 ==========
 [HCLK]	Implement Fisher-Yates shuffle algorithm for a
 	generic list. http://eli.thegreenplace.net/2010/05/28/the-intuition-behind-fisher-yates-shuffling/ 
+<<<<<<< HEAD
+[HCLK]  Create the cards for the game with adobe flash 
+[MCHE]  Started working on bon
+
+=======
 [MCHE] Started working on bon
 
-[TODO] 	Create graphics..
+[TODO] 	Create graphics..Kan Helena godt prøve på. 
 	Ideas:
-	- Gold coins as bet
+	- Gold coins as bet 
 	- Pirate theme
-	- Losers must walk the plank
+	- Losers must walk the plank 
 	- Make the players have a rum (perhaps drink when they win)
 	- Joe as Ace, Helena as Queen, Andreas as King, Morten as Jack
 	- 2D view from an 45 angle
@@ -42,3 +47,4 @@ dd.mm.yyyy
 [MCHE]	Implementing GameLogic
 
 [TODO]	Sorting algorithm for cards.. Sort after suit then value
+>>>>>>> e3ac002e6f66df1ea58306fbb391adedcd8fa5a1
