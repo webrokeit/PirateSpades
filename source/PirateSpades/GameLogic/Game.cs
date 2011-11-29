@@ -101,11 +101,18 @@ namespace PirateSpades.GameLogic {
             while(!IsFinished()) {
                 this.RotateDealer();
                 var r = new Round(dealership, deal, roundNumber);
-                while(!r.IsFinished()) {
-                    
-                }
+                // Collect bet from each player
+                r.Start();
+                this.ReceiveStats(r);
                 roundNumber++;
                 playedRounds++;
+                if(playedRounds < 10) {
+                    deal--;
+                } else if(playedRounds == 10) {
+                    //DO NOTHING
+                } else {
+                    deal++;
+                }
             }
         }
 
