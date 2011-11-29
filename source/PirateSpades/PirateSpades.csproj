@@ -76,7 +76,9 @@
     <Compile Include="Func\Sorting.cs" />
     <Compile Include="GameLogic\Card.cs" />
     <Compile Include="GameLogic\Deck.cs" />
+    <Compile Include="GameLogic\Game.cs" />
     <Compile Include="GameLogic\Player.cs" />
+    <Compile Include="GameLogic\Round.cs" />
     <Compile Include="GameLogic\Table.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -9,11 +9,18 @@ namespace PirateSpades.GameLogic {
         private readonly List<List<Card>> tricks;
         private readonly Table table = Table.GetTable();
 
-        public Player() {
+        public Player(string name) {
+            this.Name = name;
             hand = new List<Card>();
             this.IsDealer = false;
             tricks = new List<List<Card>>();
         }
+
+        public string Name { get; protected set; }
+
+        private delegate void CardPlayedDelegate(Card c);
+
+        private event CardPlayedDelegate CardPlayed;
 
         public bool IsDealer { get; set; }
 
@@ -51,12 +58,13 @@ namespace PirateSpades.GameLogic {
         public void ReceiveTrick(List<Card> trick) {
             Contract.Requires(trick != null);
             Contract.Ensures(Tricks == Contract.OldValue(Tricks) + 1);
-            tricks.Add(trick);
+            tricks.Add(new List<Card>(trick));
         }
 
         public void ClearTricks() {
-            Contract.Ensures(Tricks == 0);
+            Contract.Ensures(Tricks == 0 && Bet == 0);
             tricks.Clear();
+            Bet = 0;
         }
 
         public bool HaveCard(Card c) {
@@ -82,7 +90,10 @@ namespace PirateSpades.GameLogic {
             Contract.Requires(c != null && this.Playable(c) && this.HaveCard(c));
             Contract.Ensures(!this.HaveCard(c) && NumberOfCards == Contract.OldValue(NumberOfCards) - 1);
             CardToPlay = c;
-            Table.ReceiveCard(this);
+            if(CardPlayed != null) {
+                CardPlayed(c);
+            }
+            table.ReceiveCard(this, c);
             hand.Remove(c);
         }
 
@@ -95,11 +106,10 @@ namespace PirateSpades.GameLogic {
         public void DealCards(List<Player> players, int deal) {
             Contract.Requires(players != null && deal > 0 && IsDealer);
             Contract.Ensures(NumberOfCards == deal);
-            Deck deck = Deck.GetDeck();
-            deck.Shuffle();
+            Stack<Card> deck = Deck.ShuffleDeck();
             for(int i = 0; i < deal; i++) {
                 foreach(var p in players) {
-                    p.ReceiveCard(deck.RemoveTopCard());
+                    p.ReceiveCard(deck.Pop());
                 }
             }
         }

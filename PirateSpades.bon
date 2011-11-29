@@ -78,9 +78,10 @@ query
 	"What cards do you have?",
 	"Can this card be played?",
 	"Do you have any of cards of this suit left?",
-	"May I have a new player?",
+	"May I have a new player with this name?",
 	"What card do you want to play?",
 	"Do you have this card?",
+	"What is your name?",
 	"What is your bet?",
 	"What is at this index of your hand?",
 	"How many tricks do you have?"
@@ -125,6 +126,7 @@ query
 	"Who is the starting player?",
 command
 	"Receive played card.",
+	"Add these players.",
 	"Give winner the played cards."
 constraint
 	"There can only be 5 players at the same table."
@@ -149,7 +151,6 @@ command
 	"Give points to player.",
 	"Receive end-of-round stats.",
 	"Rotate dealership.",
-	"Make this player dealer.",
 	"Start game.",
 	"New round."
 constraint
@@ -165,6 +166,7 @@ query
 	"Is the round finished?",
 	"How many cards is each player supposed to have this round?",
 	"May I have a new round with this number of cards for each player?",
+	"What is your number?",
 	"How many players are in the game?",
 	"How many bets have been placed this round?",
 	"How many tricks does this player have?",
@@ -197,6 +199,11 @@ component
 					result -> player.CardToPlay.Suit = OpeningCard.Suit or
 					result -> not player.AnyCard(OpeningCard.Suit)
 				end
+				AddPlayers : void
+					-> players : SET[PLAYER]
+				require
+					players /= Void
+				end
 				ReceiveCard : void
 					-> player : PLAYER
 				require
@@ -220,11 +227,10 @@ component
 					WinningPlayer /= Void
 				ensure
 					OpeningCard = Void;
-					WinningPlayer = StartingPlayer;
-					WinningPlayer = PlayerTurn
+					AmountOfCards = 0
 				end
 				invariant
-					AmountOfPlayers >= 2 and AmountOfPlayers <= 5;
+					AmountOfPlayers <= 5;
 					AmountOfCards >= 0;
 					AmountOfCards <= AmountOfPlayers
 		end
@@ -242,26 +248,24 @@ component
 					-> player : PLAYER
 				require
 					AmountOfPlayers < 5;
-					player /= Void
+					player /= Void;
+					not IsStarted
 				ensure
 					AmountOfPlayers = (old AmountOfPlayers) + 1
 				end
-				Finished : BOOLEAN
+				IsStarted : BOOLEAN
+				IsFinished : BOOLEAN
 				ensure
 					result -> RoundsLeft = 0
 				end
 				RoundsLeft : INT
+				ensure
+					Result -> RoundsPlayed = RoundsLeft
+				end
 				RotateDealer : void
 				ensure
 					PlayerToDeal.IsDealer;
 					not (old PlayerToDeal).IsDealer
-				end
-				MakeDealer : void
-					-> player : PLAYER
-				require
-					player /= Void
-				ensure
-					player.isDealer
 				end
 				Points : INT
 					-> player : PLAYER
@@ -278,7 +282,10 @@ component
 				end
 				Start : void
 				require
-					AmountOfPlayers >= 2 and AmountOfPlayers <= 5
+					AmountOfPlayers >= 2 and AmountOfPlayers <= 5;
+					not IsStarted
+				ensure
+					IsStarted
 				end
 				ReceiveStatsFromRound : void
 					-> round : ROUND
@@ -289,24 +296,26 @@ component
 				NewRound : void
 				invariant
 					RoundsPlayed <= NumberOfRounds;
-					RoundsLeft <= 0
+					RoundsLeft >= 0
 		end
 		class ROUND
 			feature
 				make : ROUND
 					-> cards : INT
 					-> players : SET[PLAYER]
+					-> number : INT
 				ensure
 					cards = AmountOfPlayerCards
 				end
+				RoundNumber : INT
 				AmountOfPlayers : INT
 				AmountOfPlayerCards : INT
+				TotalCards : INT
 				NumberOfCardsInPlay : INT
 				AmountOfBets : INT
-				Finished : BOOLEAN
+				IsFinished : BOOLEAN
 				ensure
-					result -> AmountOfPlayers * AmountOfPlayerCards = \
-					\ NumberOfCardsInPlay
+					result -> NumberOfCardsInPlay = TotalCards
 				end
 				PlayerDealing : PLAYER
 				ensure
@@ -335,6 +344,8 @@ component
 				end
 				MatchTrick : BOOLEAN
 					-> player : PLAYER
+				require
+					player /= Void
 				ensure
 					result -> NumberOfTricksForPlayer(player) = \
 					\ PlayerBet(player)
@@ -345,12 +356,16 @@ component
 				end
 				invariant
 					AmountOfPlayers >= 2 and AmountOfPlayers <= 5;
-					AmountOfPlayerCards > 0;
-					NumberOfCardsInPlay >= AmountOfPlayers
+					AmountOfPlayerCards >= AmountOfPlayers;
+					TotalCards = AmountOfPlayers * AmountOfPlayerCards;
+					NumberOfCardsInPlay > 0
 		end
 		class PLAYER
 			feature
 				make : PLAYER
+					-> name : STRING
+				end
+				GetName : STRING
 				IsDealer : BOOLEAN
 				NumberOfCards : INT
 				ensure
@@ -376,7 +391,8 @@ component
 				end
 				ClearTricks : void
 				ensure
-					AmountOfTricks = 0
+					AmountOfTricks = 0;
+					Bet = 0
 				end
 				AmountOfTricks : INT
 				ensure
@@ -457,28 +473,7 @@ component
 		end
 		class DECK
 			feature
-				getDeck : DECK
-				RemoveTopCard : CARD
-				require
-					Count > 0
-				ensure
-					Count = (old Count) - 1
-				end
-				Count : INT
-				AddCard : void
-					-> card : CARD
-				require
-					card /= Void;
-					Count < 52
-				ensure
-					Count = (old Count) - 1
-				end
-				Shuffle : void
-				require
-					Count = 52
-				end
-				invariant
-					Count >= 0 and Count <= 52
+				ShuffleDeck : DECK
 		end
 		class SUIT
 			feature
