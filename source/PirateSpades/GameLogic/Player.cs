@@ -9,15 +9,18 @@ namespace PirateSpades.GameLogic {
         private readonly List<List<Card>> tricks;
         private readonly Table table = Table.GetTable();
 
-        public Player() {
+        public Player(string name) {
+            this.Name = name;
             hand = new List<Card>();
             this.IsDealer = false;
             tricks = new List<List<Card>>();
         }
 
-        protected delegate void CardPlayedDelegate(Card c);
+        public string Name { get; protected set; }
 
-        protected event CardPlayedDelegate CardPlayed;
+        private delegate void CardPlayedDelegate(Card c);
+
+        private event CardPlayedDelegate CardPlayed;
 
         public bool IsDealer { get; set; }
 
@@ -90,7 +93,7 @@ namespace PirateSpades.GameLogic {
             if(CardPlayed != null) {
                 CardPlayed(c);
             }
-            table.ReceiveCard(this);
+            table.ReceiveCard(this, c);
             hand.Remove(c);
         }
 

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 
 namespace PirateSpades.GameLogic {
     public class Round {
@@ -12,13 +10,15 @@ namespace PirateSpades.GameLogic {
         private int cards;
         private Dictionary<Player, int> bets;
         private Player dealer;
+        private int number;
 
-        public Round(List<Player> players, int deal) {
+        public Round(List<Player> players, int deal, int number) {
             Contract.Ensures(deal == PlayerCards);
             this.players = players;
             this.deal = deal;
             dealer = players.Last();
             cards = players.Count * deal;
+            this.number = number;
         }
 
         public int PlayerCards { get { return deal; } }
@@ -44,6 +44,7 @@ namespace PirateSpades.GameLogic {
         public void CollectBet(Player p, int bet) {
             Contract.Requires(p != null && bet >= 0);
             bets.Add(p, bet);
+            p.Bet = bet;
         }
 
         public int PlayerBet(Player p) {
@@ -65,7 +66,10 @@ namespace PirateSpades.GameLogic {
         }
 
         public void Start() {
-            Contract.Requires(Bets == Players);
+            //Contract.Requires(Bets == Players);
+            table.AddPlayers(players);
+            table.StartingPlayer = players[0];
+            table.PlayerTurn = players[0];
             dealer.DealCards(players, deal);
         }
 
@@ -73,7 +77,7 @@ namespace PirateSpades.GameLogic {
         private void ObjectInvariant() {
             Contract.Invariant(Players >= 0 && Players <= 5);
             Contract.Invariant(PlayerCards >= Players);
-            Contract.Invariant(TotalCards > 0 && NumberOfCardsInPlay > 0);
+            Contract.Invariant(TotalCards > 0 && NumberOfCardsPlayed > 0);
         }
     }
 }

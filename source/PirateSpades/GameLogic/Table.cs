@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 
 namespace PirateSpades.GameLogic {
     public class Table {
@@ -12,8 +10,8 @@ namespace PirateSpades.GameLogic {
         private Player winning;
         private List<Card> cards;
         private Card winningCard;
-        private int numberOfCards;
-        private Dictionary<Player, Card> playedCards; 
+        private Dictionary<Player, Card> playedCards;
+        private int CurrentPlayerIndex = 0;
 
         private Table() {
             open = null;
@@ -33,7 +31,7 @@ namespace PirateSpades.GameLogic {
 
         public Player Winning { get { return winning; } }
 
-        public int CardsPlayed { get { return numberOfCards; } }
+        public int CardsPlayed { get; set; }
 
         public Player PlayerTurn { get; set; }
 
@@ -46,20 +44,29 @@ namespace PirateSpades.GameLogic {
             return p.Playable(p.CardToPlay);
         }
 
-        public void ReceiveCard(Player p) {
+        public void AddPlayers(List<Player> p) {
+            Contract.Requires(p != null);
+            Contract.Ensures(Players == p.Count);
+            players = new List<Player>(p);
+        }
+
+        public void ReceiveCard(Player p, Card c) {
             Contract.Requires(this.SameSuit(p) || StartingPlayer == PlayerTurn);
             Contract.Requires(p != null && !this.IsRoundFinished() && PlayerTurn == p);
+            CurrentPlayerIndex += 1 % players.Count;
             if(open == null) {
                 playedCards.Clear();
-                cards.Add(p.CardToPlay);
-                open = p.CardToPlay;
-                playedCards.Add(p, p.CardToPlay);
-                //GIVE TURN TO NEXT PLAYER IN LINE
+                cards.Add(c);
+                CardsPlayed++;
+                open = c;
+                playedCards.Add(p, c);
+                PlayerTurn = players[CurrentPlayerIndex];
                 return;
             }
-            cards.Add(p.CardToPlay);
+            cards.Add(c);
+            CardsPlayed++;
             if(!this.IsRoundFinished()) {
-                //GIVE TURN TO NEXT PLAYER IN LINE
+                PlayerTurn = players[CurrentPlayerIndex];
                 return;
             }
             this.FinishRound();
@@ -78,7 +85,6 @@ namespace PirateSpades.GameLogic {
                 this.winningCard = kvp.Value;
             }
             winning.ReceiveTrick(cards);
-            numberOfCards += cards.Count;
             cards.Clear();
             PlayerTurn = Winning;
             winning = null;
@@ -87,8 +93,8 @@ namespace PirateSpades.GameLogic {
 
         [ContractInvariantMethod]
         private void ObjectInvariant() {
-            Contract.Invariant(Players >= 2 && Players <= 5);
-            Contract.Invariant(Cards >0 && Cards <= Players);
+            Contract.Invariant(Players <= 5);
+            Contract.Invariant(Cards > 0 && Cards <= Players);
         }
     }
 }
