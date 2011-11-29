@@ -12,5 +12,9 @@ namespace PirateSpades
     using System.Text;
 
 
-    public static void Main(string[] args){}
+    public class Program {
+        public static void Main(String[] args) {
+            
+        }
+    }
 }

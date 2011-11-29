@@ -17,7 +17,9 @@ namespace PirateSpades.GameLogic {
         public Suit Suit { get { return s; } }
 
         public int CompareTo(Object obj) {
-            Contract.Requires(obj != null && obj is Card);
+            if(obj == null || !(obj is Card)) {
+                return 0;
+            }
             var c = (Card)obj;
             if(c.Suit == Suit) {
                 if(Value < c.Value) {

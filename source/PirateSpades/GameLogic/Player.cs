@@ -78,8 +78,7 @@ namespace PirateSpades.GameLogic {
 
         public bool Playable(Card c) {
             Contract.Requires(c != null);
-            Contract.Ensures(c.Suit == table.OpeningCard.Suit ? Contract.Result<bool>() : true ||
-                !this.AnyCard(table.OpeningCard.Suit) ? Contract.Result<bool>() : true);
+            Contract.Ensures(c.Suit == table.OpeningCard.Suit || !this.AnyCard(table.OpeningCard.Suit));
             if(c.Suit == table.OpeningCard.Suit) {
                 return true;
             }

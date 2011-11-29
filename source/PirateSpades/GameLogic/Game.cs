@@ -19,6 +19,7 @@ namespace PirateSpades.GameLogic {
             playedRounds = 0;
             started = false;
             points = new Dictionary<Player, int>();
+            roundPoints = new Dictionary<Round, Dictionary<Player, int>>();
         }
 
         public int Players { get { return players.Count; } }
@@ -30,7 +31,6 @@ namespace PirateSpades.GameLogic {
         public bool IsStarted { get { return started; } }
 
         public int RoundsLeft() {
-            Contract.Ensures(Rounds == RoundsPlayed ? Contract.Result<bool>() : true);
             return Rounds - RoundsPlayed;
         }
 

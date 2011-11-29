@@ -17,6 +17,8 @@ namespace PirateSpades.GameLogic {
             open = null;
             winning = null;
             cards = new List<Card>();
+            CardsPlayed = 0;
+            playedCards = new Dictionary<Player, Card>();
         }
 
         public static Table GetTable() {
@@ -37,11 +39,10 @@ namespace PirateSpades.GameLogic {
 
         public Player StartingPlayer { get; set; }
 
-        public bool SameSuit(Player p) {
-            Contract.Requires(p.CardToPlay != null && OpeningCard != null);
-            Contract.Ensures(p.CardToPlay.Suit == OpeningCard.Suit ? Contract.Result<bool>() : true ||
-                !p.AnyCard(OpeningCard.Suit) ? Contract.Result<bool>() : true);
-            return p.Playable(p.CardToPlay);
+        public bool SameSuit(Player p, Card c) {
+            Contract.Requires(c != null && p != null && OpeningCard != null);
+            Contract.Ensures(c.Suit == OpeningCard.Suit || !p.AnyCard(OpeningCard.Suit));
+            return p.Playable(c);
         }
 
         public void AddPlayers(List<Player> p) {
@@ -51,8 +52,8 @@ namespace PirateSpades.GameLogic {
         }
 
         public void ReceiveCard(Player p, Card c) {
-            Contract.Requires(this.SameSuit(p) || StartingPlayer == PlayerTurn);
-            Contract.Requires(p != null && !this.IsRoundFinished() && PlayerTurn == p);
+            Contract.Requires(this.SameSuit(p, c) || StartingPlayer == PlayerTurn);
+            Contract.Requires(p != null && !this.IsRoundFinished() && PlayerTurn == p && c != null);
             CurrentPlayerIndex += 1 % players.Count;
             if(open == null) {
                 playedCards.Clear();

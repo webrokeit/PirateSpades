@@ -173,7 +173,8 @@ query
 	"Does the number of tricks match the player's bet?",
 	"What has this player bet?",
 	"Who is dealing this round?",
-	"How many cards are in play this round?"
+	"How many cards are in play this round?",
+	"Has this player bet?"
 command
 	"Collect bet from player.",
 	"Remove bets.",
@@ -192,9 +193,11 @@ component
 				OpeningCard : CARD
 				SameSuit : BOOLEAN
 					-> player : PLAYER
+					-> card : CARD
 				require
-					player.PlayedCard /= Void;
-					OpeningCard /= Void
+					player /= Void;
+					OpeningCard /= Void;
+					card /= Void
 				ensure
 					result -> player.CardToPlay.Suit = OpeningCard.Suit or
 					result -> not player.AnyCard(OpeningCard.Suit)
@@ -206,9 +209,11 @@ component
 				end
 				ReceiveCard : void
 					-> player : PLAYER
+					-> card : CARD
 				require
-					SameSuit(player) or StartingPlayer = PlayerTurn;
+					SameSuit(player, card) or StartingPlayer = PlayerTurn;
 					player /= Void;
+					card /= Void;
 					not RoundFinished;
 					PlayerTurn = player
 				end
@@ -259,9 +264,6 @@ component
 					result -> RoundsLeft = 0
 				end
 				RoundsLeft : INT
-				ensure
-					Result -> RoundsPlayed = RoundsLeft
-				end
 				RotateDealer : void
 				ensure
 					PlayerToDeal.IsDealer;
@@ -313,6 +315,11 @@ component
 				TotalCards : INT
 				NumberOfCardsInPlay : INT
 				AmountOfBets : INT
+				HasPlayerBet : BOOLEAN
+					-> player : PLAYER
+				require
+					player /= Void
+				end
 				IsFinished : BOOLEAN
 				ensure
 					result -> NumberOfCardsInPlay = TotalCards
@@ -459,8 +466,6 @@ component
 				Suit : SUIT
 				CompareTo : INT
 					-> card : CARD
-				require
-					card /= Void
 				SameSuit : BOOLEAN
 					-> card : CARD
 				require

@@ -19,6 +19,7 @@ namespace PirateSpades.GameLogic {
             dealer = players.Last();
             cards = players.Count * deal;
             this.number = number;
+            bets = new Dictionary<Player, int>();
         }
 
         public int PlayerCards { get { return deal; } }
@@ -47,8 +48,13 @@ namespace PirateSpades.GameLogic {
             p.Bet = bet;
         }
 
+        public bool HasPlayerBet(Player p) {
+            Contract.Requires(p != null);
+            return bets.ContainsKey(p);
+        }
+
         public int PlayerBet(Player p) {
-            Contract.Requires(p != null && bets.ContainsKey(p));
+            Contract.Requires(p != null && HasPlayerBet(p));
             Contract.Ensures(Contract.Result<int>() >= 0);
             return bets[p];
         }
@@ -66,7 +72,7 @@ namespace PirateSpades.GameLogic {
         }
 
         public void Start() {
-            //Contract.Requires(Bets == Players);
+            Contract.Requires(Bets == Players);
             table.AddPlayers(players);
             table.StartingPlayer = players[0];
             table.PlayerTurn = players[0];
