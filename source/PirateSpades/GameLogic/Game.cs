@@ -102,7 +102,6 @@ namespace PirateSpades.GameLogic {
                 this.RotateDealer();
                 var r = new Round(dealership, deal, roundNumber);
                 // Collect bet from each player
-
                 r.Start();
                 this.ReceiveStats(r);
                 roundNumber++;
