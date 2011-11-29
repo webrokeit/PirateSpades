@@ -15,9 +15,9 @@ namespace PirateSpades.GameLogic {
             tricks = new List<List<Card>>();
         }
 
-        private delegate void CardPlayedDelegate(Card c);
+        protected delegate void CardPlayedDelegate(Card c);
 
-        private event CardPlayedDelegate CardPlayed;
+        protected event CardPlayedDelegate CardPlayed;
 
         public bool IsDealer { get; set; }
 

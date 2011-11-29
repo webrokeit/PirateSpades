@@ -2,19 +2,18 @@
 using System;
 
 namespace PirateSpades.GameLogic {
-    
+    using System.Text.RegularExpressions;
+
     public class Card : IComparable {
-        private readonly Suit s;
-        private readonly CardValue v;
 
         public Card(Suit s, CardValue v) {
-            this.s = s;
-            this.v = v;
+            this.Suit = s;
+            this.Value = v;
         }
 
-        public CardValue Value { get { return v; } }
+        public CardValue Value { get; private set; }
 
-        public Suit Suit { get { return s; } }
+        public Suit Suit { get; private set; }
 
         public int CompareTo(Object obj) {
             Contract.Requires(obj != null && obj is Card);
@@ -33,8 +32,27 @@ namespace PirateSpades.GameLogic {
 
         public bool SameSuit(Card c) {
             Contract.Requires(c != null);
-            Contract.Ensures(Suit == c.Suit ? Contract.Result<bool>() : true);
+            Contract.Ensures(this.Suit != c.Suit || Contract.Result<bool>());
             return Suit == c.Suit;
+        }
+
+        public override string ToString() {
+            return "card:{" + Suit.ToString() + "," + Value.ToString() + "}";
+        }
+
+        public static Card FromString(string s) {
+            Contract.Requires(Regex.IsMatch(s, @"card:\{([A-Z]{4}),(\w{3,5})\}"));
+            var m = Regex.Match(s, @"card:\{[A-Z]{4},\w{3,5}\}");
+            if(m.Success) {
+                Suit suit;
+                if (Enum.TryParse(m.Groups[1].Value, true, out suit)) {
+                    CardValue value;
+                    if (Enum.TryParse(m.Groups[2].Value, true, out value)) {
+                        return new Card(suit, value);
+                    }
+                }
+            }
+            return null;
         }
 
         [ContractInvariantMethod]
