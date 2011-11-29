@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 
 namespace PirateSpades.GameLogic {
     public class Round {
@@ -46,6 +44,7 @@ namespace PirateSpades.GameLogic {
         public void CollectBet(Player p, int bet) {
             Contract.Requires(p != null && bet >= 0);
             bets.Add(p, bet);
+            p.Bet = bet;
         }
 
         public int PlayerBet(Player p) {
@@ -67,7 +66,7 @@ namespace PirateSpades.GameLogic {
         }
 
         public void Start() {
-            Contract.Requires(Bets == Players);
+            //Contract.Requires(Bets == Players);
             table.AddPlayers(players);
             table.StartingPlayer = players[0];
             table.PlayerTurn = players[0];

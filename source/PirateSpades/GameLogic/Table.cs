@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 
 namespace PirateSpades.GameLogic {
     public class Table {
@@ -12,8 +10,7 @@ namespace PirateSpades.GameLogic {
         private Player winning;
         private List<Card> cards;
         private Card winningCard;
-        private Dictionary<String, Card> playedCards;
-
+        private Dictionary<Player, Card> playedCards;
         private int CurrentPlayerIndex = 0;
 
         private Table() {
@@ -97,7 +94,7 @@ namespace PirateSpades.GameLogic {
         [ContractInvariantMethod]
         private void ObjectInvariant() {
             Contract.Invariant(Players <= 5);
-            Contract.Invariant(Cards >0 && Cards <= Players);
+            Contract.Invariant(Cards > 0 && Cards <= Players);
         }
     }
 }

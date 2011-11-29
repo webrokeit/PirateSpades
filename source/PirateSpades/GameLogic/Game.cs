@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
 
 namespace PirateSpades.GameLogic {
     public class Game {
@@ -77,17 +74,20 @@ namespace PirateSpades.GameLogic {
                     this.GivePoints(p, pluspoints);
                     roundPoints.Add(r, new Dictionary<Player, int>());
                     roundPoints[r].Add(p, pluspoints);
+                    p.ClearTricks();
                 }
                 if(r.NumberOfTricks(p) > r.PlayerBet(p)) {
                     int minuspoints = r.NumberOfTricks(p) - r.PlayerBet(p);
                     this.GivePoints(p, minuspoints);
                     roundPoints.Add(r, new Dictionary<Player, int>());
                     roundPoints[r].Add(p, minuspoints);
+                    p.ClearTricks();
                 } else {
                     int minuspoints = r.PlayerBet(p) - r.NumberOfTricks(p);
                     this.GivePoints(p, minuspoints);
                     roundPoints.Add(r, new Dictionary<Player, int>());
                     roundPoints[r].Add(p, minuspoints);
+                    p.ClearTricks();
                 }
             }
         }
@@ -102,13 +102,14 @@ namespace PirateSpades.GameLogic {
                 this.RotateDealer();
                 var r = new Round(dealership, deal, roundNumber);
                 // Collect bet from each player
+
                 r.Start();
                 this.ReceiveStats(r);
                 roundNumber++;
                 playedRounds++;
-                if(playedRounds < 10) {
+                if(playedRounds < 11) {
                     deal--;
-                } else if(playedRounds == 10) {
+                } else if(playedRounds == 11) {
                     //DO NOTHING
                 } else {
                     deal++;
