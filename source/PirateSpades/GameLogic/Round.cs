@@ -31,6 +31,8 @@ namespace PirateSpades.GameLogic {
 
         public int Bets { get { return bets.Count; } }
 
+        public int Number { get { return number; } }
+
         public int NumberOfCardsPlayed { get { return table.CardsPlayed; } }
 
         public bool IsFinished() {
@@ -83,7 +85,6 @@ namespace PirateSpades.GameLogic {
         [ContractInvariantMethod]
         private void ObjectInvariant() {
             Contract.Invariant(Players >= 0 && Players <= 5);
-            Contract.Invariant(PlayerCards >= Players);
             Contract.Invariant(TotalCards == (Players * PlayerCards));
             Contract.Invariant(NumberOfCardsPlayed >= 0);
         }

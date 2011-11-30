@@ -2,6 +2,9 @@
 using System.Diagnostics.Contracts;
 
 namespace PirateSpades.GameLogic {
+    using System;
+    using System.Linq;
+
     public class Game {
         private List<Player> players;
         private List<Player> dealership;
@@ -9,6 +12,7 @@ namespace PirateSpades.GameLogic {
         private int playedRounds;
         private bool started;
         private Player dealer;
+        private Table table = Table.GetTable();
         private Dictionary<Player, int> points;
         private Dictionary<Round, Dictionary<Player, int>> roundPoints;
 
@@ -20,11 +24,14 @@ namespace PirateSpades.GameLogic {
             started = false;
             points = new Dictionary<Player, int>();
             roundPoints = new Dictionary<Round, Dictionary<Player, int>>();
+            CurrentRound = null;
         }
 
         public int Players { get { return players.Count; } }
 
         public int Rounds { get { return rounds; } }
+
+        public Round CurrentRound { get; private set; }
 
         public int RoundsPlayed { get { return playedRounds; } }
 
@@ -56,6 +63,13 @@ namespace PirateSpades.GameLogic {
 
         }
 
+        public List<int> PointsFromRound(int number) {
+            Contract.Requires(number > 0 && number <= 20);
+            Round r = this.roundPoints.Keys.FirstOrDefault(key => key.Number == number);
+            var roundp = this.players.Select(p => this.roundPoints[r][p]).ToList();
+            return roundp;
+        } 
+
         public int Points(Player p) {
             Contract.Requires(p != null);
             return this.points[p];
@@ -67,6 +81,15 @@ namespace PirateSpades.GameLogic {
             points[p] += point;
         }
 
+        public bool HasAllPlayersBet(Round r) {
+            return this.players.All(r.HasPlayerBet);
+        }
+
+        public void StartTable(Round r) {
+            Contract.Requires(this.HasAllPlayersBet(r));
+            table.Start(this);
+        }
+
         public void ReceiveStats(Round r) {
             Contract.Requires(r != null && r.IsFinished());
             roundPoints.Add(r, new Dictionary<Player, int>());
@@ -76,8 +99,9 @@ namespace PirateSpades.GameLogic {
                     this.GivePoints(p, pluspoints);
                     roundPoints[r].Add(p, pluspoints);
                     p.ClearTricks();
-                }
-                if(r.NumberOfTricks(p) > r.PlayerBet(p)) {
+                    continue;
+                } 
+                if(r.NumberOfTricks(p) < r.PlayerBet(p)) {
                     int minuspoints = r.NumberOfTricks(p) - r.PlayerBet(p);
                     this.GivePoints(p, minuspoints);
                     roundPoints[r].Add(p, minuspoints);
@@ -100,6 +124,7 @@ namespace PirateSpades.GameLogic {
             while(!IsFinished()) {
                 this.RotateDealer();
                 var r = new Round(dealership, deal, roundNumber);
+                CurrentRound = r;
                 // Collect bet from each player
                 r.Start();
                 this.ReceiveStats(r);

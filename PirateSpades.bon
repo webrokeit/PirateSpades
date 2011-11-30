@@ -145,7 +145,8 @@ query
 	"Is the game finished?",
 	"Whose turn to deal is it?",
 	"How many rounds are there in this game?",
-	"How many rounds have been played?"
+	"How many rounds have been played?",
+	"How many points did the players get this round?"
 command
 	"Add player.",
 	"Give points to player.",
@@ -261,6 +262,11 @@ component
 				ensure
 					AmountOfPlayers = (old AmountOfPlayers) + 1
 				end
+				HasAllPlayersBet : BOOLEAN
+				StartTable : void
+				require
+					HasAllPlayersBet
+				end
 				IsStarted : BOOLEAN
 				IsFinished : BOOLEAN
 				ensure
@@ -284,6 +290,12 @@ component
 					player /= Void
 				ensure
 					Points(player) = (old Points(player)) + point
+				end
+				PointsFromRound : SET[INT]
+					-> number : INT
+				require
+					number > 0;
+					number <= 20
 				end
 				Start : void
 				require
@@ -360,12 +372,8 @@ component
 					\ PlayerBet(player)
 				end
 				Start : void
-				require
-					AmountOfBets == AmountOfPlayers
-				end
 				invariant
 					AmountOfPlayers >= 2 and AmountOfPlayers <= 5;
-					AmountOfPlayerCards >= AmountOfPlayers;
 					TotalCards = AmountOfPlayers * AmountOfPlayerCards;
 					NumberOfCardsInPlay >= 0
 		end
@@ -390,6 +398,8 @@ component
 				require
 					idx >= 0;
 					idx < NumberOfCards
+				ensure
+					HaveCard(Result)
 				end
 				ReceiveTrick : void
 					-> trick : SET[CARD]
