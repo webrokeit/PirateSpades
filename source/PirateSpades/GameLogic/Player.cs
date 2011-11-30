@@ -47,7 +47,7 @@ namespace PirateSpades.GameLogic {
         }
 
         public Card Hand(int idx) {
-            Contract.Requires(idx <= 0 && idx < NumberOfCards);
+            Contract.Requires(idx >= 0 && idx < NumberOfCards);
             return hand[idx];
         }
 
@@ -87,8 +87,10 @@ namespace PirateSpades.GameLogic {
 
         public bool Playable(Card c) {
             Contract.Requires(c != null);
-            Contract.Ensures(c.Suit == table.OpeningCard.Suit ? Contract.Result<bool>() : true ||
-                !this.AnyCard(table.OpeningCard.Suit) ? Contract.Result<bool>() : true);
+            Contract.Ensures(Contract.OldValue(table.OpeningCard) == null || c.Suit == table.OpeningCard.Suit || !this.AnyCard(table.OpeningCard.Suit));
+            if(table.OpeningCard == null) {
+                return true;
+            }
             if(c.Suit == table.OpeningCard.Suit) {
                 return true;
             }

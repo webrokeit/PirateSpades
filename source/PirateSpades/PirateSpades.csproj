@@ -74,8 +74,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bet\Betting.cs" />
     <Compile Include="Func\Fisher-Yates-Alg.cs" />
+    <Compile Include="Func\Sorting.cs" />
     <Compile Include="GameLogic\Card.cs" />
     <Compile Include="GameLogic\Deck.cs" />
     <Compile Include="GameLogic\Game.cs" />

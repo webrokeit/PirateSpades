@@ -15,7 +15,7 @@ namespace PirateSpades.Func
         private static readonly Random r = new Random();
 
         public static void Algorithm<T>(Stack<T> c) {
-            Contract.Requires(c.Count != 0);
+            Contract.Requires(c.Count != 0 && c != null);
             Contract.Ensures(c.Count == Contract.OldValue(c.Count));
 
             T[] arr = c.ToArray();

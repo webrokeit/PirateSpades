@@ -19,6 +19,7 @@ namespace PirateSpades.GameLogic {
             playedRounds = 0;
             started = false;
             points = new Dictionary<Player, int>();
+            roundPoints = new Dictionary<Round, Dictionary<Player, int>>();
         }
 
         public int Players { get { return players.Count; } }
@@ -30,7 +31,6 @@ namespace PirateSpades.GameLogic {
         public bool IsStarted { get { return started; } }
 
         public int RoundsLeft() {
-            Contract.Ensures(Rounds == RoundsPlayed ? Contract.Result<bool>() : true);
             return Rounds - RoundsPlayed;
         }
 
@@ -48,6 +48,7 @@ namespace PirateSpades.GameLogic {
             Contract.Requires(p != null && Players < 5 && !IsStarted);
             Contract.Ensures(Players == Contract.OldValue(Players) + 1);
             players.Add(p);
+            points.Add(p, 0);
             if(dealership.Count == 0) {
                 dealer = p;
             }
@@ -68,24 +69,22 @@ namespace PirateSpades.GameLogic {
 
         public void ReceiveStats(Round r) {
             Contract.Requires(r != null && r.IsFinished());
+            roundPoints.Add(r, new Dictionary<Player, int>());
             foreach(var p in players) {
                 if(r.MatchTrick(p)) {
                     int pluspoints = 10 + r.NumberOfTricks(p);
                     this.GivePoints(p, pluspoints);
-                    roundPoints.Add(r, new Dictionary<Player, int>());
                     roundPoints[r].Add(p, pluspoints);
                     p.ClearTricks();
                 }
                 if(r.NumberOfTricks(p) > r.PlayerBet(p)) {
                     int minuspoints = r.NumberOfTricks(p) - r.PlayerBet(p);
                     this.GivePoints(p, minuspoints);
-                    roundPoints.Add(r, new Dictionary<Player, int>());
                     roundPoints[r].Add(p, minuspoints);
                     p.ClearTricks();
                 } else {
                     int minuspoints = r.PlayerBet(p) - r.NumberOfTricks(p);
                     this.GivePoints(p, minuspoints);
-                    roundPoints.Add(r, new Dictionary<Player, int>());
                     roundPoints[r].Add(p, minuspoints);
                     p.ClearTricks();
                 }
