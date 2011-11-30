@@ -28,6 +28,19 @@ namespace PirateSpades.Network {
             if (player == null) return;
 
             host.SetPlayerName(pclient, player);
+            SendPlayerInfo(host);
+        }
+
+        public static void SendPlayerInfo(PirateHost host) {
+            Contract.Requires(host != null);
+
+            var msg = new PirateMessage(PirateMessageHead.Pigm, PirateMessage.ConstructBody(host.GetPlayers().Select(player => player.ToString()).ToArray()));
+
+            Console.WriteLine("Host: Players in game:");
+            foreach(var player in host.GetPlayers()) {
+                Console.WriteLine("\t" + player.Name);
+                host.SendMessage(player, msg);
+            }
         }
 
         public static void DealCard(PirateHost host, PirateMessage data) {
@@ -42,6 +55,8 @@ namespace PirateSpades.Network {
             if(card == null) return;
 
             pclient.ReceiveCard(card);
+
+            Console.WriteLine("Host: Sending card " + card + " to " + pclient);
 
             var msg = new PirateMessage(PirateMessageHead.Xcrd, card.ToString());
             host.SendMessage(pclient, msg);
@@ -79,13 +94,24 @@ namespace PirateSpades.Network {
 
             var betsMade = host.GetPlayers().Count(p => p.Bet > -1);
             if(betsMade >= host.GetPlayers().Count()) {
-                // Begin round
+                BeginRound(host);
             }
         }
 
         public static void BeginRound(PirateHost host) {
-            //Table
+            Contract.Requires(host != null);
 
+            var bets = new HashSet<string>();
+            foreach(var player in host.GetPlayers()) {
+                bets.Add(PirateMessage.ConstructPlayerBet(player));
+            }
+
+            var body = PirateMessage.ConstructBody(bets.ToArray());
+            var msg = new PirateMessage(PirateMessageHead.Satk, body);
+
+            foreach(var player in host.GetPlayers()) {
+                host.SendMessage(player, msg);
+            }
         }
     }
 }

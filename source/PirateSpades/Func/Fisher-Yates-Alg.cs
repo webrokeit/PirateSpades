@@ -14,13 +14,21 @@ namespace PirateSpades.Func
     {
         private static readonly Random r = new Random();
 
-        public static void Algorithm<T>(Stack<T> c) {
-            Contract.Requires(c.Count != 0 && c != null);
-            Contract.Ensures(c.Count == Contract.OldValue(c.Count));
+        public static void Algorithm<T>(List<T> l) {
+            Contract.Requires(l.Count != 0 && l != null);
+            Contract.Ensures(l.Count == Contract.OldValue(l.Count));
 
-            T[] arr = c.ToArray();
+            if(l.Count < 2) return;
 
-            if (c.Count > 1) {
+            for(var i = l.Count - 1; i > 0; i--) {
+                var index = r.Next(i);
+
+                var tmp = l[index];
+                l[index] = l[i];
+                l[i] = tmp;
+            }
+
+            /*if (c.Count > 1) {
                 int i = c.Count - 1;
                 while (i > 1) {
                     int s = r.Next(i);
@@ -29,9 +37,7 @@ namespace PirateSpades.Func
                     arr[s] = holder;
                     i--;
                 }
-            }
-
-            c = new Stack<T>(arr);
+            }*/
         }
     }
 }
