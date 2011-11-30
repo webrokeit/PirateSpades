@@ -60,7 +60,18 @@ namespace PirateSpades.GameLogic {
                 dealer = p;
             }
             dealership.Add(p);
+            table.AddPlayer(p);
+        }
 
+        public void RemovePlayer(Player p) {
+            players.Remove(p);
+            dealership.Remove(p);
+            table.RemovePlayer(p);
+            CurrentRound.RemovePlayer(p);
+        }
+
+        public void ClearPlayers() {
+            players.Clear();
         }
 
         public List<int> PointsFromRound(int number) {
