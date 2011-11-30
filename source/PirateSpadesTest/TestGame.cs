@@ -36,51 +36,43 @@ namespace PirateSpadesTest {
             while(roundsPlayed != g.Rounds) {
                 RotateDealer(players);
                 var r = new Round(players, deal, roundNumber);
+                r.Start();
                 r.CollectBet(p, 3);
                 r.CollectBet(p2, 3);
                 r.CollectBet(p3, 3);
-                r.Start();
+                Assert.That(g.HasAllPlayersBet(r));
+                t.Start(g);
                 for(int i = 0; i < deal; i++) {
                     p = t.PlayerTurn;
-                    if(!p.Playable(p.Hand(i))) {
-                        int j = 0;
-                        while(!p.Playable(p.Hand(j))) {
-                            //DO NOTHING
-                            j++;
-                        }
-                        p.PlayCard(p.Hand(j));
-                    } else {
-                        p.PlayCard(p.Hand(i));
+                    int j = 0;
+                    while(!p.Playable(p.Hand(j))) {
+                        //DO NOTHING
+                        Console.WriteLine(j);
+                        j++;
                     }
+                    p.PlayCard(p.Hand(j));
                     p2 = t.PlayerTurn;
-                    if(!p2.Playable(p.Hand(i))) {
-                        int k = 0;
-                        while(!p2.Playable(p.Hand(k))) {
-                            //DO NOTHING
-                            k++;
-                        }
-                        p2.PlayCard(p2.Hand(k));
-                    } else {
-                        //p2.PlayCard(p2.Hand(i));
+                    int k = 0;
+                    while(!p2.Playable(p2.Hand(k))) {
+                        //DO NOTHING
+                        k++;
                     }
+                    p2.PlayCard(p2.Hand(k));
                     p3 = t.PlayerTurn;
-                    if(!p3.Playable(p.Hand(i))) {
-                        int h = 0;
-                        while(!p3.Playable(p.Hand(h))) {
-                            //DO NOTHING
-                            h++;
-                        }
-                        p3.PlayCard(p.Hand(h));
-                    } else {
-                        p3.PlayCard(p3.Hand(i));
+                    int h = 0;
+                    while(!p3.Playable(p3.Hand(h))) {
+                        //DO NOTHING
+                        h++;
                     }
+                    p3.PlayCard(p3.Hand(h));
                 }
                 g.ReceiveStats(r);
+                t.Stop();
                 roundNumber++;
                 roundsPlayed++;
-                if(roundsPlayed < 11) {
+                if(roundsPlayed < 10) {
                     deal--;
-                } else if(roundsPlayed == 11) {
+                } else if(roundsPlayed == 10) {
                     //DO NOTHING
                 } else {
                     deal++;

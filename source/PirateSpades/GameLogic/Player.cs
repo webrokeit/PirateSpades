@@ -48,6 +48,7 @@ namespace PirateSpades.GameLogic {
 
         public Card Hand(int idx) {
             Contract.Requires(idx >= 0 && idx < NumberOfCards);
+            Contract.Ensures(this.HaveCard(Contract.Result<Card>()));
             return hand[idx];
         }
 
@@ -87,7 +88,7 @@ namespace PirateSpades.GameLogic {
 
         public bool Playable(Card c) {
             Contract.Requires(c != null);
-            Contract.Ensures(Contract.OldValue(table.OpeningCard) == null || c.Suit == table.OpeningCard.Suit || !this.AnyCard(table.OpeningCard.Suit));
+            Contract.Ensures(Contract.OldValue(table.OpeningCard) == null || c.Suit == table.OpeningCard.Suit || !this.AnyCard(table.OpeningCard.Suit) ? Contract.Result<bool>() : true);
             if(table.OpeningCard == null) {
                 return true;
             }
@@ -98,7 +99,9 @@ namespace PirateSpades.GameLogic {
         }
 
         public void PlayCard(Card c) {
-            Contract.Requires(c != null && this.Playable(c) && this.HaveCard(c));
+            Contract.Requires(c != null);
+            Contract.Requires(this.HaveCard(c));
+            Contract.Requires(this.Playable(c));
             Contract.Ensures(!this.HaveCard(c) && NumberOfCards == Contract.OldValue(NumberOfCards) - 1);
             CardToPlay = c;
             if(CardPlayed != null) {
@@ -115,7 +118,9 @@ namespace PirateSpades.GameLogic {
         }
 
         public void DealCards(List<Player> players, int deal) {
-            Contract.Requires(players != null && deal > 0 && IsDealer);
+            Contract.Requires(players != null);
+            Contract.Requires(deal > 0);
+            Contract.Requires(IsDealer);
             Contract.Ensures(NumberOfCards == deal);
             Stack<Card> deck = Deck.ShuffleDeck();
             for(int i = 0; i < deal; i++) {
@@ -132,7 +137,7 @@ namespace PirateSpades.GameLogic {
         public override string ToString() {
             return Name;
         }
-
+        
         [ContractInvariantMethod]
         private void ObjectInvariant() {
             Contract.Invariant(NumberOfCards >= 0 && NumberOfCards <= 10);

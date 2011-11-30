@@ -96,6 +96,7 @@
                     break;
                 case PirateMessageHead.Xcrd:
                     PirateClientCommands.GetCard(this, msg);
+                    break;
             }
         }
 

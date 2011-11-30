@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using PirateSpades.GameLogic;
 
 namespace PirateSpadesTest {
+    using System;
 
     [TestFixture]
     public class TestTable {
@@ -33,6 +34,7 @@ namespace PirateSpadesTest {
             p3.ReceiveCard(c3);
             p3.ReceiveCard(c6);
             Assert.That(!t.IsRoundFinished());
+            t.Start(new Game());
             p3.PlayCard(c6);
             Assert.That(!p3.HaveCard(c6));
             p.PlayCard(c4);

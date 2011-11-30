@@ -3,6 +3,8 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace PirateSpades.GameLogic {
+    using System;
+
     public class Table {
         private Card open;
         private static readonly Table Me = new Table();
@@ -12,6 +14,7 @@ namespace PirateSpades.GameLogic {
         private Card winningCard;
         private Dictionary<Player, Card> playedCards;
         private int CurrentPlayerIndex = 0;
+        private bool started;
 
         private Table() {
             open = null;
@@ -25,6 +28,8 @@ namespace PirateSpades.GameLogic {
         public static Table GetTable() {
             return Me;
         }
+
+        public Game Game { get; private set; }
 
         public int Players { get { return players.Count; } }
 
@@ -40,9 +45,11 @@ namespace PirateSpades.GameLogic {
 
         public Player StartingPlayer { get; set; }
 
+        public bool IsStarted { get { return started; } }
+
         public bool SameSuit(Player p, Card c) {
             Contract.Requires(c != null && p != null);
-            Contract.Ensures(c.Suit == OpeningCard.Suit || !p.AnyCard(OpeningCard.Suit));
+            Contract.Ensures(c.Suit == OpeningCard.Suit || !p.AnyCard(OpeningCard.Suit) ? Contract.Result<bool>() : true);
             return p.Playable(c);
         }
 
@@ -53,13 +60,13 @@ namespace PirateSpades.GameLogic {
         }
 
         public IEnumerable<Player> GetPlayers() {
-            Contract.Requires(Players < 1);
+            Contract.Requires(Players > 1);
             return this.players;
         }
 
         public void ReceiveCard(Player p, Card c) {
             Contract.Requires(StartingPlayer == PlayerTurn || this.SameSuit(p, c));
-            Contract.Requires(p != null && c != null && !this.IsRoundFinished() && PlayerTurn == p);
+            Contract.Requires(p != null && c != null && !this.IsRoundFinished() && PlayerTurn == p && IsStarted);
             if(open == null) {
                 CurrentPlayerIndex = (players.IndexOf(p) + 1) % players.Count;
                 playedCards.Clear();
@@ -74,15 +81,23 @@ namespace PirateSpades.GameLogic {
             CardsPlayed++;
             playedCards.Add(p, c);
             if(!this.IsRoundFinished()) {
-                CurrentPlayerIndex += 1 % players.Count;
+                CurrentPlayerIndex = (CurrentPlayerIndex +1) % players.Count;
                 PlayerTurn = players[CurrentPlayerIndex];
                 return;
             }
             this.FinishRound();
         }
 
-        public void BeginTable() {
-            
+        public void Start(Game g) {
+            Contract.Requires(this.GetPlayers().All(p => p.Bet >= 0));
+            this.Game = g;
+            started = true;
+        }
+
+        public void Stop() {
+            Contract.Ensures(!IsStarted);
+            started = false;
+            CardsPlayed = 0;
         }
 
         public bool IsRoundFinished() {
