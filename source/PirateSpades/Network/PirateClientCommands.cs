@@ -36,6 +36,8 @@ namespace PirateSpades.Network {
 
             Console.WriteLine(pclient.Name + ": Dealing " + card + " to " + receiver.Name);
 
+            //Table.GetPlayers().First(player => player.Name == receiver.Name).ReceiveCard(card);
+
             pclient.SendMessage(msg);
         }
 
@@ -46,7 +48,7 @@ namespace PirateSpades.Network {
 
             Console.WriteLine(pclient.Name + ": Received " + card);
 
-            pclient.ReceiveCard(card);
+            //pclient.ReceiveCard(card);
         }
 
         public static void SetBet(PirateClient pclient, int bet) {

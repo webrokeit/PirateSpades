@@ -52,9 +52,10 @@ namespace PirateSpades.Network {
             if(pclient == null) return;
 
             var card = Card.FromString(data.Body);
+            
             if(card == null) return;
 
-            pclient.ReceiveCard(card);
+            //pclient.ReceiveCard(card);
 
             Console.WriteLine("Host: Sending card " + card + " to " + pclient);
 
@@ -63,7 +64,7 @@ namespace PirateSpades.Network {
         }
 
         public static void PlayCard(PirateHost host, PirateMessage data) {
-            Contract.Requires(host != null && data != null && data.Head == PirateMessageHead.Xcrd);
+            Contract.Requires(host != null && data != null && data.Head == PirateMessageHead.Pcrd);
             var playerName = PirateClient.NameFromString(data.Body);
             if(playerName == null)
                 return;
@@ -76,7 +77,9 @@ namespace PirateSpades.Network {
             if(card == null)
                 return;
 
-            Table.ReceiveCard(player, card);
+            //Table.ReceiveCard(player, card);
+
+            Console.WriteLine(player.Name + " plays " + card);
 
             var msg = new PirateMessage(PirateMessageHead.Pcrd, player.ToString() + card.ToString());
             foreach(var pclient in host.GetPlayers()) {

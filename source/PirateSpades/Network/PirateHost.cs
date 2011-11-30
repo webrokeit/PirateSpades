@@ -66,7 +66,7 @@
             var host = (PirateHost)ar.AsyncState;
             var client = host.Listener.EndAcceptSocket(ar);
 
-            Console.WriteLine("Client connected: " + client.LocalEndPoint.ToString());
+            Console.WriteLine("Client connected: " + client.RemoteEndPoint.ToString());
             
             host.WaitForSocket(); // Wait for more
 
@@ -181,7 +181,7 @@
             this.Clients[pclient.Socket].SetName(name);
             this.Players.Add(name, pclient.Socket);
 
-            Console.WriteLine("Set name for " + pclient.Socket.LocalEndPoint + " to " + name);
+            Console.WriteLine("Set name for " + pclient.Socket.RemoteEndPoint + " to " + name);
         }
 
         public IEnumerable<PirateClient> GetPlayers() {
