@@ -37,12 +37,12 @@ namespace PirateSpades.GameLogic {
         }
 
         public override string ToString() {
-            return "card:{" + Suit.ToString() + "," + Value.ToString() + "}";
+            return "card: " + Suit.ToString() + "," + Value.ToString();
         }
 
         public static Card FromString(string s) {
-            Contract.Requires(Regex.IsMatch(s, @"card:\{([A-Z]{4}),(\w{3,5})\}"));
-            var m = Regex.Match(s, @"card:\{[A-Z]{4},\w{3,5}\}");
+            Contract.Requires(Regex.IsMatch(s, @"^card: [A-Z]{4},\w{3,5}$", RegexOptions.Multiline));
+            var m = Regex.Match(s, @"^card: ([A-Z]{4}),(\w{3,5})$");
             if(m.Success) {
                 Suit suit;
                 if (Enum.TryParse(m.Groups[1].Value, true, out suit)) {

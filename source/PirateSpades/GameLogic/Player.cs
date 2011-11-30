@@ -18,9 +18,15 @@ namespace PirateSpades.GameLogic {
 
         public string Name { get; protected set; }
 
-        private delegate void CardPlayedDelegate(Card c);
+        protected delegate void CardPlayedDelegate(Card c);
 
-        private event CardPlayedDelegate CardPlayed;
+        protected delegate void CardDealtDelegate(Player p, Card c);
+
+        protected delegate void BetSetDelegate(int bet);
+
+        protected event CardPlayedDelegate CardPlayed;
+        protected event CardDealtDelegate CardDealt;
+        protected event BetSetDelegate BetSet;
 
         public bool IsDealer { get; set; }
 
@@ -52,6 +58,9 @@ namespace PirateSpades.GameLogic {
             } set {
                 Contract.Requires(value >= 0);
                 bet = value;
+                if(BetSet != null) {
+                    BetSet(value);
+                }
             }
         }
 
@@ -109,9 +118,17 @@ namespace PirateSpades.GameLogic {
             Stack<Card> deck = Deck.ShuffleDeck();
             for(int i = 0; i < deal; i++) {
                 foreach(var p in players) {
-                    p.ReceiveCard(deck.Pop());
+                    var c = deck.Pop();
+                    if(CardDealt != null) {
+                        CardDealt(p, c);
+                    }
+                    p.ReceiveCard(c);
                 }
             }
+        }
+
+        public override string ToString() {
+            return Name;
         }
 
         [ContractInvariantMethod]

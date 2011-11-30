@@ -34,6 +34,11 @@ namespace PirateSpades.Network {
         public byte[] GetBytes() {
             return Encoding.UTF8.GetBytes(Head.ToString().ToUpper() + Body);
         }
+
+        public static string ConstructBody(params string[] inputs) {
+            Contract.Requires(inputs != null);
+            return string.Join("\n", inputs);
+        }
     }
 
     public enum PirateMessageHead {
@@ -56,6 +61,9 @@ namespace PirateSpades.Network {
         Pcrd,
 
         /// <summary>Player Bet</summary>
-        Pbet
+        Pbet,
+
+        /// <summary>Set Amount of Tricks</summary>
+        Satk
     }
 }

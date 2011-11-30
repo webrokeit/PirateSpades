@@ -66,7 +66,7 @@
                 
                 host.Clients.Add(pclient.Socket, pclient);
                 SocketMessageReceive(pclient);
-                this.GetPlayerInfo(pclient);
+                PirateHostCommands.GetPlayerInfo(this, pclient);
             } else {
                 const string Body = "You're already connected.";
                 var msg = new PirateMessage(PirateMessageHead.Erro, Body);
@@ -76,35 +76,31 @@
 
         private void SocketMessageReceive(PirateClient pclient) {
             Contract.Requires(pclient != null);
+            var mobj = new PirateMessageObj(pclient);
             pclient.Socket.BeginReceive(
-                    pclient.ReceiveBuffer,
+                    mobj.Buffer,
                     0,
-                    pclient.ReceiveBuffer.Length,
+                    mobj.Buffer.Length,
                     SocketFlags.None,
                     SocketMessageReceived,
-                    pclient
+                    mobj
             );
         }
 
         private void SocketMessageReceived(IAsyncResult ar) {
-            Contract.Requires(ar != null && ar.AsyncState is PirateClient);
-            var pclient = (PirateClient)ar.AsyncState;
+            Contract.Requires(ar != null && ar.AsyncState is PirateMessageObj);
+            var mobj = (PirateMessageObj)ar.AsyncState;
+            var pclient = mobj.Client;
             var read = pclient.Socket.EndReceive(ar);
 
-            if(read >= 4) {
-                var msg = PirateMessage.GetMessage(pclient.ReceiveBuffer, read);
+            if (read >= 4) {
+                var msg = PirateMessage.GetMessage(mobj.Buffer, read);
                 HandleMessage(pclient, msg);
             }
 
-            if(pclient.Socket.Connected) {
+            if (pclient.Socket.Connected) {
                 SocketMessageReceive(pclient);
             }
-        }
-
-        private void GetPlayerInfo(PirateClient pclient) {
-            Contract.Requires(pclient != null);
-            var msg = new PirateMessage(PirateMessageHead.Pnfo, "");
-            this.SendMessage(pclient, msg);
         }
 
         public void SendMessage(PirateClient pclient, PirateMessage msg) {
@@ -126,12 +122,15 @@
             Contract.Requires(pclient != null && msg != null);
             switch (msg.Head) {
                 case PirateMessageHead.Pnfo:
-                    // pclient.Name = "SET IT";
+                    PirateHostCommands.SetPlayerInfo(this, pclient, msg);
                     // pclient.Id = "GENERATE IT";
                     // Send back id
                     break;
                 case PirateMessageHead.Xcrd:
                     PirateHostCommands.DealCard(this, msg);
+                    break;
+                case PirateMessageHead.Pcrd:
+                    PirateHostCommands.PlayCard(this, msg);
                     break;
             }
         }
@@ -149,6 +148,18 @@
                 }
             }
             return null;
+        }
+
+        public void SetPlayerName(PirateClient pclient, string name) {
+            Contract.Requires(pclient != null && name != null && this.Clients.ContainsKey(pclient.Socket));
+            if(!String.IsNullOrEmpty(this.Clients[pclient.Socket].Name)) {
+                if(this.Players.ContainsKey(this.Clients[pclient.Socket].Name)) {
+                    this.Players.Remove(this.Clients[pclient.Socket].Name);
+                }
+            }
+
+            this.Clients[pclient.Socket].SetName(name);
+            this.Players.Add(name, pclient.Socket);
         }
 
         public IEnumerable<PirateClient> GetPlayers() {
