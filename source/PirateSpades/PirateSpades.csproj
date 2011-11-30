@@ -82,12 +82,15 @@
     <Compile Include="GameLogic\Player.cs" />
     <Compile Include="GameLogic\Round.cs" />
     <Compile Include="GameLogic\Table.cs" />
+<<<<<<< HEAD
     <Compile Include="Network\PirateClient.cs" />
     <Compile Include="Network\PirateClientCommands.cs" />
     <Compile Include="Network\PirateHost.cs" />
     <Compile Include="Network\PirateHostCommands.cs" />
     <Compile Include="Network\PirateMessage.cs" />
     <Compile Include="Network\PirateMessageObj.cs" />
+=======
+>>>>>>> 1417c5c4beb101a9fa1503fd412fc476effcf44b
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
