@@ -117,7 +117,7 @@ namespace PirateSpades.GameLogic {
         public void DealCards(List<Player> players, int deal) {
             Contract.Requires(players != null && deal > 0 && IsDealer);
             Contract.Ensures(NumberOfCards == deal);
-            Stack<Card> deck = Deck.ShuffleDeck();
+            Deck deck = Deck.ShuffleDeck();
             for(int i = 0; i < deal; i++) {
                 foreach(var p in players) {
                     var c = deck.Pop();

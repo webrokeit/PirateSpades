@@ -67,8 +67,9 @@
             var read = Socket.EndReceive(ar);
 
             if(read >= 4) {
-                var msg = PirateMessage.GetMessage(mobj.Buffer, read);
-                HandleMessage(msg);
+                foreach(var msg in PirateMessage.GetMessages(mobj.Buffer, read)) {
+                    this.HandleMessage(msg);
+                }
             }
 
             if(Socket.Connected) {
@@ -96,12 +97,12 @@
                     break;
                 case PirateMessageHead.Xcrd:
                     PirateClientCommands.GetCard(this, msg);
+                    break;
             }
         }
 
         public override string ToString() {
-            Contract.Requires(Socket.LocalEndPoint != null);
-            return PirateMessage.ConstructBody("player_name: " + Name, "player_ip: 0.0.0.0");
+            return NameToString(Name);
         }
 
         public static string NameToString(string name) {

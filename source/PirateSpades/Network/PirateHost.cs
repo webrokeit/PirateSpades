@@ -2,6 +2,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using System.Linq;
     using System.Net;
     using System.Net.Sockets;
 
@@ -12,6 +13,12 @@
         public bool Started { get; private set; }
 
         private int BufferSize { get; set; }
+
+        public bool PlayersReady {
+            get {
+                return this.Clients.Count == this.Players.Count && this.Clients.Count > 0 && this.Clients.Values.All(pclient => !String.IsNullOrEmpty(pclient.Name));
+            }
+        }
 
         private Dictionary<Socket, PirateClient> Clients { get; set; }
         private Dictionary<string, Socket> Players { get; set; }
@@ -58,6 +65,8 @@
             Contract.Requires(ar != null && ar.AsyncState is PirateHost);
             var host = (PirateHost)ar.AsyncState;
             var client = host.Listener.EndAcceptSocket(ar);
+
+            Console.WriteLine("Client connected: " + client.LocalEndPoint.ToString());
             
             host.WaitForSocket(); // Wait for more
 
@@ -89,25 +98,36 @@
 
         private void SocketMessageReceived(IAsyncResult ar) {
             Contract.Requires(ar != null && ar.AsyncState is PirateMessageObj);
-            var mobj = (PirateMessageObj)ar.AsyncState;
-            var pclient = mobj.Client;
-            var read = pclient.Socket.EndReceive(ar);
+            try {
+                var mobj = (PirateMessageObj)ar.AsyncState;
+                var pclient = mobj.Client;
+                var read = pclient.Socket.EndReceive(ar);
 
-            if (read >= 4) {
-                var msg = PirateMessage.GetMessage(mobj.Buffer, read);
-                HandleMessage(pclient, msg);
-            }
+                Console.WriteLine("[" + read + "] " + mobj.Buffer);
 
-            if (pclient.Socket.Connected) {
-                SocketMessageReceive(pclient);
+                if(read >= 4) {
+                    foreach(var msg in PirateMessage.GetMessages(mobj.Buffer, read)) {
+                        this.HandleMessage(pclient, msg);
+                    }
+                }
+
+                if(pclient.Socket.Connected) {
+                    SocketMessageReceive(pclient);
+                }
+            } catch(Exception ex) {
+                Console.WriteLine(ex);
             }
         }
 
         public void SendMessage(PirateClient pclient, PirateMessage msg) {
             Contract.Requires(pclient != null && msg != null);
-            byte[] buffer = msg.GetBytes();
-            pclient.Socket.BeginSend(
-                buffer, 0, buffer.Length, SocketFlags.None, MessageSent, new SendObject(pclient, msg));
+            try {
+                byte[] buffer = msg.GetBytes();
+                pclient.Socket.BeginSend(
+                    buffer, 0, buffer.Length, SocketFlags.None, MessageSent, new SendObject(pclient, msg));
+            } catch(Exception ex) {
+                Console.WriteLine(ex);
+            }
         }
 
         private void MessageSent(IAsyncResult ar) {
@@ -160,6 +180,8 @@
 
             this.Clients[pclient.Socket].SetName(name);
             this.Players.Add(name, pclient.Socket);
+
+            Console.WriteLine("Set name for " + pclient.Socket.LocalEndPoint + " to " + name);
         }
 
         public IEnumerable<PirateClient> GetPlayers() {
