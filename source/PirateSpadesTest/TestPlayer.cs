@@ -29,6 +29,7 @@ namespace PirateSpadesTest {
             Assert.That(!p.IsDealer);
             p.ReceiveCard(c);
             Assert.That(p.HaveCard(c));
+            Assert.That(p.Hand(0) == c);
             Assert.That(p.AnyCard(Suit.Spades));
             Assert.That(!p.AnyCard(Suit.Clubs));
             Assert.That(!p.AnyCard(Suit.Diamonds));

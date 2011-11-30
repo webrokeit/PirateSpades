@@ -207,6 +207,10 @@ component
 				require
 					players /= Void
 				end
+				GetPlayers : SET[PLAYER]
+				require
+					AmountOfPlayers < 1
+				end
 				ReceiveCard : void
 					-> player : PLAYER
 					-> card : CARD
@@ -228,8 +232,7 @@ component
 				WinningPlayer : PLAYER
 				FinishRound : void
 				require
-					RoundFinished;
-					WinningPlayer /= Void
+					RoundFinished
 				ensure
 					OpeningCard = Void;
 					AmountOfCards = 0
@@ -295,7 +298,6 @@ component
 					round /= Void;
 					round.Finished
 				end
-				NewRound : void
 				invariant
 					RoundsPlayed <= NumberOfRounds;
 					RoundsLeft >= 0
@@ -365,7 +367,7 @@ component
 					AmountOfPlayers >= 2 and AmountOfPlayers <= 5;
 					AmountOfPlayerCards >= AmountOfPlayers;
 					TotalCards = AmountOfPlayers * AmountOfPlayerCards;
-					NumberOfCardsInPlay > 0
+					NumberOfCardsInPlay >= 0
 		end
 		class PLAYER
 			feature
@@ -418,7 +420,8 @@ component
 					card /= Void
 				ensure
 					result -> card.Suit = table.OpeningCard.Suit or
-					result -> not AnyCard(table.OpeningCard.Suit)
+					result -> not AnyCard(table.OpeningCard.Suit) or
+					Result -> table.OpeningCard = Void
 				end
 				PlayCard : void
 					-> card : CARD

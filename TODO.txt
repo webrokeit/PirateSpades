@@ -47,4 +47,15 @@ dd.mm.yyyy
 [MCHE]	Implementing GameLogic
 
 [TODO]	Sorting algorithm for cards.. Sort after suit then value
->>>>>>> e3ac002e6f66df1ea58306fbb391adedcd8fa5a1
+
+
+28.11.2011
+==========
+[AHAL]	Working on the network part
+[HCLK]	Making the graphics for different parts of the game
+[HCLK]	Implemented the sorting algorithm for cards
+
+29.11.2011
+==========
+[MCHE]	Testing GameLogic
+

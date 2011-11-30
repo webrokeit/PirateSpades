@@ -1,9 +1,0 @@
-C:\Users\Helena\Desktop\ITU\BDSA Project\PirateSpades\source\PirateSpades\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\Helena\Desktop\ITU\BDSA Project\PirateSpades\source\PirateSpades\bin\Debug\PirateSpades.exe
-C:\Users\Helena\Desktop\ITU\BDSA Project\PirateSpades\source\PirateSpades\bin\Debug\PirateSpades.pdb
-C:\Users\Helena\Desktop\ITU\BDSA Project\PirateSpades\source\PirateSpades\obj\x86\Debug\PirateSpades.exe
-C:\Users\Helena\Desktop\ITU\BDSA Project\PirateSpades\source\PirateSpades\obj\x86\Debug\PirateSpades.pdb
-C:\Morten\IT-Universitetet\3. Semester\BDSA\Project\PirateSpades\source\PirateSpades\obj\x86\Debug\PirateSpades.exe
-C:\Morten\IT-Universitetet\3. Semester\BDSA\Project\PirateSpades\source\PirateSpades\obj\x86\Debug\PirateSpades.pdb
-C:\Users\Andreas\Documents\My Dropbox\PirateSpades\source\PirateSpades\obj\x86\Debug\PirateSpades.exe
-C:\Users\Andreas\Documents\My Dropbox\PirateSpades\source\PirateSpades\obj\x86\Debug\PirateSpades.pdb

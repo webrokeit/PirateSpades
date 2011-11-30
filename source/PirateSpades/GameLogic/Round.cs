@@ -17,6 +17,7 @@ namespace PirateSpades.GameLogic {
             this.players = players;
             this.deal = deal;
             dealer = players.Last();
+            dealer.IsDealer = true;
             cards = players.Count * deal;
             this.number = number;
             bets = new Dictionary<Player, int>();
@@ -72,7 +73,7 @@ namespace PirateSpades.GameLogic {
         }
 
         public void Start() {
-            Contract.Requires(Bets == Players);
+            table.CardsPlayed = 0;
             table.AddPlayers(players);
             table.StartingPlayer = players[0];
             table.PlayerTurn = players[0];
@@ -83,7 +84,8 @@ namespace PirateSpades.GameLogic {
         private void ObjectInvariant() {
             Contract.Invariant(Players >= 0 && Players <= 5);
             Contract.Invariant(PlayerCards >= Players);
-            Contract.Invariant(TotalCards > 0 && NumberOfCardsPlayed > 0);
+            Contract.Invariant(TotalCards == (Players * PlayerCards));
+            Contract.Invariant(NumberOfCardsPlayed >= 0);
         }
     }
 }
