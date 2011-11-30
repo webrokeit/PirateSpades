@@ -173,7 +173,8 @@ query
 	"Does the number of tricks match the player's bet?",
 	"What has this player bet?",
 	"Who is dealing this round?",
-	"How many cards are in play this round?"
+	"How many cards are in play this round?",
+	"Has this player bet?"
 command
 	"Collect bet from player.",
 	"Remove bets.",
@@ -192,9 +193,11 @@ component
 				OpeningCard : CARD
 				SameSuit : BOOLEAN
 					-> player : PLAYER
+					-> card : CARD
 				require
-					player.PlayedCard /= Void;
-					OpeningCard /= Void
+					player /= Void;
+					OpeningCard /= Void;
+					card /= Void
 				ensure
 					result -> player.CardToPlay.Suit = OpeningCard.Suit or
 					result -> not player.AnyCard(OpeningCard.Suit)
@@ -204,11 +207,17 @@ component
 				require
 					players /= Void
 				end
+				GetPlayers : SET[PLAYER]
+				require
+					AmountOfPlayers < 1
+				end
 				ReceiveCard : void
 					-> player : PLAYER
+					-> card : CARD
 				require
-					SameSuit(player) or StartingPlayer = PlayerTurn;
+					SameSuit(player, card) or StartingPlayer = PlayerTurn;
 					player /= Void;
+					card /= Void;
 					not RoundFinished;
 					PlayerTurn = player
 				end
@@ -223,8 +232,7 @@ component
 				WinningPlayer : PLAYER
 				FinishRound : void
 				require
-					RoundFinished;
-					WinningPlayer /= Void
+					RoundFinished
 				ensure
 					OpeningCard = Void;
 					AmountOfCards = 0
@@ -259,9 +267,6 @@ component
 					result -> RoundsLeft = 0
 				end
 				RoundsLeft : INT
-				ensure
-					Result -> RoundsPlayed = RoundsLeft
-				end
 				RotateDealer : void
 				ensure
 					PlayerToDeal.IsDealer;
@@ -293,7 +298,6 @@ component
 					round /= Void;
 					round.Finished
 				end
-				NewRound : void
 				invariant
 					RoundsPlayed <= NumberOfRounds;
 					RoundsLeft >= 0
@@ -313,6 +317,11 @@ component
 				TotalCards : INT
 				NumberOfCardsInPlay : INT
 				AmountOfBets : INT
+				HasPlayerBet : BOOLEAN
+					-> player : PLAYER
+				require
+					player /= Void
+				end
 				IsFinished : BOOLEAN
 				ensure
 					result -> NumberOfCardsInPlay = TotalCards
@@ -358,7 +367,7 @@ component
 					AmountOfPlayers >= 2 and AmountOfPlayers <= 5;
 					AmountOfPlayerCards >= AmountOfPlayers;
 					TotalCards = AmountOfPlayers * AmountOfPlayerCards;
-					NumberOfCardsInPlay > 0
+					NumberOfCardsInPlay >= 0
 		end
 		class PLAYER
 			feature
@@ -411,7 +420,8 @@ component
 					card /= Void
 				ensure
 					result -> card.Suit = table.OpeningCard.Suit or
-					result -> not AnyCard(table.OpeningCard.Suit)
+					result -> not AnyCard(table.OpeningCard.Suit) or
+					Result -> table.OpeningCard = Void
 				end
 				PlayCard : void
 					-> card : CARD
@@ -459,8 +469,6 @@ component
 				Suit : SUIT
 				CompareTo : INT
 					-> card : CARD
-				require
-					card /= Void
 				SameSuit : BOOLEAN
 					-> card : CARD
 				require
