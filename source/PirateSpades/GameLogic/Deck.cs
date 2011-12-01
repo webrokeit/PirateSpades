@@ -4,6 +4,8 @@ namespace PirateSpades.GameLogic {
     using System.Collections;
     using System.Diagnostics.Contracts;
 
+    using PirateSpades.Misc;
+
     public class Deck : IEnumerable<Card> {
         private static List<Card> mainDeck;
         private List<Card> deck { get; set; }
@@ -49,7 +51,7 @@ namespace PirateSpades.GameLogic {
                 CreateDeck();
             }
             var deckClone = new List<Card>(mainDeck);
-            Func.FisherYatesAlg.Algorithm(deckClone);
+            CollectionFnc.FisherYatesShuffle(deckClone);
             return new Deck(deckClone);
         }
 

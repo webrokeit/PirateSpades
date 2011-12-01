@@ -58,6 +58,11 @@ namespace PirateSpades.Network {
             return msg;
         }
 
+        public PirateError GetError(string s) {
+            PirateError err;
+            return Enum.TryParse(s, true, out err) ? err : PirateError.Unknown;
+        }
+
         public static string ConstructBody(params string[] inputs) {
             Contract.Requires(inputs != null);
             return string.Join("\n", inputs);
@@ -68,6 +73,7 @@ namespace PirateSpades.Network {
         }
 
         public static Dictionary<string, int> GetPlayerBets(PirateMessage msg) {
+            Contract.Requires(msg != null);
             var res = new Dictionary<string, int>();
             foreach(Match m in Regex.Matches(msg.Body, @"^player_bet: (\w+);([0-9])$", RegexOptions.Multiline)) {
                 res[m.Groups[1].Value] = int.Parse(m.Groups[2].Value);
@@ -82,6 +88,12 @@ namespace PirateSpades.Network {
 
         /// <summary>Error</summary>
         Erro,
+
+        /// <summary>Init Player Connection</summary>
+        Init,
+
+        /// <summary>Verify</summary>
+        Verf,
 
         /// <summary>Player Information</summary>
         Pnfo,
@@ -103,5 +115,13 @@ namespace PirateSpades.Network {
 
         /// <summary>Set Amount of Tricks</summary>
         Satk
+    }
+
+    public enum PirateError {
+        /// <summary>Unknown error. Also used if error send could not be identified.</summary>
+        Unknown,
+
+        /// <summary>The name the user wanted to use was already taken.</summary>
+        NameAlreadyTaken
     }
 }

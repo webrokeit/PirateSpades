@@ -10,9 +10,25 @@ namespace PirateSpades.Network {
     public class PirateHostCommands {
         private static Table pTable = null;
 
+        private const string WelcomePhrase = "YARRR!!";
+
         private static Table Table {
             get {
                 return pTable ?? (pTable = Table.GetTable());
+            }
+        }
+
+        public static void InitConnection(PirateHost host, PirateClient pclient, PirateMessage data) {
+            Contract.Requires(host != null && pclient != null && data != null && data.Head == PirateMessageHead.Init);
+            var msg = new PirateMessage(PirateMessageHead.Init, WelcomePhrase);
+            host.SendMessage(pclient, msg);
+        }
+
+        public static void VerifyConnection(PirateHost host, PirateClient pclient, PirateMessage data) {
+            Contract.Requires(host != null && pclient != null && data != null && data.Head == PirateMessageHead.Verf);
+            if(data.Body == WelcomePhrase) {
+                host.AddClient(pclient);
+                GetPlayerInfo(host, pclient);
             }
         }
 
@@ -23,12 +39,19 @@ namespace PirateSpades.Network {
         }
 
         public static void SetPlayerInfo(PirateHost host, PirateClient pclient, PirateMessage data) {
-            Contract.Requires(host != null && data != null && data.Head == PirateMessageHead.Pnfo);
+            Contract.Requires(host != null && pclient != null && data != null && data.Head == PirateMessageHead.Pnfo);
             var player = PirateClient.NameFromString(data.Body);
             if (player == null) return;
 
-            host.SetPlayerName(pclient, player);
-            SendPlayerInfo(host);
+            var oldPlayer = host.PlayerFromString(player);
+            if (oldPlayer == null) {
+
+                host.SetPlayerName(pclient, player);
+                SendPlayerInfo(host);
+            }else {
+                var msg = new PirateMessage(PirateMessageHead.Erro, PirateError.NameAlreadyTaken.ToString());
+                host.SendMessage(pclient, msg);
+            }
         }
 
         public static void SendPlayerInfo(PirateHost host) {
@@ -36,10 +59,12 @@ namespace PirateSpades.Network {
 
             var msg = new PirateMessage(PirateMessageHead.Pigm, PirateMessage.ConstructBody(host.GetPlayers().Select(player => player.ToString()).ToArray()));
 
-            Console.WriteLine("Host: Players in game:");
-            foreach(var player in host.GetPlayers()) {
-                Console.WriteLine("\t" + player.Name);
-                host.SendMessage(player, msg);
+            if (host.PlayerCount > 0) {
+                Console.WriteLine("Host: Players in game:");
+                foreach (var player in host.GetPlayers()) {
+                    Console.WriteLine("\t" + player.Name);
+                    host.SendMessage(player, msg);
+                }
             }
         }
 

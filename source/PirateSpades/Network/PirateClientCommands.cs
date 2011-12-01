@@ -16,10 +16,34 @@ namespace PirateSpades.Network {
             }
         }
 
+        public static void InitConnection(PirateClient pclient) {
+            Contract.Requires(pclient != null);
+            var msg = new PirateMessage(PirateMessageHead.Init, "");
+            pclient.SendMessage(msg);
+        }
+
+        public static void VerifyConnection(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Init);
+            var msg = new PirateMessage(PirateMessageHead.Verf, data.Body);
+            pclient.SendMessage(msg);
+        }
+
         public static void SendPlayerInfo(PirateClient pclient) {
             Contract.Requires(pclient != null);
             var msg = new PirateMessage(PirateMessageHead.Pnfo, pclient.ToString());
             pclient.SendMessage(msg);
+        }
+
+        public static void GetPlayersInGame(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null);
+
+            var players = PirateClient.NamesFromString(data.Body);
+            if(players.Count > 0) {
+                Console.WriteLine("Current players in game:");
+               foreach(var player in players) {
+                   Console.WriteLine("\t" + player + (pclient.Name == player ? " (YOU)" : ""));
+               } 
+            }
         }
 
         public static void PlayCard(PirateClient pclient, Card card) {

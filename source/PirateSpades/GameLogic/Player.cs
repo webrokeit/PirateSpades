@@ -132,7 +132,6 @@ namespace PirateSpades.GameLogic {
                     p.ReceiveCard(c);
                 }
             }
-            int i2 = 1;
         }
 
         public override string ToString() {

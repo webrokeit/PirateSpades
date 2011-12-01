@@ -5,22 +5,35 @@ using System.Text;
 using PirateSpades.Network;
 
 namespace AndreasTest {
+    using System.Net;
+    using System.Text.RegularExpressions;
+
     using PirateSpades.GameLogic;
     using PirateSpades.Func;
 
     class Program {
+
         static void Main(string[] args) {
             try {
-                PirateHost host = new PirateHost(4939);
-                host.Start();
+                Console.Write("Choose function (host/player): ");
+                var function = Console.ReadLine();
+                if(function != null) {
 
-                PirateClient pc = new PirateClient("Andreas", "localhost", 4939);
-                PirateClient pc2 = new PirateClient("Morten", "localhost", 4939);
+                    switch (function.ToLower()) {
+                        case "host":
+                            Host();
+                            break;
+                        case "player":
+                            Player();
+                            break;
+                        default:
+                            Console.WriteLine("No valid function specified!");
+                            break;
+                    }
+                }
 
 
-
-
-                while(!host.PlayersReady) {
+                /*while(!host.PlayersReady) {
                     //Console.WriteLine("Waiting for players");
                 }
 
@@ -64,14 +77,71 @@ namespace AndreasTest {
                 t.Stop();
 
                 Console.WriteLine("Andreas Points = " + g.Points(pc));
-                Console.WriteLine("Morten Points = " + g.Points(pc2));
-
+                Console.WriteLine("Morten Points = " + g.Points(pc2));*/
 
             } catch(Exception ex) {
                 Console.WriteLine(ex);
             } finally {
-                Console.ReadLine();
+                Console.Write("Program finished, press any key to exit...");
+                Console.ReadKey(true);
             }
+        }
+
+        private static void Host() {
+            Console.WriteLine("Creating host");
+            var host = new PirateHost(4939) { DebugMode = true };
+            host.Start();
+            Console.WriteLine("Host started");
+            while (host.Started) { }
+        }
+
+        private static void Player() {
+            Console.Write("IP to use (empty to scan): ");
+            var strIp = Console.ReadLine();
+            IPAddress ip = null;
+            if(!string.IsNullOrEmpty(strIp)) {
+                if(!IPAddress.TryParse(strIp, out ip)) {
+                    Console.WriteLine("Invalid IP specified!");
+                    return;
+                }
+
+                if(!PirateScanner.CheckIp(ip, 4939, 50)) {
+                    Console.WriteLine("No game is hosted at the specified ip!");
+                    return;
+                }
+            }else {
+                Console.WriteLine("Scanning for IP...");
+                var d = DateTime.Now;
+                ip = new PirateScanner().ScanForIp(4939);
+                Console.WriteLine("Scan took " + (DateTime.Now - d).TotalMilliseconds + " milliseconds");
+                if (ip == null) {
+                    Console.WriteLine("No IP found... Make sure there's a host!");
+                    return;
+                }
+                Console.WriteLine("IP Found: " + ip);
+            }
+            Console.WriteLine();
+
+            var pc = new PirateClient("", ip, 4939);
+            pc.NameRequested += OnNameRequest;
+            Console.WriteLine("Initiating...");
+            pc.InitConnection();
+
+            while(true) {}
+        }
+
+        private static void OnNameRequest(PirateClient pclient) {
+            var playerName = string.Empty;
+            while (String.IsNullOrEmpty(playerName)) {
+                Console.Write("Select a name [a-zA-Z0-9_-] (3 - 20 chars): ");
+                playerName = Console.ReadLine();
+                if (playerName == null || !Regex.IsMatch(playerName, "^[a-zA-Z0-9_-]{3,20}$")) {
+                    Console.WriteLine("Invalid name specified, try again...");
+                    playerName = string.Empty;
+                }
+            }
+
+            pclient.SetName(playerName);
         }
     }
 }

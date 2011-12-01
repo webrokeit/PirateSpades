@@ -64,7 +64,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Pex.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -74,20 +73,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Func\Fisher-Yates-Alg.cs" />
-    <Compile Include="Func\Sorting.cs" />
+    <Compile Include="Misc\CollectionFnc.cs" />
+    <Compile Include="Misc\Sorting.cs" />
     <Compile Include="GameLogic\Card.cs" />
     <Compile Include="GameLogic\Deck.cs" />
     <Compile Include="GameLogic\Game.cs" />
     <Compile Include="GameLogic\Player.cs" />
     <Compile Include="GameLogic\Round.cs" />
     <Compile Include="GameLogic\Table.cs" />
+    <Compile Include="Misc\OrderedDictionary.cs" />
     <Compile Include="Network\PirateClient.cs" />
     <Compile Include="Network\PirateClientCommands.cs" />
     <Compile Include="Network\PirateHost.cs" />
     <Compile Include="Network\PirateHostCommands.cs" />
     <Compile Include="Network\PirateMessage.cs" />
     <Compile Include="Network\PirateMessageObj.cs" />
+    <Compile Include="Network\PirateScanner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
