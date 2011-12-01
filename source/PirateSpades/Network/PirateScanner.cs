@@ -22,6 +22,7 @@ namespace PirateSpades.Network {
 
         public int IpCount { get; private set; }
         public int IpsChecked { get; private set; }
+        public bool CheckRunning { get; private set; }
 
         public double PercentageDone {
             get {
@@ -39,11 +40,13 @@ namespace PirateSpades.Network {
         }
 
         public IPAddress ScanForIp(int port) {
-            Contract.Requires(port >= 0 && port <= 65535);
+            Contract.Requires(port >= 0 && port <= 65535 && !CheckRunning);
+            Contract.Ensures(!CheckRunning);
 
+            CheckRunning = true;
             ipsToCheck.Clear();
             var ipSubs = new HashSet<string>();
-            foreach (var ipBits in GetLocalIPs().Select(localIp => Regex.Split(localIp.ToString(), "\\."))) {
+            foreach (var ipBits in GetLocalIPsV4().Select(localIp => Regex.Split(localIp.ToString(), "\\."))) {
                 ipSubs.Add(string.Join(".", ipBits, 0, 3));
             }
 
@@ -58,21 +61,27 @@ namespace PirateSpades.Network {
 
             while (IpsChecked < IpCount) {
                 if (CheckIp(ipsToCheck[IpsChecked], port, 50)) {
+                    CheckRunning = false;
                     return ipsToCheck[IpsChecked];
                 }
                 IpsChecked++;
             }
 
-            return this.ipsToCheck.FirstOrDefault(ip => CheckIp(ip, port, 50));
+            CheckRunning = false;
+            return null;
         }
 
         public static bool CheckIp(IPAddress ip, int port, int timeout) {
+            Contract.Requires(ip != null && port >= 0 && port <= 65535 && timeout >= 0);
+            //Console.WriteLine("Checking ip: " + ip.ToString());
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             var res = false;
             try {
                 var ar = socket.BeginConnect(ip, port, null, null);
                 ar.AsyncWaitHandle.WaitOne(timeout);
-                res = socket.Connected;
+                if(socket.Connected) {
+                    res = PirateClientCommands.KnockKnock(socket);
+                }
             } catch (SocketException ex) {
                 Console.WriteLine("Exception: " + ex);
             } finally {
@@ -82,7 +91,7 @@ namespace PirateSpades.Network {
             return res;
         }
 
-        private static IEnumerable<IPAddress> GetLocalIPs() {
+        private static IEnumerable<IPAddress> GetLocalIPsV4() {
             return Dns.GetHostAddresses(Dns.GetHostName()).Where(ip => Regex.IsMatch(ip.ToString(), @"[0-9]{0,3}\.[0-9]{0,3}\.[0-9]{0,3}\.[0-9]{0,3}")).Distinct();
         }
     }

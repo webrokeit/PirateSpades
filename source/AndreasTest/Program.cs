@@ -8,7 +8,7 @@ namespace AndreasTest {
     using System.Net;
     using System.Text.RegularExpressions;
 
-    using PirateSpades.GameLogic;
+    using PirateSpades.GameLogicV2;
     using PirateSpades.Func;
 
     class Program {
@@ -92,7 +92,18 @@ namespace AndreasTest {
             var host = new PirateHost(4939) { DebugMode = true };
             host.Start();
             Console.WriteLine("Host started");
-            while (host.Started) { }
+            while (host.Started) {
+                var cmd = Console.ReadLine();
+                switch(cmd) {
+                    case "start":
+
+                        break;
+
+                    case "exit":
+                        host.Stop();
+                        break;
+                }
+            }
         }
 
         private static void Player() {
@@ -124,24 +135,29 @@ namespace AndreasTest {
 
             var pc = new PirateClient("", ip, 4939);
             pc.NameRequested += OnNameRequest;
+            pc.Disconnected += OnDisconnect;
             Console.WriteLine("Initiating...");
             pc.InitConnection();
 
-            while(true) {}
+            while(pc.Socket.Connected) {}
         }
 
         private static void OnNameRequest(PirateClient pclient) {
             var playerName = string.Empty;
             while (String.IsNullOrEmpty(playerName)) {
-                Console.Write("Select a name [a-zA-Z0-9_-] (3 - 20 chars): ");
+                Console.Write("Select a name [a-zA-Z0-9_] (3 - 20 chars): ");
                 playerName = Console.ReadLine();
-                if (playerName == null || !Regex.IsMatch(playerName, "^[a-zA-Z0-9_-]{3,20}$")) {
+                if (playerName == null || !Regex.IsMatch(playerName, @"^\w{3,20}$")) {
                     Console.WriteLine("Invalid name specified, try again...");
                     playerName = string.Empty;
                 }
             }
 
             pclient.SetName(playerName);
+        }
+
+        private static void OnDisconnect(PirateClient pclient) {
+            Console.WriteLine("Server disconnected!");
         }
     }
 }

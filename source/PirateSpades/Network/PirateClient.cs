@@ -16,9 +16,9 @@ namespace PirateSpades.Network {
     using System.Net.Sockets;
     using System.Text.RegularExpressions;
 
-    using PirateSpades.GameLogic;
+    using PirateSpades.GameLogicV2;
 
-    public class PirateClient : GameLogic.Player {
+    public class PirateClient : Player {
         public readonly Socket Socket;
         public int BufferSize { get; private set; }
 
@@ -170,14 +170,14 @@ namespace PirateSpades.Network {
 
         public static string NameFromString(string s) {
             Contract.Requires(s != null);
-            var m = Regex.Match(s, @"^player_name: ([a-zA-Z0-9_-]{3,20})$", RegexOptions.Multiline);
+            var m = Regex.Match(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline);
             return m.Success ? m.Groups[1].Value : null;
         }
 
         public static HashSet<string> NamesFromString(string s) {
             Contract.Requires(s != null);
             var res = new HashSet<string>();
-            foreach(Match m in Regex.Matches(s, @"^player_name: ([a-zA-Z0-9_-]{3,20})$", RegexOptions.Multiline)) {
+            foreach(Match m in Regex.Matches(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline)) {
                 res.Add(m.Groups[1].Value);
             }
             return res;

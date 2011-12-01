@@ -13,7 +13,7 @@ namespace PirateSpades.Network {
     using System.Text;
     using System.Text.RegularExpressions;
 
-    using PirateSpades.GameLogic;
+    using PirateSpades.GameLogicV2;
 
     public class PirateMessage {
         public static int BufferSize = 4096;
@@ -77,6 +77,7 @@ namespace PirateSpades.Network {
         }
 
         public static string ConstructPlayerBet(Player p) {
+            Contract.Requires(p != null);
             return "player_bet: " + p.Name + ";" + p.Bet;
         }
 
@@ -88,6 +89,17 @@ namespace PirateSpades.Network {
             }
             return res;
         }
+
+        public static string ConstructStartingPlayer(Player p) {
+            Contract.Requires(p != null);
+            return "starting_player: " + p.Name;
+        }
+
+        public static string GetStarrtingPlayer(PirateMessage msg) {
+            Contract.Requires(msg != null);
+            var m = Regex.Match(msg.Body, @"^starting_player: (\w+)$", RegexOptions.Multiline);
+            return m.Success ? m.Groups[1].Value : null;
+        }
     }
 
     public enum PirateMessageHead {
@@ -96,6 +108,9 @@ namespace PirateSpades.Network {
 
         /// <summary>Error</summary>
         Erro,
+
+        /// <summary>Knock Knock (For scanning)</summary>
+        Knck,
 
         /// <summary>Init Player Connection</summary>
         Init,
@@ -111,6 +126,9 @@ namespace PirateSpades.Network {
 
         /// <summary>Player Accept</summary>
         Pacp,
+
+        /// <summary>Game Started</summary>
+        Gstr,
 
         /// <summary>Transfer Card</summary>
         Xcrd,
@@ -128,6 +146,12 @@ namespace PirateSpades.Network {
     public enum PirateError {
         /// <summary>Unknown error. Also used if error send could not be identified.</summary>
         Unknown,
+
+        /// <summary>You're already connected.</summary>
+        AlreadyConnected,
+
+        /// <summary>No new connection allowed.</summary>
+        NoNewConnections,
 
         /// <summary>The name the user wanted to use was already taken.</summary>
         NameAlreadyTaken

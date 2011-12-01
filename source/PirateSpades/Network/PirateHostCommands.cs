@@ -12,17 +12,24 @@ namespace PirateSpades.Network {
     using System.Linq;
     using System.Text;
     using System.Diagnostics.Contracts;
-    using PirateSpades.GameLogic;
+    using PirateSpades.GameLogicV2;
+    using PirateSpades.Misc;
 
     public class PirateHostCommands {
-        private static Table pTable = null;
-
-        private const string WelcomePhrase = "YARRR!!";
+        /*private static Table pTable = null;
 
         private static Table Table {
             get {
                 return pTable ?? (pTable = Table.GetTable());
             }
+        }*/
+
+        private const string WelcomePhrase = "YARRR!!";
+
+        public static void KnockKnock(PirateHost host, PirateClient pclient) {
+            Contract.Requires(host != null && pclient != null);
+            var msg = new PirateMessage(PirateMessageHead.Knck, "");
+            host.SendMessage(pclient, msg);
         }
 
         public static void InitConnection(PirateHost host, PirateClient pclient, PirateMessage data) {
@@ -37,6 +44,12 @@ namespace PirateSpades.Network {
                 host.AddClient(pclient);
                 GetPlayerInfo(host, pclient);
             }
+        }
+
+        public static void ErrorMessage(PirateHost host, PirateClient pclient, PirateError error) {
+            Contract.Requires(host != null && pclient != null && error != PirateError.Unknown);
+            var msg = new PirateMessage(PirateMessageHead.Erro, error.ToString());
+            host.SendMessage(pclient, msg);
         }
 
         public static void GetPlayerInfo(PirateHost host, PirateClient pclient) {
@@ -72,6 +85,20 @@ namespace PirateSpades.Network {
                     Console.WriteLine("\t" + player.Name);
                     host.SendMessage(player, msg);
                 }
+            }
+        }
+
+        public static void StartGame(PirateHost host) {
+            Contract.Requires(host != null && host.PlayerCount >= 2);
+            host.StopAccepting();
+
+            //Table.Game.ClearPlayers();
+
+            var starter = CollectionFnc.PickRandom(host.GetPlayers());
+
+            var msg = new PirateMessage(PirateMessageHead.Gstr, starter.ToString());
+            foreach(var pclient in host.GetPlayers()) {
+                host.SendMessage(pclient, msg);
             }
         }
 

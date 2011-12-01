@@ -105,5 +105,9 @@ namespace PirateSpades.Misc {
         public bool ContainsValue(TValue value) {
             return this.Values.Cast<TValue>().Contains(value);
         }
+
+        public ImmutableOrderedDictionary<TKey, TValue> AsImmutable() {
+            return new ImmutableOrderedDictionary<TKey, TValue>(this);
+        } 
     }
 }

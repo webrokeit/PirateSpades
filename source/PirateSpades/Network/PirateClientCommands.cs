@@ -10,17 +10,27 @@ namespace PirateSpades.Network {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Sockets;
     using System.Text;
     using System.Diagnostics.Contracts;
-    using PirateSpades.GameLogic;
+    using PirateSpades.GameLogicV2;
 
     public class PirateClientCommands {
-        private static Table pTable = null;
+        /*private static Table pTable = null;
 
         private static Table Table {
             get {
                 return pTable ?? (pTable = Table.GetTable());
             }
+        }*/
+
+        public static bool KnockKnock(Socket client) {
+            Contract.Requires(client != null);
+            var knock = new PirateMessage(PirateMessageHead.Knck, "");
+            client.Send(knock.GetBytes());
+            var buffer = new byte[PirateMessage.BufferSize];
+            var read = client.Receive(buffer);
+            return read > 4 && PirateMessage.GetMessages(buffer, read).Any(msg => msg.Head == PirateMessageHead.Knck);
         }
 
         public static void InitConnection(PirateClient pclient) {
@@ -44,12 +54,12 @@ namespace PirateSpades.Network {
         public static void GetPlayersInGame(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null);
 
-            Table.ClearPlayers();
+            //Table.ClearPlayers();
             var players = PirateClient.NamesFromString(data.Body);
             if(players.Count > 0) {
                 Console.WriteLine("Current players in game:");
                foreach(var player in players) {
-                   Table.AddPlayer(new Player(player));
+                   //Table.AddPlayer(new Player(player));
                    Console.WriteLine("\t" + player + (pclient.Name == player ? " (YOU)" : ""));
                } 
             }
