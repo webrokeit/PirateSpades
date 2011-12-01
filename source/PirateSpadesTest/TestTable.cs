@@ -14,7 +14,7 @@ namespace PirateSpadesTest {
             var p2 = new Player("Jens");
             var p3 = new Player("Alberto");
             var players = new List<Player>() { p, p2, p3 };
-            t.AddPlayers(players);
+            t.SetPlayers(players);
             Assert.That(t.Players == 3);
             Assert.That(t.Cards == 0);
             t.StartingPlayer = p3;
