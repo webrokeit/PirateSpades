@@ -145,7 +145,8 @@ query
 	"Is the game finished?",
 	"Whose turn to deal is it?",
 	"How many rounds are there in this game?",
-	"How many rounds have been played?"
+	"How many rounds have been played?",
+	"How many points did the players get this round?"
 command
 	"Add player.",
 	"Give points to player.",
@@ -173,7 +174,8 @@ query
 	"Does the number of tricks match the player's bet?",
 	"What has this player bet?",
 	"Who is dealing this round?",
-	"How many cards are in play this round?"
+	"How many cards are in play this round?",
+	"Has this player bet?"
 command
 	"Collect bet from player.",
 	"Remove bets.",
@@ -192,9 +194,11 @@ component
 				OpeningCard : CARD
 				SameSuit : BOOLEAN
 					-> player : PLAYER
+					-> card : CARD
 				require
-					player.PlayedCard /= Void;
-					OpeningCard /= Void
+					player /= Void;
+					OpeningCard /= Void;
+					card /= Void
 				ensure
 					result -> player.CardToPlay.Suit = OpeningCard.Suit or
 					result -> not player.AnyCard(OpeningCard.Suit)
@@ -204,11 +208,17 @@ component
 				require
 					players /= Void
 				end
+				GetPlayers : SET[PLAYER]
+				require
+					AmountOfPlayers < 1
+				end
 				ReceiveCard : void
 					-> player : PLAYER
+					-> card : CARD
 				require
-					SameSuit(player) or StartingPlayer = PlayerTurn;
+					SameSuit(player, card) or StartingPlayer = PlayerTurn;
 					player /= Void;
+					card /= Void;
 					not RoundFinished;
 					PlayerTurn = player
 				end
@@ -223,8 +233,7 @@ component
 				WinningPlayer : PLAYER
 				FinishRound : void
 				require
-					RoundFinished;
-					WinningPlayer /= Void
+					RoundFinished
 				ensure
 					OpeningCard = Void;
 					AmountOfCards = 0
@@ -253,15 +262,17 @@ component
 				ensure
 					AmountOfPlayers = (old AmountOfPlayers) + 1
 				end
+				HasAllPlayersBet : BOOLEAN
+				StartTable : void
+				require
+					HasAllPlayersBet
+				end
 				IsStarted : BOOLEAN
 				IsFinished : BOOLEAN
 				ensure
 					result -> RoundsLeft = 0
 				end
 				RoundsLeft : INT
-				ensure
-					Result -> RoundsPlayed = RoundsLeft
-				end
 				RotateDealer : void
 				ensure
 					PlayerToDeal.IsDealer;
@@ -280,6 +291,12 @@ component
 				ensure
 					Points(player) = (old Points(player)) + point
 				end
+				PointsFromRound : SET[INT]
+					-> number : INT
+				require
+					number > 0;
+					number <= 20
+				end
 				Start : void
 				require
 					AmountOfPlayers >= 2 and AmountOfPlayers <= 5;
@@ -293,7 +310,6 @@ component
 					round /= Void;
 					round.Finished
 				end
-				NewRound : void
 				invariant
 					RoundsPlayed <= NumberOfRounds;
 					RoundsLeft >= 0
@@ -313,6 +329,11 @@ component
 				TotalCards : INT
 				NumberOfCardsInPlay : INT
 				AmountOfBets : INT
+				HasPlayerBet : BOOLEAN
+					-> player : PLAYER
+				require
+					player /= Void
+				end
 				IsFinished : BOOLEAN
 				ensure
 					result -> NumberOfCardsInPlay = TotalCards
@@ -351,14 +372,10 @@ component
 					\ PlayerBet(player)
 				end
 				Start : void
-				require
-					AmountOfBets == AmountOfPlayers
-				end
 				invariant
 					AmountOfPlayers >= 2 and AmountOfPlayers <= 5;
-					AmountOfPlayerCards >= AmountOfPlayers;
 					TotalCards = AmountOfPlayers * AmountOfPlayerCards;
-					NumberOfCardsInPlay > 0
+					NumberOfCardsInPlay >= 0
 		end
 		class PLAYER
 			feature
@@ -381,6 +398,8 @@ component
 				require
 					idx >= 0;
 					idx < NumberOfCards
+				ensure
+					HaveCard(Result)
 				end
 				ReceiveTrick : void
 					-> trick : SET[CARD]
@@ -411,7 +430,8 @@ component
 					card /= Void
 				ensure
 					result -> card.Suit = table.OpeningCard.Suit or
-					result -> not AnyCard(table.OpeningCard.Suit)
+					result -> not AnyCard(table.OpeningCard.Suit) or
+					Result -> table.OpeningCard = Void
 				end
 				PlayCard : void
 					-> card : CARD
@@ -459,8 +479,6 @@ component
 				Suit : SUIT
 				CompareTo : INT
 					-> card : CARD
-				require
-					card /= Void
 				SameSuit : BOOLEAN
 					-> card : CARD
 				require

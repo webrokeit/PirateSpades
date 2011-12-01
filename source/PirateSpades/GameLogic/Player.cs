@@ -18,9 +18,15 @@ namespace PirateSpades.GameLogic {
 
         public string Name { get; protected set; }
 
-        private delegate void CardPlayedDelegate(Card c);
+        protected delegate void CardPlayedDelegate(Card c);
 
-        private event CardPlayedDelegate CardPlayed;
+        protected delegate void CardDealtDelegate(Player p, Card c);
+
+        protected delegate void BetSetDelegate(int bet);
+
+        protected event CardPlayedDelegate CardPlayed;
+        protected event CardDealtDelegate CardDealt;
+        protected event BetSetDelegate BetSet;
 
         public bool IsDealer { get; set; }
 
@@ -40,8 +46,21 @@ namespace PirateSpades.GameLogic {
             }
         }
 
+        public List<Card> GetHand() {
+            return hand;
+        }
+
+        public Card GetPlayableCard() {
+            int i = 0;
+            while(!this.Playable(this.Hand(i))) {
+                i++;
+            }
+            return this.Hand(i);
+        }
+
         public Card Hand(int idx) {
-            Contract.Requires(idx <= 0 && idx < NumberOfCards);
+            Contract.Requires(idx >= 0 && idx < NumberOfCards);
+            Contract.Ensures(this.HaveCard(Contract.Result<Card>()));
             return hand[idx];
         }
 
@@ -52,6 +71,9 @@ namespace PirateSpades.GameLogic {
             } set {
                 Contract.Requires(value >= 0);
                 bet = value;
+                if(BetSet != null) {
+                    BetSet(value);
+                }
             }
         }
 
@@ -78,8 +100,10 @@ namespace PirateSpades.GameLogic {
 
         public bool Playable(Card c) {
             Contract.Requires(c != null);
-            Contract.Ensures(c.Suit == table.OpeningCard.Suit ? Contract.Result<bool>() : true ||
-                !this.AnyCard(table.OpeningCard.Suit) ? Contract.Result<bool>() : true);
+            Contract.Ensures(Contract.OldValue(table.OpeningCard) == null || c.Suit == table.OpeningCard.Suit || !this.AnyCard(table.OpeningCard.Suit) ? Contract.Result<bool>() : true);
+            if(table.OpeningCard == null) {
+                return true;
+            }
             if(c.Suit == table.OpeningCard.Suit) {
                 return true;
             }
@@ -87,7 +111,9 @@ namespace PirateSpades.GameLogic {
         }
 
         public void PlayCard(Card c) {
-            Contract.Requires(c != null && this.Playable(c) && this.HaveCard(c));
+            Contract.Requires(c != null);
+            Contract.Requires(this.HaveCard(c));
+            Contract.Requires(this.Playable(c));
             Contract.Ensures(!this.HaveCard(c) && NumberOfCards == Contract.OldValue(NumberOfCards) - 1);
             CardToPlay = c;
             if(CardPlayed != null) {
@@ -104,16 +130,26 @@ namespace PirateSpades.GameLogic {
         }
 
         public void DealCards(List<Player> players, int deal) {
-            Contract.Requires(players != null && deal > 0 && IsDealer);
+            Contract.Requires(players != null);
+            Contract.Requires(deal > 0);
+            Contract.Requires(IsDealer);
             Contract.Ensures(NumberOfCards == deal);
-            Stack<Card> deck = Deck.ShuffleDeck();
+            Deck deck = Deck.ShuffleDeck();
             for(int i = 0; i < deal; i++) {
                 foreach(var p in players) {
-                    p.ReceiveCard(deck.Pop());
+                    var c = deck.Pop();
+                    if(CardDealt != null) {
+                        CardDealt(p, c);
+                    }
+                    p.ReceiveCard(c);
                 }
             }
         }
 
+        public override string ToString() {
+            return Name;
+        }
+        
         [ContractInvariantMethod]
         private void ObjectInvariant() {
             Contract.Invariant(NumberOfCards >= 0 && NumberOfCards <= 10);

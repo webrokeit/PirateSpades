@@ -1,6 +1,6 @@
 ﻿// Helena 
 
-namespace PirateSpades.Func
+namespace PirateSpades.Misc
 {
     using System;
     using System.Collections.Generic;
@@ -10,17 +10,25 @@ namespace PirateSpades.Func
     /// A shuffle algorithm, which is unbiased. Iterates through the whole collection and swaps the item at index i, with an item 
     /// at a randomly generated index in the collection. Does this until there's only one item left.
     /// </summary>
-    public class FisherYatesAlg
+    public class CollectionFnc
     {
-        private static readonly Random r = new Random();
+        private static readonly Random R = new Random();
 
-        public static void Algorithm<T>(Stack<T> c) {
-            Contract.Requires(c.Count != 0);
-            Contract.Ensures(c.Count == Contract.OldValue(c.Count));
+        public static void FisherYatesShuffle<T>(List<T> l) {
+            Contract.Requires(l.Count != 0 && l != null);
+            Contract.Ensures(l.Count == Contract.OldValue(l.Count));
 
-            T[] arr = c.ToArray();
+            if(l.Count < 2) return;
 
-            if (c.Count > 1) {
+            for(var i = l.Count - 1; i > 0; i--) {
+                var index = R.Next(i);
+
+                var tmp = l[index];
+                l[index] = l[i];
+                l[i] = tmp;
+            }
+
+            /*if (c.Count > 1) {
                 int i = c.Count - 1;
                 while (i > 1) {
                     int s = r.Next(i);
@@ -29,9 +37,7 @@ namespace PirateSpades.Func
                     arr[s] = holder;
                     i--;
                 }
-            }
-
-            c = new Stack<T>(arr);
+            }*/
         }
     }
 }

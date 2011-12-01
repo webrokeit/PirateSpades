@@ -3,6 +3,8 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace PirateSpades.GameLogic {
+    using System;
+
     public class Table {
         private Card open;
         private static readonly Table Me = new Table();
@@ -11,17 +13,23 @@ namespace PirateSpades.GameLogic {
         private List<Card> cards;
         private Card winningCard;
         private Dictionary<Player, Card> playedCards;
-        private int CurrentPlayerIndex = 0;
+        private int currentPlayerIndex = 0;
+        private bool started;
 
         private Table() {
             open = null;
             winning = null;
             cards = new List<Card>();
+            CardsPlayed = 0;
+            playedCards = new Dictionary<Player, Card>();
+            players = new List<Player>();
         }
 
         public static Table GetTable() {
             return Me;
         }
+
+        public Game Game { get; private set; }
 
         public int Players { get { return players.Count; } }
 
@@ -37,39 +45,73 @@ namespace PirateSpades.GameLogic {
 
         public Player StartingPlayer { get; set; }
 
-        public bool SameSuit(Player p) {
-            Contract.Requires(p.CardToPlay != null && OpeningCard != null);
-            Contract.Ensures(p.CardToPlay.Suit == OpeningCard.Suit ? Contract.Result<bool>() : true ||
-                !p.AnyCard(OpeningCard.Suit) ? Contract.Result<bool>() : true);
-            return p.Playable(p.CardToPlay);
+        public bool IsStarted { get { return started; } }
+
+        public bool SameSuit(Player p, Card c) {
+            Contract.Requires(c != null && p != null);
+            Contract.Ensures(c.Suit == OpeningCard.Suit || !p.AnyCard(OpeningCard.Suit) ? Contract.Result<bool>() : true);
+            return p.Playable(c);
         }
 
-        public void AddPlayers(List<Player> p) {
+        public void SetPlayers(List<Player> p) {
             Contract.Requires(p != null);
             Contract.Ensures(Players == p.Count);
             players = new List<Player>(p);
         }
 
+        public void AddPlayer(Player p) {
+            Contract.Requires(p != null);
+            players.Add(p);
+        }
+
+        public void RemovePlayer(Player p) {
+            Contract.Requires(p != null);
+            players.Remove(p);
+        }
+
+        public void ClearPlayers() {
+            this.players.Clear();
+        }
+
+        public IEnumerable<Player> GetPlayers() {
+            Contract.Requires(Players > 1);
+            return this.players;
+        }
+
         public void ReceiveCard(Player p, Card c) {
-            Contract.Requires(this.SameSuit(p) || StartingPlayer == PlayerTurn);
-            Contract.Requires(p != null && !this.IsRoundFinished() && PlayerTurn == p);
-            CurrentPlayerIndex += 1 % players.Count;
+            Contract.Requires(StartingPlayer == PlayerTurn || this.SameSuit(p, c));
+            Contract.Requires(p != null && c != null && !this.IsRoundFinished() && PlayerTurn == p && IsStarted);
             if(open == null) {
+                this.currentPlayerIndex = (players.IndexOf(p) + 1) % players.Count;
                 playedCards.Clear();
                 cards.Add(c);
                 CardsPlayed++;
                 open = c;
                 playedCards.Add(p, c);
-                PlayerTurn = players[CurrentPlayerIndex];
+                PlayerTurn = players[this.currentPlayerIndex];
                 return;
             }
             cards.Add(c);
             CardsPlayed++;
+            playedCards.Add(p, c);
             if(!this.IsRoundFinished()) {
-                PlayerTurn = players[CurrentPlayerIndex];
+                this.currentPlayerIndex = (this.currentPlayerIndex +1) % players.Count;
+                PlayerTurn = players[this.currentPlayerIndex];
                 return;
             }
             this.FinishRound();
+        }
+
+        public void Start(Game g) {
+            Contract.Requires(this.GetPlayers().All(p => p.Bet >= 0));
+            this.Game = g;
+            started = true;
+        }
+
+        public void Stop() {
+            Contract.Ensures(!IsStarted);
+            started = false;
+            CardsPlayed = 0;
         }
 
         public bool IsRoundFinished() {
@@ -78,7 +120,7 @@ namespace PirateSpades.GameLogic {
         }
 
         public void FinishRound() {
-            Contract.Requires(this.IsRoundFinished() && Winning != null);
+            Contract.Requires(this.IsRoundFinished());
             Contract.Ensures(OpeningCard == null && Cards == 0);
             foreach (var kvp in this.playedCards.Where(kvp => this.winning == null || this.winningCard.CompareTo(kvp.Value) < 0)) {
                 this.winning = kvp.Key;
@@ -87,14 +129,16 @@ namespace PirateSpades.GameLogic {
             winning.ReceiveTrick(cards);
             cards.Clear();
             PlayerTurn = Winning;
+            StartingPlayer = Winning;
             winning = null;
             winningCard = null;
+            open = null;
         }
 
         [ContractInvariantMethod]
         private void ObjectInvariant() {
             Contract.Invariant(Players <= 5);
-            Contract.Invariant(Cards > 0 && Cards <= Players);
+            Contract.Invariant(Cards >= 0 && Cards <= Players);
         }
     }
 }

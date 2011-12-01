@@ -17,8 +17,10 @@ namespace PirateSpades.GameLogic {
             this.players = players;
             this.deal = deal;
             dealer = players.Last();
+            dealer.IsDealer = true;
             cards = players.Count * deal;
             this.number = number;
+            bets = new Dictionary<Player, int>();
         }
 
         public int PlayerCards { get { return deal; } }
@@ -28,6 +30,8 @@ namespace PirateSpades.GameLogic {
         public int Players { get { return players.Count; } }
 
         public int Bets { get { return bets.Count; } }
+
+        public int Number { get { return number; } }
 
         public int NumberOfCardsPlayed { get { return table.CardsPlayed; } }
 
@@ -47,8 +51,13 @@ namespace PirateSpades.GameLogic {
             p.Bet = bet;
         }
 
+        public bool HasPlayerBet(Player p) {
+            Contract.Requires(p != null);
+            return bets.ContainsKey(p);
+        }
+
         public int PlayerBet(Player p) {
-            Contract.Requires(p != null && bets.ContainsKey(p));
+            Contract.Requires(p != null && HasPlayerBet(p));
             Contract.Ensures(Contract.Result<int>() >= 0);
             return bets[p];
         }
@@ -65,9 +74,13 @@ namespace PirateSpades.GameLogic {
             return this.NumberOfTricks(p) == this.PlayerBet(p);
         }
 
+        public void RemovePlayer(Player p) {
+            players.Remove(p);
+        }
+
         public void Start() {
-            //Contract.Requires(Bets == Players);
-            table.AddPlayers(players);
+            table.CardsPlayed = 0;
+            table.SetPlayers(players);
             table.StartingPlayer = players[0];
             table.PlayerTurn = players[0];
             dealer.DealCards(players, deal);
@@ -76,8 +89,8 @@ namespace PirateSpades.GameLogic {
         [ContractInvariantMethod]
         private void ObjectInvariant() {
             Contract.Invariant(Players >= 0 && Players <= 5);
-            Contract.Invariant(PlayerCards >= Players);
-            Contract.Invariant(TotalCards > 0 && NumberOfCardsPlayed > 0);
+            Contract.Invariant(TotalCards == (Players * PlayerCards));
+            Contract.Invariant(NumberOfCardsPlayed >= 0);
         }
     }
 }
