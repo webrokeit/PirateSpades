@@ -53,10 +53,18 @@ namespace PirateSpades.GameLogic {
             return p.Playable(c);
         }
 
-        public void AddPlayers(List<Player> p) {
+        public void SetPlayers(List<Player> p) {
             Contract.Requires(p != null);
             Contract.Ensures(Players == p.Count);
             players = new List<Player>(p);
+        }
+
+        public void AddPlayer(Player p) {
+            players.Add(p);
+        }
+
+        public void RemovePlayer(Player p) {
+            players.Remove(p);
         }
 
         public IEnumerable<Player> GetPlayers() {

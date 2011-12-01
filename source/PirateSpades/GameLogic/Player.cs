@@ -46,6 +46,18 @@ namespace PirateSpades.GameLogic {
             }
         }
 
+        public List<Card> GetHand() {
+            return hand;
+        }
+
+        public Card GetPlayableCard() {
+            int i = 0;
+            while(!this.Playable(this.Hand(i))) {
+                i++;
+            }
+            return this.Hand(i);
+        }
+
         public Card Hand(int idx) {
             Contract.Requires(idx >= 0 && idx < NumberOfCards);
             Contract.Ensures(this.HaveCard(Contract.Result<Card>()));

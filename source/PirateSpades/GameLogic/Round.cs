@@ -74,9 +74,13 @@ namespace PirateSpades.GameLogic {
             return this.NumberOfTricks(p) == this.PlayerBet(p);
         }
 
+        public void RemovePlayer(Player p) {
+            players.Remove(p);
+        }
+
         public void Start() {
             table.CardsPlayed = 0;
-            table.AddPlayers(players);
+            table.SetPlayers(players);
             table.StartingPlayer = players[0];
             table.PlayerTurn = players[0];
             dealer.DealCards(players, deal);
