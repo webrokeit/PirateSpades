@@ -92,6 +92,7 @@ namespace PirateSpades.GameLogicV2 {
         }
 
         public void PlayCard(Player player, Card card) {
+            Contract.Requires(player != null && card != null && player.HasCard(card));
             BoardCards.PlaceCard(player, card);
             if(PileDone) {
                 this.NextPile();

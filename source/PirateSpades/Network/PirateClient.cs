@@ -52,8 +52,9 @@ namespace PirateSpades.Network {
 
         private void Init() {
             BufferSize = PirateMessage.BufferSize;
-            this.CardPlayed += OnCardPlayed;
+            this.CardPlayed += this.OnCardPlayed;
             this.CardDealt += this.OnCardDealt;
+            this.BetSet += this.OnBetSet;
         }
 
         public void InitConnection() {
@@ -75,8 +76,8 @@ namespace PirateSpades.Network {
             PirateClientCommands.DealCard(this, p, c);
         }
 
-        private void OnBetSet(Player p, int bet) {
-            PirateClientCommands.SetBet(this, bet);
+        private void OnBetSet(int bet) {
+            if(!VirtualPlayer) PirateClientCommands.SetBet(this, bet);
         }
 
         public void SetName(string name) {

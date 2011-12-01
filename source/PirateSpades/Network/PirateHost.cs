@@ -300,9 +300,7 @@ namespace PirateSpades.Network {
                 this.Players.Add(name, pclient.Socket);
             }
 
-            lock (Clients) {
-                this.Clients[pclient.Socket].SetName(name);
-            }
+            pclient.SetName(name);
 
             Console.WriteLine("Set name for " + pclient.Socket.RemoteEndPoint + " to " + name);
         }

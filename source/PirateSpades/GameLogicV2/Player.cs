@@ -72,9 +72,9 @@
             Contract.Requires(card != null);
             Contract.Requires(this.Cards.Contains(card));
             Contract.Ensures(!this.Cards.Contains(card) && CardsOnHand == Contract.OldValue(CardsOnHand) - 1);
-            this.Cards.Remove(card);
             CardToPlay = card;
             Game.Round.PlayCard(this, card);
+            this.RemoveCard(card);
             if(CardPlayed != null) CardPlayed(card);
         }
 
@@ -90,6 +90,10 @@
             }
         }
 
+        public bool HasCard(Card card) {
+            return this.Cards.Contains(card);
+        }
+
         public void SetBet(int bet) {
             this.Bet = bet;
             this.Game.Round.PlayerBet(this, bet);
@@ -98,6 +102,16 @@
 
         public void SetGame(Game game) {
             this.Game = game;
+        }
+
+        public Card GetPlayableCard() {
+            Contract.Requires(Game != null && Game.Active && !Game.Round.BoardCards.HasPlayed(this) && Hand.Count > 0);
+            var toPlay = Hand[0];
+            foreach (var card in this.Hand.Where(card => card.Suit == this.Game.Round.BoardCards.FirstCard.Suit)) {
+                toPlay = card;
+                break;
+            }
+            return toPlay;
         }
 
         public override string ToString() {

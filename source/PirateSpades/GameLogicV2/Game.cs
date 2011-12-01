@@ -35,7 +35,7 @@ namespace PirateSpades.GameLogicV2 {
 
         public bool Active {
             get {
-                return CurrentRound >= 1 && CurrentRound <= Round.RoundsPossible(Players.Count);
+                return CurrentRound >= 1 && CurrentRound <= Round.RoundsPossible(Players.Count) && Round != null;
             }
         }
 
@@ -138,6 +138,11 @@ namespace PirateSpades.GameLogicV2 {
         public bool Contains(Player player) {
             Contract.Requires(player != null);
             return GamePlayers.ContainsKey(player);
+        }
+
+        public bool Contains(string playerName) {
+            Contract.Requires(playerName != null);
+            return PlayerNames.ContainsKey(playerName);
         }
 
         public int PlayerIndex(Player player) {

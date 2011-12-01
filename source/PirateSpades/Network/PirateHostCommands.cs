@@ -65,8 +65,9 @@ namespace PirateSpades.Network {
 
             var oldPlayer = host.PlayerFromString(player);
             if (oldPlayer == null) {
-
+                if(host.Game.Contains(pclient)) host.Game.RemovePlayer(pclient);
                 host.SetPlayerName(pclient, player);
+                host.Game.AddPlayer(pclient);
                 SendPlayerInfo(host);
             }else {
                 var msg = new PirateMessage(PirateMessageHead.Erro, PirateError.NameAlreadyTaken.ToString());
@@ -80,9 +81,9 @@ namespace PirateSpades.Network {
             var msg = new PirateMessage(PirateMessageHead.Pigm, PirateMessage.ConstructBody(host.GetPlayers().Select(player => player.ToString()).ToArray()));
 
             if (host.PlayerCount > 0) {
-                Console.WriteLine("Host: Players in game:");
+                if(host.DebugMode) Console.WriteLine("Host: Players in game:");
                 foreach (var player in host.GetPlayers()) {
-                    Console.WriteLine("\t" + player.Name);
+                    if(host.DebugMode) Console.WriteLine("\t" + player.Name);
                     host.SendMessage(player, msg);
                 }
             }
@@ -111,10 +112,9 @@ namespace PirateSpades.Network {
             if(pclient == null) return;
 
             var card = Card.FromString(data.Body);
-            
             if(card == null) return;
 
-            //pclient.ReceiveCard(card);
+            pclient.GetCard(card);
 
             Console.WriteLine("Host: Sending card " + card + " to " + pclient);
 
@@ -125,18 +125,15 @@ namespace PirateSpades.Network {
         public static void PlayCard(PirateHost host, PirateMessage data) {
             Contract.Requires(host != null && data != null && data.Head == PirateMessageHead.Pcrd);
             var playerName = PirateClient.NameFromString(data.Body);
-            if(playerName == null)
-                return;
+            if(playerName == null) return;
 
             var player = host.PlayerFromString(playerName);
-            if(player == null)
-                return;
+            if(player == null) return;
 
             var card = Card.FromString(data.Body);
-            if(card == null)
-                return;
+            if(card == null) return;
 
-            //Table.ReceiveCard(player, card);
+            host.Game.Round.PlayCard(player, card);
 
             Console.WriteLine(player.Name + " plays " + card);
 
@@ -151,11 +148,10 @@ namespace PirateSpades.Network {
 
             var bet = 0;
             if(int.TryParse(msg.Body, out bet)) {
-                player.Bet = bet;
+                player.SetBet(bet);
             }
 
-            var betsMade = host.GetPlayers().Count(p => p.Bet > -1);
-            if(betsMade >= host.GetPlayers().Count()) {
+            if(host.Game.Round.BetsDone) {
                 BeginRound(host);
             }
         }

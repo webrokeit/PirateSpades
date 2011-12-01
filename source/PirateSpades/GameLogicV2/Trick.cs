@@ -11,21 +11,17 @@ namespace PirateSpades.GameLogicV2 {
     public class Trick {
         public ImmutableOrderedDictionary<Player, Card> Pile { get; private set; }
         private OrderedDictionary<Player, Card> CardsPlayed { get; set; }
+        public Card FirstCard { get; private set; }
 
         public Player Winner {
             get {
-                Contract.Requires(CardsPlayed.Count > 0);
+                Contract.Requires(CardsPlayed.Count > 0 && FirstCard != null);
                 Player winner = null;
-                Card firstCard = null;
                 foreach(KeyValuePair<Player, Card> kvp in CardsPlayed) {
-                    if (firstCard == null) {
-                        firstCard = kvp.Value;
-                    }
-
                     if (winner == null) {
                         winner = kvp.Key;
-                    } else if (kvp.Value.SameSuit(firstCard) || kvp.Value.Suit == Suit.Spades) {
-                        if (kvp.Value.HigherThan(firstCard)) {
+                    } else if (kvp.Value.SameSuit(FirstCard) || kvp.Value.Suit == Suit.Spades) {
+                        if (kvp.Value.HigherThan(FirstCard)) {
                             winner = kvp.Key;
                         }
                     }
@@ -45,8 +41,14 @@ namespace PirateSpades.GameLogicV2 {
 
         public void PlaceCard(Player player, Card card) {
             Contract.Requires(player != null && card != null && !Pile.ContainsKey(player));
+            if(FirstCard == null) FirstCard = card;
             Pile.Add(player, card);
             this.UpdatePile();
+        }
+
+        public bool HasPlayed(Player player) {
+            Contract.Requires(player != null);
+            return Pile.ContainsKey(player);
         }
     }
 }
