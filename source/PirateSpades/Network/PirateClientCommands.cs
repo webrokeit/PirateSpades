@@ -1,9 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// <copyright file="PirateClientCommands.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      Various commands used by the PirateClientt to communicate with its host (PirateHost).
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
 
 namespace PirateSpades.Network {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
     using System.Diagnostics.Contracts;
     using PirateSpades.GameLogic;
 
@@ -37,10 +44,12 @@ namespace PirateSpades.Network {
         public static void GetPlayersInGame(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null);
 
+            Table.ClearPlayers();
             var players = PirateClient.NamesFromString(data.Body);
             if(players.Count > 0) {
                 Console.WriteLine("Current players in game:");
                foreach(var player in players) {
+                   Table.AddPlayer(new Player(player));
                    Console.WriteLine("\t" + player + (pclient.Name == player ? " (YOU)" : ""));
                } 
             }

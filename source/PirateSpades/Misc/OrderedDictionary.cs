@@ -1,4 +1,13 @@
-﻿namespace PirateSpades.Misc {
+﻿// <copyright file="OrderedDictionary.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      A generic version of the OrderedDictionary.
+//      It's more or less just a proxy for the OrderedDictionary found in System.Collections.Specialized.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
+
+namespace PirateSpades.Misc {
     using System;
     using System.Collections.Generic;
     using System.Linq;

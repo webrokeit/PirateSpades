@@ -1,4 +1,12 @@
-﻿namespace PirateSpades.Network {
+﻿// <copyright file="PirateHost.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      A game host for the PirateSpades game.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
+
+namespace PirateSpades.Network {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;

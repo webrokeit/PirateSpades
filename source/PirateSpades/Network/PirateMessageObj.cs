@@ -1,9 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// <copyright file="PirateMessageObj.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      Message object used for reading asynchonously.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
 
 namespace PirateSpades.Network {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
     using System.Diagnostics.Contracts;
     using System.Net.Sockets;
 

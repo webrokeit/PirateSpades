@@ -13,7 +13,7 @@ namespace PirateSpades.GameLogic {
         private List<Card> cards;
         private Card winningCard;
         private Dictionary<Player, Card> playedCards;
-        private int CurrentPlayerIndex = 0;
+        private int currentPlayerIndex = 0;
         private bool started;
 
         private Table() {
@@ -60,11 +60,17 @@ namespace PirateSpades.GameLogic {
         }
 
         public void AddPlayer(Player p) {
+            Contract.Requires(p != null);
             players.Add(p);
         }
 
         public void RemovePlayer(Player p) {
+            Contract.Requires(p != null);
             players.Remove(p);
+        }
+
+        public void ClearPlayers() {
+            this.players.Clear();
         }
 
         public IEnumerable<Player> GetPlayers() {
@@ -76,21 +82,21 @@ namespace PirateSpades.GameLogic {
             Contract.Requires(StartingPlayer == PlayerTurn || this.SameSuit(p, c));
             Contract.Requires(p != null && c != null && !this.IsRoundFinished() && PlayerTurn == p && IsStarted);
             if(open == null) {
-                CurrentPlayerIndex = (players.IndexOf(p) + 1) % players.Count;
+                this.currentPlayerIndex = (players.IndexOf(p) + 1) % players.Count;
                 playedCards.Clear();
                 cards.Add(c);
                 CardsPlayed++;
                 open = c;
                 playedCards.Add(p, c);
-                PlayerTurn = players[CurrentPlayerIndex];
+                PlayerTurn = players[this.currentPlayerIndex];
                 return;
             }
             cards.Add(c);
             CardsPlayed++;
             playedCards.Add(p, c);
             if(!this.IsRoundFinished()) {
-                CurrentPlayerIndex = (CurrentPlayerIndex +1) % players.Count;
-                PlayerTurn = players[CurrentPlayerIndex];
+                this.currentPlayerIndex = (this.currentPlayerIndex +1) % players.Count;
+                PlayerTurn = players[this.currentPlayerIndex];
                 return;
             }
             this.FinishRound();

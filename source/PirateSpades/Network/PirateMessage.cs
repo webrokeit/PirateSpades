@@ -1,3 +1,11 @@
+// <copyright file="PirateMessage.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      Message to be send between PirateHost and PirateClient.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
+
 namespace PirateSpades.Network {
     using System;
     using System.Collections.Generic;

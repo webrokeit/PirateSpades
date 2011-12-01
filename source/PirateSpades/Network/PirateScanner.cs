@@ -1,9 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// <copyright file="PirateScanner.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      A port scanner searching for PirateSpades games.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
 
 namespace PirateSpades.Network {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
     using System.Diagnostics.Contracts;
     using System.Net;
     using System.Net.Sockets;

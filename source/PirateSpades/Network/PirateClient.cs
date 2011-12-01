@@ -1,4 +1,12 @@
-﻿namespace PirateSpades.Network {
+﻿// <copyright file="PirateClient.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      A network client for the PirateSpades game.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
+
+namespace PirateSpades.Network {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -135,9 +143,12 @@
                     PirateClientCommands.VerifyConnection(this, msg);
                     break;
                 case PirateMessageHead.Pnfo:
-                    //PirateClientCommands.SendPlayerInfo(this);
-                    if(NameRequested != null) {
-                        NameRequested(this);
+                    if (string.IsNullOrEmpty(Name)) {
+                        if (NameRequested != null) {
+                            NameRequested(this);
+                        }
+                    } else {
+                        PirateClientCommands.SendPlayerInfo(this);
                     }
                     break;
                 case PirateMessageHead.Xcrd:

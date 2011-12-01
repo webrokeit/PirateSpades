@@ -1,9 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// <copyright file="PirateHostCommands.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      Various commands used by the PirateHost to communicate with its clients (PirateClient).
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
 
 namespace PirateSpades.Network {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
     using System.Diagnostics.Contracts;
     using PirateSpades.GameLogic;
 
