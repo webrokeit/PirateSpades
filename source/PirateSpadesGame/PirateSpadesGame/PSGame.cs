@@ -10,15 +10,20 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 namespace PirateSpadesGame {
+    using PirateSpades.GameLogic;
+
     /// <summary>
     /// This is the main type for your game
     /// </summary>
     public class PsGame : Microsoft.Xna.Framework.Game {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private CardSprite cSprite;
 
         public PsGame() {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1024;
+            graphics.PreferredBackBufferHeight = 720;
             Content.RootDirectory = "Content";
         }
 
@@ -30,7 +35,9 @@ namespace PirateSpadesGame {
         /// </summary>
         protected override void Initialize() {
             // TODO: Add your initialization logic here
+            this.IsMouseVisible = true;
 
+            cSprite = new CardSprite(new Card(Suit.Clubs, CardValue.Eight), new Vector2(150, 100));
             base.Initialize();
         }
 
@@ -43,6 +50,7 @@ namespace PirateSpadesGame {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
             // TODO: use this.Content to load your game content here
+            cSprite.LoadContent(this.Content);
         }
 
         /// <summary>
@@ -64,6 +72,7 @@ namespace PirateSpadesGame {
                 this.Exit();
 
             // TODO: Add your update logic here
+            cSprite.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -76,6 +85,9 @@ namespace PirateSpadesGame {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            cSprite.Draw(this.spriteBatch);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
