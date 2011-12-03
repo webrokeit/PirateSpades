@@ -33,7 +33,17 @@
         }
 
         public override string ToString() {
+            Contract.Ensures(Contract.Result<string>() != null);
             return "card: " + Suit.ToString() + ";" + Value.ToString();
+        }
+
+        public static Card FromString(string s) {
+            Contract.Requires(Regex.IsMatch(s, "^card: " + EnumRegexString(typeof(Suit)) + ";" + EnumRegexString(typeof(CardValue)) + "$", RegexOptions.Multiline));
+            Contract.Ensures(Contract.Result<Card>() != null);
+            var m = Regex.Match(s, "^card: " + EnumRegexString(typeof(Suit)) + ";" + EnumRegexString(typeof(CardValue)) + "$", RegexOptions.Multiline);
+            var suit = (Suit) Enum.Parse(typeof(Suit), m.Groups[1].Value, true);
+            var value = (CardValue) Enum.Parse(typeof(CardValue), m.Groups[2].Value, true);
+            return new Card(suit, value);
         }
 
         public static int CardsToDeal(int round, int players) {
@@ -41,24 +51,20 @@
             return (round <= maxCards ? maxCards - round + 1 : round - maxCards);
         }
 
-        public static Card FromString(string s) {
-            Contract.Requires(Regex.IsMatch(s, @"^card: \w{5,8};\w{3,5}$", RegexOptions.Multiline));
-            var m = Regex.Match(s, @"^card: (\w{5,8});(\w{3,5})$", RegexOptions.Multiline);
-            if(m.Success) {
-                Suit suit;
-                if (Enum.TryParse(m.Groups[1].Value, true, out suit)) {
-                    CardValue value;
-                    if (Enum.TryParse(m.Groups[2].Value, true, out value)) {
-                        return new Card(suit, value);
-                    }
-                }
-            }
-            return null;
-        }
-
         [ContractInvariantMethod]
         private void ObjectInvariant() {
             Contract.Invariant(Value > (CardValue)1 && Value < (CardValue)15);
+        }
+
+        [Pure]
+        public static string EnumRegexString(Type enumType) {
+            Contract.Requires(enumType != null && Enum.GetNames(enumType).Length > 0);
+            var names = Enum.GetNames(enumType);
+            var res = new string[names.Length];
+            for(var i = 0; i < names.Length; i++) {
+                res[i] = Regex.Escape(names[i]);
+            }
+            return "(" + string.Join("|", res) + ")";
         }
     }
 

@@ -140,14 +140,15 @@ namespace PirateSpades.Network {
 
         private void HandleMessage(PirateMessage msg) {
             switch(msg.Head) {
+                case PirateMessageHead.Erro:
+                    PirateClientCommands.ErrorMessage(this, msg);
+                    break;
                 case PirateMessageHead.Init:
                     PirateClientCommands.VerifyConnection(this, msg);
                     break;
                 case PirateMessageHead.Pnfo:
                     if (string.IsNullOrEmpty(Name)) {
-                        if (NameRequested != null) {
-                            NameRequested(this);
-                        }
+                        if (NameRequested != null) NameRequested(this);
                     } else {
                         PirateClientCommands.SendPlayerInfo(this);
                     }
@@ -158,25 +159,41 @@ namespace PirateSpades.Network {
                 case PirateMessageHead.Pigm:
                     PirateClientCommands.GetPlayersInGame(this, msg);
                     break;
+                case PirateMessageHead.Gstr:
+                    PirateClientCommands.GameStarted(this, msg);
+                    break;
+                case PirateMessageHead.Nrnd:
+                    PirateClientCommands.NewRound(this, msg);
+                    break;
+                case PirateMessageHead.Bgrn:
+                    PirateClientCommands.BeginRound(this, msg);
+                    break;
+                case PirateMessageHead.Frnd:
+                    PirateClientCommands.FinishRound(this, msg);
+                    break;
             }
         }
 
         public override string ToString() {
+            Contract.Ensures(Contract.Result<string>() != null);
             return NameToString(Name);
         }
 
         public static string NameToString(string name) {
+            Contract.Requires(name != null);
+            Contract.Ensures(Contract.Result<string>() != null);
             return "player_name: " + name;
         }
 
         public static string NameFromString(string s) {
-            Contract.Requires(s != null);
-            var m = Regex.Match(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline);
-            return m.Success ? m.Groups[1].Value : null;
+            Contract.Requires(s != null && Regex.IsMatch(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline));
+            Contract.Ensures(Contract.Result<string>() != null);
+            return Regex.Match(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline).Groups[1].Value;
         }
 
         public static HashSet<string> NamesFromString(string s) {
             Contract.Requires(s != null);
+            Contract.Ensures(Contract.Result<HashSet<string>>() != null);
             var res = new HashSet<string>();
             foreach(Match m in Regex.Matches(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline)) {
                 res.Add(m.Groups[1].Value);

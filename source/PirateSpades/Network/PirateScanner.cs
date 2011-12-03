@@ -10,12 +10,12 @@ namespace PirateSpades.Network {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Diagnostics.Contracts;
     using System.Net;
     using System.Net.Sockets;
-    using System.Runtime.Remoting.Messaging;
     using System.Text.RegularExpressions;
+
+    using PirateSpades.Misc;
 
     public class PirateScanner {
         private readonly List<IPAddress> ipsToCheck = new List<IPAddress>();
@@ -46,7 +46,7 @@ namespace PirateSpades.Network {
             CheckRunning = true;
             ipsToCheck.Clear();
             var ipSubs = new HashSet<string>();
-            foreach (var ipBits in GetLocalIPsV4().Select(localIp => Regex.Split(localIp.ToString(), "\\."))) {
+            foreach (var ipBits in GetLocalIpsV4().Select(localIp => Regex.Split(localIp.ToString(), "\\."))) {
                 ipSubs.Add(string.Join(".", ipBits, 0, 3));
             }
 
@@ -56,6 +56,7 @@ namespace PirateSpades.Network {
                 }
             }
 
+            CollectionFnc.FisherYatesShuffle(ipsToCheck);
             IpCount = ipsToCheck.Count();
             IpsChecked = 0;
 
@@ -91,7 +92,7 @@ namespace PirateSpades.Network {
             return res;
         }
 
-        private static IEnumerable<IPAddress> GetLocalIPsV4() {
+        private static IEnumerable<IPAddress> GetLocalIpsV4() {
             return Dns.GetHostAddresses(Dns.GetHostName()).Where(ip => Regex.IsMatch(ip.ToString(), @"[0-9]{0,3}\.[0-9]{0,3}\.[0-9]{0,3}\.[0-9]{0,3}")).Distinct();
         }
     }

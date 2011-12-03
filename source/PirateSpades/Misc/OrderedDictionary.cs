@@ -106,6 +106,10 @@ namespace PirateSpades.Misc {
             return this.Values.Cast<TValue>().Contains(value);
         }
 
+        public override System.Collections.IDictionaryEnumerator GetEnumerator() {
+            return base.GetEnumerator();
+        }
+
         public ImmutableOrderedDictionary<TKey, TValue> AsImmutable() {
             return new ImmutableOrderedDictionary<TKey, TValue>(this);
         } 

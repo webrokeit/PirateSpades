@@ -68,6 +68,7 @@ namespace PirateSpades.Network {
                 if(host.Game.Contains(pclient)) host.Game.RemovePlayer(pclient);
                 host.SetPlayerName(pclient, player);
                 host.Game.AddPlayer(pclient);
+                pclient.SetGame(host.Game);
                 SendPlayerInfo(host);
             }else {
                 var msg = new PirateMessage(PirateMessageHead.Erro, PirateError.NameAlreadyTaken.ToString());
@@ -93,9 +94,8 @@ namespace PirateSpades.Network {
             Contract.Requires(host != null && host.PlayerCount >= 2);
             host.StopAccepting();
 
-            //Table.Game.ClearPlayers();
-
             var starter = CollectionFnc.PickRandom(host.GetPlayers());
+            host.Game.Start(true);
 
             var msg = new PirateMessage(PirateMessageHead.Gstr, starter.ToString());
             foreach(var pclient in host.GetPlayers()) {
@@ -106,13 +106,19 @@ namespace PirateSpades.Network {
         public static void DealCard(PirateHost host, PirateMessage data) {
             Contract.Requires(host != null && data != null && data.Head == PirateMessageHead.Xcrd);
             var player = PirateClient.NameFromString(data.Body);
-            if(player == null) return;
+            if(player == null) {
+                return;
+            }
 
             var pclient = host.PlayerFromString(player);
-            if(pclient == null) return;
+            if(pclient == null) {
+                return;
+            }
 
             var card = Card.FromString(data.Body);
-            if(card == null) return;
+            if(card == null) {
+                return;
+            }
 
             pclient.GetCard(card);
 
@@ -131,28 +137,42 @@ namespace PirateSpades.Network {
             if(player == null) return;
 
             var card = Card.FromString(data.Body);
-            if(card == null) return;
-
-            host.Game.Round.PlayCard(player, card);
+            if (card == null) return;
 
             Console.WriteLine(player.Name + " plays " + card);
 
-            var msg = new PirateMessage(PirateMessageHead.Pcrd, player.ToString() + card.ToString());
+            var msg = new PirateMessage(
+                PirateMessageHead.Pcrd, PirateMessage.ConstructBody(player.ToString(), card.ToString()));
             foreach(var pclient in host.GetPlayers()) {
                 host.SendMessage(pclient, msg);
             }
         }
 
         public static void ReceiveBet(PirateHost host, PirateClient player, PirateMessage msg) {
-            Contract.Requires(host != null && player != null && msg != null);
+            Contract.Requires(host != null && player != null && msg != null && msg.Head == PirateMessageHead.Pbet);
 
             var bet = 0;
             if(int.TryParse(msg.Body, out bet)) {
                 player.SetBet(bet);
+            }else {
+                ErrorMessage(host, player, PirateError.InvalidBet);
             }
 
             if(host.Game.Round.BetsDone) {
                 BeginRound(host);
+            }
+        }
+
+        public static void NewRound(PirateHost host) {
+            Contract.Requires(host != null);
+
+            var body =
+                PirateMessage.ConstructBody(
+                    PirateMessage.ConstructDealer(host.Game.Players[host.Game.Round.Dealer].Name),
+                    PirateMessage.ConstructRoundNumber(host.Game.CurrentRound));
+            var msg = new PirateMessage(PirateMessageHead.Nrnd, body);
+            foreach (var pclient in host.GetPlayers()) {
+                host.SendMessage(pclient, msg);
             }
         }
 
@@ -163,13 +183,30 @@ namespace PirateSpades.Network {
             foreach(var player in host.GetPlayers()) {
                 bets.Add(PirateMessage.ConstructPlayerBet(player));
             }
+            bets.Add(PirateMessage.ConstructRoundNumber(host.Game.CurrentRound));
 
-            var body = PirateMessage.ConstructBody(bets.ToArray());
-            var msg = new PirateMessage(PirateMessageHead.Satk, body);
+            host.Game.Round.Begin();
+
+            var msg = new PirateMessage(PirateMessageHead.Bgrn, PirateMessage.ConstructBody(bets));
 
             foreach(var player in host.GetPlayers()) {
                 host.SendMessage(player, msg);
             }
+        }
+
+        public static void RoundFinished(PirateHost host) {
+            Contract.Requires(host != null);
+
+            var body =
+                PirateMessage.ConstructBody(
+                    PirateMessage.ContstructPlayerScores(host.Game.GetRoundScoreTotal(host.Game.CurrentRound)));
+            var msg = new PirateMessage(PirateMessageHead.Frnd, body);
+
+            foreach (var player in host.GetPlayers()) {
+                host.SendMessage(player, msg);
+            }
+
+            host.Game.NewRound();
         }
     }
 }

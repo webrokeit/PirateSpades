@@ -63,17 +63,21 @@ namespace PirateSpades.GameLogicV2 {
             Contract.Requires(!Finished && !AwaitingBets && Game.Players.Count >= 2);
             Contract.Ensures(AwaitingBets);
             foreach(var player in Game.Players) {
+                player.IsDealer = false;
                 PlayerTricks.Add(player, new List<Trick>());
                 PlayerBets.Add(player, -1);
             }
-            Game.Players[this.Dealer].DealCards();
+
+            var dealer = Game.Players[this.Dealer];
+            dealer.IsDealer = true;
+            dealer.DealCards();
             AwaitingBets = true;
             this.NextPlayer();
             if(RoundStarted != null) RoundStarted(this);
         }
 
         public void Begin() {
-            Contract.Requires(!Finished && AwaitingBets);
+            Contract.Requires(!Finished && BetsDone && AwaitingBets);
             Contract.Ensures(!AwaitingBets);
             AwaitingBets = false;
             if(RoundBegun != null) RoundBegun(this);
@@ -85,10 +89,13 @@ namespace PirateSpades.GameLogicV2 {
         }
 
         public void PlayerBet(Player player, int bet) {
-            Contract.Requires(player != null && bet >= 0 && bet <= Cards && AwaitingBets);
+            Contract.Requires(player != null && bet >= 0 && bet <= Cards && AwaitingBets && PlayerBets.ContainsKey(player));
             PlayerBets[player] = bet;
+        }
 
-            if(BetsDone) this.Begin();
+        public void PlayerBet(string playerName, int bet) {
+            Contract.Requires(playerName != null);
+            this.PlayerBet(Game.GetPlayer(playerName), bet);
         }
 
         public void PlayCard(Player player, Card card) {

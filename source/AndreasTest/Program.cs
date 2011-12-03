@@ -96,7 +96,7 @@ namespace AndreasTest {
                 var cmd = Console.ReadLine();
                 switch(cmd) {
                     case "start":
-
+                        host.Game.Start(true);
                         break;
 
                     case "exit":
@@ -108,7 +108,7 @@ namespace AndreasTest {
 
         private static void Player() {
             Console.Write("IP to use (empty to scan): ");
-            var strIp = Console.ReadLine();
+            var strIp = "192.168.1.101"; //  Console.ReadLine();
             IPAddress ip = null;
             if(!string.IsNullOrEmpty(strIp)) {
                 if(!IPAddress.TryParse(strIp, out ip)) {
@@ -133,7 +133,9 @@ namespace AndreasTest {
             }
             Console.WriteLine();
 
+            var game = new Game();
             var pc = new PirateClient("", ip, 4939);
+            pc.SetGame(game);
             pc.NameRequested += OnNameRequest;
             pc.Disconnected += OnDisconnect;
             Console.WriteLine("Initiating...");

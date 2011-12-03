@@ -22,7 +22,7 @@
 
         public int Tricks {
             get {
-                return Game != null && Game.Round.PlayerTricks.ContainsKey(this)
+                return Game != null && Game.Started && Game.Round.PlayerTricks.ContainsKey(this)
                            ? Game.Round.PlayerTricks[this].Count
                            : 0;
             }
@@ -95,12 +95,14 @@
         }
 
         public void SetBet(int bet) {
+            Contract.Requires(this.Game != null && bet >= 0);
             this.Bet = bet;
             this.Game.Round.PlayerBet(this, bet);
             if(BetSet != null) BetSet(bet);
         }
 
         public void SetGame(Game game) {
+            Contract.Requires(game != null);
             this.Game = game;
         }
 

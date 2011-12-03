@@ -64,7 +64,7 @@ namespace PirateSpades.Network {
             this.Clients = new OrderedDictionary<Socket, PirateClient>();
             this.Players = new Dictionary<string, Socket>();
             this.Listener = new TcpListener(new IPEndPoint(IPAddress.Any, this.Port));
-            this.Game = new Game();
+            this.NewGame();
         }
 
         public void Start() {
@@ -236,6 +236,9 @@ namespace PirateSpades.Network {
                     case PirateMessageHead.Pcrd:
                         PirateHostCommands.PlayCard(this, msg);
                         break;
+                    case PirateMessageHead.Pbet:
+                        PirateHostCommands.ReceiveBet(this, pclient, msg);
+                        break;
                 }
             }
         }
@@ -307,6 +310,30 @@ namespace PirateSpades.Network {
 
         public IEnumerable<PirateClient> GetPlayers() {
             return this.Clients.Values;
+        }
+
+        public void NewGame() {
+            if(Game != null) {
+                Game.RoundStarted -= RoundStarted;
+                Game.RoundFinished -= RoundFinished;
+                Game.GameFinished -= GameFinished;
+            }
+            Game = new Game();
+            Game.RoundStarted += RoundStarted;
+            Game.RoundFinished += RoundFinished;
+            Game.GameFinished += GameFinished;
+        }
+
+        private void RoundStarted(Game game) {
+            PirateHostCommands.NewRound(this);
+        }
+
+        private void RoundFinished(Game game) {
+            PirateHostCommands.RoundFinished(this);
+        }
+
+        private void GameFinished(Game game) {
+            Console.WriteLine("GAME HAS FINISHED!");
         }
     }
 }
