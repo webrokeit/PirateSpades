@@ -1,8 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
+﻿// <copyright file="Round.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      A round for the PirateSpades game.
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
 
 namespace PirateSpades.GameLogic {
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
+    using System.Linq;
+
     public class Round {
         private List<Player> players;
         private int deal;

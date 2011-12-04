@@ -1,9 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
+﻿// <copyright file="Table.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      A table for the PirateSpades game.
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
 
 namespace PirateSpades.GameLogic {
-    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
+    using System.Linq;
 
     public class Table {
         private Card open;
@@ -40,6 +46,8 @@ namespace PirateSpades.GameLogic {
         public Player Winning { get { return winning; } }
 
         public int CardsPlayed { get; set; }
+
+        public List<Card> PlayedCards { get { return cards; } }
 
         public Player PlayerTurn { get; set; }
 

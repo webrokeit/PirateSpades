@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using PirateSpades.GameLogic;
 
 namespace PirateSpadesTest {
+    using System;
+
     [TestFixture]
     public class TestCard {
         [Test]

@@ -1,8 +1,15 @@
-﻿using System.Diagnostics.Contracts;
-using System;
+﻿// <copyright file="Card.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      A card, its suit and value for the PirateSpades game.
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
 
 namespace PirateSpades.GameLogic {
     using System.Text.RegularExpressions;
+    using System.Diagnostics.Contracts;
+    using System;
 
     public class Card : IComparable {
 

@@ -1,7 +1,14 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="Deck.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      A deck of cards for the PirateSpades game.
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
 
 namespace PirateSpades.GameLogic {
     using System.Collections;
+    using System.Collections.Generic;
     using System.Diagnostics.Contracts;
 
     using PirateSpades.Misc;
