@@ -30,7 +30,7 @@ namespace PirateSpades.GameLogicV2 {
         public int CurrentRound { get; private set; }
         public Round Round {
             get {
-                Contract.Requires(Started && CurrentRound >= 1 && CurrentRound <= RoundsPossible);
+                Contract.Requires(Started && CurrentRound >= 1 && CurrentRound <= RoundsPossible && Players.Count >= 2);
                 Contract.Ensures(Contract.Result<Round>() == Rounds[CurrentRound]);
                 return this.GetRound(CurrentRound);
             }
@@ -38,12 +38,30 @@ namespace PirateSpades.GameLogicV2 {
         public bool Started { get; private set; }
         public bool Active {
             get {
-                return Started && CurrentRound >= 1 && CurrentRound <= Round.RoundsPossible(Players.Count);
+                Contract.Requires(Players.Count >= 2);
+                return Started && CurrentRound >= 1 && CurrentRound <= RoundsPossible && !Finished;
             }
         }
         public bool Finished {
             get {
-                return Started && !Active && CurrentRound >= 1;
+                Contract.Requires(Players.Count >= 2);
+                return Started && CurrentRound == RoundsPossible && CurrentRound == Rounds.Count && Round.Finished;
+            }
+        }
+        public Player Leader {
+            get {
+                Contract.Requires(Started && CurrentRound >= 1 && Players.Count >= 2);
+                Contract.Ensures(Contract.Result<Player>() != null);
+                var scores = this.GetTotalScores();
+                Player leader = null;
+                var maxScore = int.MinValue;
+                foreach(var key in scores.Keys) {
+                    if(leader == null || scores[key] > maxScore) {
+                        leader = key;
+                        maxScore = scores[key];
+                    }
+                }
+                return leader;
             }
         }
         private bool IsHost { get; set; }
@@ -51,6 +69,7 @@ namespace PirateSpades.GameLogicV2 {
         public delegate void GameEventDelegate(Game game);
 
         public event GameEventDelegate RoundStarted;
+        public event GameEventDelegate RoundBegun;
         public event GameEventDelegate RoundFinished;
         public event GameEventDelegate GameFinished;
 
@@ -71,12 +90,12 @@ namespace PirateSpades.GameLogicV2 {
 
         public void Start(int dealer) {
             Contract.Requires(dealer >= 0 && dealer < Players.Count);
-            CurrentDealer = dealer;
-            this.Start(false);
+            this.Start(false, dealer);
         }
 
-        public void Start(bool isHost) {
-            Contract.Requires(Players.Count >= 2);
+        public void Start(bool isHost, int dealer) {
+            Contract.Requires(Players.Count >= 2 && dealer >= 0 && dealer < Players.Count);
+            CurrentDealer = dealer;
             this.Started = true;
             this.IsHost = isHost;
             if(this.IsHost) {
@@ -93,30 +112,38 @@ namespace PirateSpades.GameLogicV2 {
             Contract.Requires(Started);
             CurrentRound++;
             if(Active) {
-                if (CurrentRound == 1) {
-                    if (CurrentDealer == -1) {
-                        CurrentDealer = CollectionFnc.PickRandom(GamePlayers.Values.ToList());
-                    }
-                } else {
+                if (CurrentRound > 1) {
                     CurrentDealer = (this.GetRound(CurrentRound - 1).Dealer + 1) % Players.Count;
                 }
 
                 var r = new Round(this, CurrentDealer);
-                if(IsHost) r.RoundFinished += this.OnRoundFinished;
+                if(IsHost) {
+                    r.RoundBegun += this.OnRoundBegun;
+                    r.RoundFinished += this.OnRoundFinished;
+                }
                 Rounds.Add(CurrentRound, r);
                 r.Start();
                 if (RoundStarted != null) RoundStarted(this);
             } else {
+                CurrentRound--;
                 this.Finish();
             }
         }
 
-        private void OnRoundFinished(Round round) {
+        private void OnRoundBegun(Round round) {
             Contract.Requires(round != null && Active);
+            if (RoundBegun != null) RoundBegun(this);
+            if(IsHost) {
+                round.RoundBegun -= this.OnRoundBegun;
+            }
+        }
+
+        private void OnRoundFinished(Round round) {
+            Contract.Requires(round != null && (Active || Finished));
             if (RoundFinished != null) RoundFinished(this);
             if (IsHost) {
                 round.RoundFinished -= this.OnRoundFinished;
-                this.NewRound();
+                //this.NewRound();
             }
         }
 
@@ -190,7 +217,9 @@ namespace PirateSpades.GameLogicV2 {
         }
 
         public Round GetRound(int round) {
-            Contract.Requires(round >= 1 && round <= RoundsPossible && Rounds.ContainsKey(round));
+            Contract.Requires(round >= 1);
+            Contract.Requires(round <= RoundsPossible);
+            Contract.Requires(Rounds.ContainsKey(round));
             Contract.Ensures(Contract.Result<Round>() != null);
             return Rounds[round];
         }

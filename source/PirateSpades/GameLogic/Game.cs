@@ -37,15 +37,18 @@ namespace PirateSpades.GameLogic {
 
         public bool IsStarted { get { return started; } }
 
+        [Pure]
         public int RoundsLeft() {
             return Rounds - RoundsPlayed;
         }
 
+        [Pure]
         public Player PlayerToDeal() {
             Contract.Ensures(Contract.Result<Player>().IsDealer == true);
             return dealer;
         }
 
+        [Pure]
         public bool IsFinished() {
             Contract.Ensures(this.RoundsLeft() == 0 ? Contract.Result<bool>() : true);
             return this.RoundsLeft() == 0;
@@ -79,8 +82,9 @@ namespace PirateSpades.GameLogic {
             Round r = this.roundPoints.Keys.FirstOrDefault(key => key.Number == number);
             var roundp = this.players.Select(p => this.roundPoints[r][p]).ToList();
             return roundp;
-        } 
+        }
 
+        [Pure]
         public int Points(Player p) {
             Contract.Requires(p != null);
             return this.points[p];
@@ -92,6 +96,7 @@ namespace PirateSpades.GameLogic {
             points[p] += point;
         }
 
+        [Pure]
         public bool HasAllPlayersBet(Round r) {
             return this.players.All(r.HasPlayerBet);
         }

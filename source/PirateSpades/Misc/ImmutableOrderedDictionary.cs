@@ -10,8 +10,8 @@ namespace PirateSpades.Misc {
 
         public ImmutableOrderedDictionary(OrderedDictionary<TKey, TValue> from) {
             Contract.Requires(from != null);
-            foreach(KeyValuePair<TKey, TValue> kvp in from) {
-                base[kvp.Key] = kvp.Value;
+            foreach(var key in from.Keys) {
+                base[key] = from[key];
             }
         }
 

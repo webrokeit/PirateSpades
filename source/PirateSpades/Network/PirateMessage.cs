@@ -84,6 +84,15 @@ namespace PirateSpades.Network {
             return ConstructBody(inputs.ToArray());
         }
 
+        public static string AppendBody(string body, params string[] inputs) {
+            Contract.Requires(body != null && inputs != null);
+            Contract.Ensures(Contract.Result<string>() != null);
+            if(string.IsNullOrEmpty(body)) {
+                return ConstructBody(inputs);
+            }
+            return body + "\n" + ConstructBody(inputs);
+        }
+
         public static string ConstructPlayerBet(Player player) {
             Contract.Requires(player != null);
             return "player_bet: " + player.Name + ";" + player.Bet;
@@ -119,7 +128,7 @@ namespace PirateSpades.Network {
         public static string GetDealer(PirateMessage msg) {
             Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^dealer: \w+$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<string>() != null);
-            return Regex.Match(msg.Body, @"^dealer: (\w)+$", RegexOptions.Multiline).Groups[1].Value;
+            return Regex.Match(msg.Body, @"^dealer: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
         }
 
         public static string ConstructStartingPlayer(Player player) {
@@ -133,8 +142,20 @@ namespace PirateSpades.Network {
             return Regex.Match(msg.Body, @"^starting_player: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
         }
 
+        public static string ConstructWinner(Player player) {
+            Contract.Requires(player != null);
+            return "winning_player: " + player.Name;
+        }
+
+        public static string GetWinner(PirateMessage msg) {
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^winning_player: \w+$", RegexOptions.Multiline));
+            Contract.Ensures(Contract.Result<string>() != null);
+            return Regex.Match(msg.Body, @"^winning_player: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
+        }
+
+
         public static string ConstructPlayerScore(Player player, int score) {
-            Contract.Requires(player != null && score >= 0);
+            Contract.Requires(player != null);
             return "player_score: " + player.Name + ";" + score;
         }
 
@@ -148,7 +169,7 @@ namespace PirateSpades.Network {
             Contract.Requires(msg != null);
             Contract.Ensures(Contract.Result<Dictionary<string, int>>() != null);
             var res = new Dictionary<string, int>();
-            foreach (Match m in Regex.Matches(msg.Body, @"^player_score: (\w+);([0-9]+)$", RegexOptions.Multiline)) {
+            foreach (Match m in Regex.Matches(msg.Body, @"^player_score: (\w+);(-?[0-9]+)$", RegexOptions.Multiline)) {
                 res[m.Groups[1].Value] = int.Parse(m.Groups[2].Value);
             }
             return res;
@@ -183,6 +204,9 @@ namespace PirateSpades.Network {
         /// <summary>Game Started</summary>
         Gstr,
 
+        /// <summary>Game Finished</summary>
+        Gfin,
+
         /// <summary>Transfer Card</summary>
         Xcrd,
 
@@ -199,7 +223,16 @@ namespace PirateSpades.Network {
         Bgrn,
 
         /// <summary>Finish Round</summary>
-        Frnd
+        Frnd,
+
+        /// <summary>Done Dealing Cards</summary>
+        Ddlc,
+
+        /// <summary>Request Bets</summary>
+        Breq,
+
+        /// <summary>Request Card</summary>
+        Creq
     }
 
     public enum PirateError {
@@ -216,6 +249,9 @@ namespace PirateSpades.Network {
         NameAlreadyTaken,
 
         /// <summary>Invalid bet.</summary>
-        InvalidBet
+        InvalidBet,
+
+        /// <summary>Card not playable.</summary>
+        CardNotPlayable
     }
 }

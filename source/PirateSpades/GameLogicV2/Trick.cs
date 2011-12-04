@@ -17,12 +17,12 @@ namespace PirateSpades.GameLogicV2 {
             get {
                 Contract.Requires(CardsPlayed.Count > 0 && FirstCard != null);
                 Player winner = null;
-                foreach(KeyValuePair<Player, Card> kvp in CardsPlayed) {
+                foreach(var key in CardsPlayed.Keys) {
                     if (winner == null) {
-                        winner = kvp.Key;
-                    } else if (kvp.Value.SameSuit(FirstCard) || kvp.Value.Suit == Suit.Spades) {
-                        if (kvp.Value.HigherThan(FirstCard)) {
-                            winner = kvp.Key;
+                        winner = key;
+                    } else if (CardsPlayed[key].SameSuit(FirstCard) || CardsPlayed[key].Suit == Suit.Spades) {
+                        if (CardsPlayed[key].HigherThan(FirstCard)) {
+                            winner = key;
                         }
                     }
                 }
@@ -42,10 +42,11 @@ namespace PirateSpades.GameLogicV2 {
         public void PlaceCard(Player player, Card card) {
             Contract.Requires(player != null && card != null && !Pile.ContainsKey(player));
             if(FirstCard == null) FirstCard = card;
-            Pile.Add(player, card);
+            CardsPlayed.Add(player, card);
             this.UpdatePile();
         }
 
+        [Pure]
         public bool HasPlayed(Player player) {
             Contract.Requires(player != null);
             return Pile.ContainsKey(player);

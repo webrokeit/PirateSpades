@@ -9,7 +9,7 @@ namespace AndreasTest {
     using System.Text.RegularExpressions;
 
     using PirateSpades.GameLogicV2;
-    using PirateSpades.Func;
+    using PirateSpades.Misc;
 
     class Program {
 
@@ -21,9 +21,11 @@ namespace AndreasTest {
 
                     switch (function.ToLower()) {
                         case "host":
+                        case "h":
                             Host();
                             break;
                         case "player":
+                        case "p":
                             Player();
                             break;
                         default:
@@ -31,54 +33,6 @@ namespace AndreasTest {
                             break;
                     }
                 }
-
-
-                /*while(!host.PlayersReady) {
-                    //Console.WriteLine("Waiting for players");
-                }
-
-                List<Player> l = new List<Player> { pc, pc2 };
-
-                Game g = new Game();
-                g.AddPlayer(pc);
-                g.AddPlayer(pc2);
-
-                Table t = Table.GetTable();
-
-                Round r = new Round(l, 5, 6);
-
-                r.Start();
-
-                r.CollectBet(pc, 2);
-                r.CollectBet(pc2, 3);
-                
-                t.Start(g);
-
-                while(pc.NumberOfCards > 0) {
-                    Player first = t.PlayerTurn == pc ? pc : pc2;
-                    Player second = first == pc ? pc2 : pc;
-
-                    for(var i = 0; i < first.NumberOfCards; i++) {
-                        if (first.Playable(first.Hand(i))) {
-                            first.PlayCard(first.Hand(i));
-                            break;
-                        }
-                    }
-
-                    for(var i = 0; i < second.NumberOfCards; i++) {
-                        if (second.Playable(second.Hand(i))) {
-                            second.PlayCard(second.Hand(i));
-                            break;
-                        }
-                    }
-                }
-
-                g.ReceiveStats(r);
-                t.Stop();
-
-                Console.WriteLine("Andreas Points = " + g.Points(pc));
-                Console.WriteLine("Morten Points = " + g.Points(pc2));*/
-
             } catch(Exception ex) {
                 Console.WriteLine(ex);
             } finally {
@@ -92,14 +46,17 @@ namespace AndreasTest {
             var host = new PirateHost(4939) { DebugMode = true };
             host.Start();
             Console.WriteLine("Host started");
+            Console.Title = "Host";
             while (host.Started) {
                 var cmd = Console.ReadLine();
                 switch(cmd) {
                     case "start":
-                        host.Game.Start(true);
+                    case "s":
+                        host.StartGame();
                         break;
 
                     case "exit":
+                    case "e":
                         host.Stop();
                         break;
                 }
@@ -108,7 +65,7 @@ namespace AndreasTest {
 
         private static void Player() {
             Console.Write("IP to use (empty to scan): ");
-            var strIp = "192.168.1.101"; //  Console.ReadLine();
+            var strIp = Console.ReadLine();
             IPAddress ip = null;
             if(!string.IsNullOrEmpty(strIp)) {
                 if(!IPAddress.TryParse(strIp, out ip)) {
@@ -138,10 +95,13 @@ namespace AndreasTest {
             pc.SetGame(game);
             pc.NameRequested += OnNameRequest;
             pc.Disconnected += OnDisconnect;
+            pc.BetRequested += OnBetRequest;
+            pc.CardRequested += OnCardRequest;
             Console.WriteLine("Initiating...");
             pc.InitConnection();
 
             while(pc.Socket.Connected) {}
+            return;
         }
 
         private static void OnNameRequest(PirateClient pclient) {
@@ -154,12 +114,61 @@ namespace AndreasTest {
                     playerName = string.Empty;
                 }
             }
-
+            Console.Title = "Player: " + playerName;
             pclient.SetName(playerName);
         }
 
         private static void OnDisconnect(PirateClient pclient) {
             Console.WriteLine("Server disconnected!");
+        }
+
+        private static void OnBetRequest(PirateClient pclient) {
+            pclient.SetBet(CollectionFnc.PickRandom(0, pclient.Hand.Count));
+            return;
+            var bet = string.Empty;
+            var pbet = 0;
+            while(string.IsNullOrEmpty(bet)) {
+                Console.Write("Input bet (0 - " + pclient.Game.Round.Cards + "): ");
+                bet = Console.ReadLine();
+                if(bet == null || !Regex.IsMatch(bet, "^[0-9]+$")) {
+                    Console.WriteLine("Invalid bet specified, try again...");
+                    bet = string.Empty;
+                }else {
+                    pbet = int.Parse(bet);
+                    if(pbet > pclient.Game.Round.Cards) {
+                        pbet = pclient.Game.Round.Cards;
+                    }
+                }
+            }
+            pclient.SetBet(pbet);
+        }
+
+        private static void OnCardRequest(PirateClient pclient) {
+            pclient.PlayCard(pclient.Hand[0]);
+            return;
+            var cardIndex = string.Empty;
+            Card card = null;
+            while(string.IsNullOrEmpty(cardIndex)) {
+                Console.WriteLine("Your hand:");
+                for(var i = 0; i < pclient.Hand.Count; i++) {
+                    Console.WriteLine("\t" + "[" + i + "] " + pclient.Hand[i].Suit + ";" + pclient.Hand[i].Value);
+                }
+                Console.Write("Pick card to play (index): ");
+                cardIndex = Console.ReadLine();
+                if (cardIndex == null || !Regex.IsMatch(cardIndex, "^[0-9]+$")) {
+                    Console.WriteLine("Invalid index specified, try again...");
+                    cardIndex = string.Empty;
+                } else {
+                    int index = int.Parse(cardIndex);
+                    if(index >= pclient.Hand.Count) {
+                        Console.WriteLine("Invalid index specified, try again...");
+                        cardIndex = string.Empty;
+                    }else {
+                        card = pclient.Hand[index];
+                    }
+                }
+            }
+            pclient.PlayCard(card);
         }
     }
 }

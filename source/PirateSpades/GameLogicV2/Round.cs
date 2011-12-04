@@ -14,6 +14,11 @@ namespace PirateSpades.GameLogicV2 {
                 return Game.Players.Count * Cards;
             }
         }
+        public int CardsDealt {
+            get {
+                return AwaitingBets ? Game.Players.Sum(player => player.CardsOnHand) : TotalCards;
+            }
+        }
         public bool AwaitingBets { get; private set; }
         public bool BetsDone {
             get {
@@ -68,9 +73,7 @@ namespace PirateSpades.GameLogicV2 {
                 PlayerBets.Add(player, -1);
             }
 
-            var dealer = Game.Players[this.Dealer];
-            dealer.IsDealer = true;
-            dealer.DealCards();
+            Game.Players[this.Dealer].IsDealer = true;
             AwaitingBets = true;
             this.NextPlayer();
             if(RoundStarted != null) RoundStarted(this);

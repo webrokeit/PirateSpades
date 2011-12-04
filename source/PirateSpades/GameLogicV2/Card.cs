@@ -14,11 +14,18 @@
 
         public Suit Suit { get; private set; }
 
+        [Pure]
         public int CompareTo(Object obj) {
             if(obj == null || !(obj is Card)) return 0;
-            return this.HigherThan((Card)obj) ? -1 : 1;
+            var h = this.GetHashCode();
+            var oh = obj.GetHashCode();
+
+            if(h > oh) return 1;
+            if(h < oh) return -1;
+            return 0;
         }
 
+        [Pure]
         public bool HigherThan(Card card) {
             Contract.Requires(card != null);
             if(Suit == Suit.Spades && card.Suit != Suit) return true;
@@ -26,17 +33,20 @@
             return false;
         }
 
+        [Pure]
         public bool SameSuit(Card card) {
             Contract.Requires(card != null);
             Contract.Ensures(this.Suit != card.Suit || Contract.Result<bool>());
             return Suit == card.Suit;
         }
 
+        [Pure]
         public override string ToString() {
             Contract.Ensures(Contract.Result<string>() != null);
             return "card: " + Suit.ToString() + ";" + Value.ToString();
         }
 
+        [Pure]
         public static Card FromString(string s) {
             Contract.Requires(Regex.IsMatch(s, "^card: " + EnumRegexString(typeof(Suit)) + ";" + EnumRegexString(typeof(CardValue)) + "$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<Card>() != null);
@@ -46,9 +56,30 @@
             return new Card(suit, value);
         }
 
+        [Pure]
         public static int CardsToDeal(int round, int players) {
             var maxCards = 52 / players < 10 ? 52 / players : 10;
             return (round <= maxCards ? maxCards - round + 1 : round - maxCards);
+        }
+
+        [Pure]
+        public override int GetHashCode() {
+            var h = (int)Math.Pow(10, (int)Suit) + (int)Value;
+            return h;
+        }
+
+        [Pure]
+        public override bool Equals(object obj) {
+            if (!(obj is Card)) {
+                return false;
+            }
+            if (obj.GetHashCode() != this.GetHashCode()) {
+                return false;
+            }
+            if (((Card)obj).Suit != Suit) {
+                return false;
+            }
+            return ((Card)obj).Value == this.Value;
         }
 
         [ContractInvariantMethod]
@@ -69,7 +100,10 @@
     }
 
     public enum Suit {
-        Hearts, Spades, Diamonds, Clubs
+        Diamonds = 1,
+        Clubs = 2,
+        Hearts = 3,
+        Spades = 4
     }
 
     public enum CardValue {

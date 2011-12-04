@@ -58,5 +58,9 @@ namespace PirateSpades.Misc
 
             return c[R.Next(c.Count)];
         }
+
+        public static int PickRandom(int min, int max) {
+            return max < min ? PickRandom(max, min) : R.Next(min, max + 1);
+        }
     }
 }

@@ -73,7 +73,9 @@ namespace PirateSpades.Network {
             if(players.Count > 0) {
                 Console.WriteLine("Current players in game:");
                foreach(var player in players) {
-                   pclient.Game.AddPlayer(pclient.Name == player ? pclient : new Player(player));
+                   var p = pclient.Name == player ? pclient : new Player(player);
+                   p.SetGame(pclient.Game);
+                   pclient.Game.AddPlayer(p);
                    Console.WriteLine("\t" + player + (pclient.Name == player ? " (YOU)" : ""));
                }
             }
@@ -88,6 +90,18 @@ namespace PirateSpades.Network {
             if (!pclient.Game.Contains(startPlayer)) return;
 
             pclient.Game.Start(pclient.Game.PlayerIndex(startPlayer));
+        }
+
+        public static void GameFinished(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Gfin);
+
+            var scores = PirateMessage.GetPlayerScores(data);
+            var winner = PirateMessage.GetWinner(data);
+
+            Console.WriteLine("GAME FINISHED - Scores:");
+            foreach (var kvp in scores) {
+                Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value + (kvp.Key == winner ? " [WINNER!!!]" : ""));
+            }
         }
 
         public static void PlayCard(PirateClient pclient, Card card) {
@@ -105,8 +119,13 @@ namespace PirateSpades.Network {
 
             var player = pclient.Game.GetPlayer(playerName);
             var card = Card.FromString(data.Body);
+            
+            if (pclient.Name != playerName) {
+                player.GetCard(card);
+                player.PlayCard(card);
+            }
 
-            pclient.Game.Round.PlayCard(player, card);
+            Console.WriteLine(player.Name + " plays " + card.Suit + ";" + card.Value);
         }
 
         public static void DealCard(PirateClient pclient, Player receiver, Card card) {
@@ -124,7 +143,9 @@ namespace PirateSpades.Network {
             if(card == null) return;
 
             Console.WriteLine(pclient.Name + ": Received " + card);
-            pclient.GetCard(card);
+            if (!pclient.IsDealer) {
+                pclient.GetCard(card);
+            }
         }
 
         public static void SetBet(PirateClient pclient, int bet) {
@@ -141,22 +162,25 @@ namespace PirateSpades.Network {
             var round = PirateMessage.GetRound(data);
 
             if (pclient.Game.CurrentRound + 1 != round) return;
-            Console.WriteLine("Starting new round: " + round);
+            Console.WriteLine("Starting new round: " + round + " - Dealer is " + dealerName);
 
             pclient.Game.NewRound();
+            if(dealerName == pclient.Name) {
+                pclient.DealCards();
+            }
         }
 
-        public static void BeginRound(PirateClient pclient, PirateMessage msg) {
-            Contract.Requires(pclient != null && msg != null && msg.Head == PirateMessageHead.Bgrn);
-            var bets = PirateMessage.GetPlayerBets(msg);
-            var round = PirateMessage.GetRound(msg);
+        public static void BeginRound(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Bgrn);
+            var bets = PirateMessage.GetPlayerBets(data);
+            var round = PirateMessage.GetRound(data);
 
             if (pclient.Game.CurrentRound != round) return;
 
             Console.WriteLine("Player bets:");
             foreach(var kvp in bets) {
                 pclient.Game.Round.PlayerBet(kvp.Key, kvp.Value);
-                Console.Write("\t" + kvp.Key + ": " + kvp.Value);
+                Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value);
             }
 
             if (!pclient.Game.Round.BetsDone) return;
@@ -165,11 +189,13 @@ namespace PirateSpades.Network {
             pclient.Game.Round.Begin();
         }
 
-        public static void FinishRound(PirateClient pclient, PirateMessage msg) {
-            Contract.Requires(pclient != null && msg != null && msg.Head == PirateMessageHead.Frnd);
-            var scores = PirateMessage.GetPlayerScores(msg);
+        public static void FinishRound(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Frnd);
+            var scores = PirateMessage.GetPlayerScores(data);
 
-            if (!pclient.Game.Round.Finished) return;
+            if (!pclient.Game.Round.Finished) {
+                return;
+            }
 
             Console.WriteLine("Round " + pclient.Game.CurrentRound + " finished - Scores:");
             foreach(var kvp in scores) {

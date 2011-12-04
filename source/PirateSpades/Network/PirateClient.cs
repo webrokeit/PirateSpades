@@ -27,23 +27,25 @@ namespace PirateSpades.Network {
         public delegate void PirateClientDelegate(PirateClient pclient);
         public event PirateClientDelegate Disconnected;
         public event PirateClientDelegate NameRequested;
+        public event PirateClientDelegate BetRequested;
+        public event PirateClientDelegate CardRequested;
 
         private static readonly HashSet<SocketError> IgnoreSocketErrors = new HashSet<SocketError>() { SocketError.ConnectionReset };
 
         public PirateClient (Socket socket) : base("") {
             Contract.Requires(socket != null);
             this.Socket = socket;
-            this.Init();
             this.VirtualPlayer = true;
+            this.Init();
         }
 
         public PirateClient(string name, IPAddress ip, int port) : base(name) {
             Contract.Requires(name != null && ip != null && port > 0 && port <= 65535);
             this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this.Socket.Connect(ip, port);
+            this.VirtualPlayer = false;
             this.Init();
             this.SocketMessageReceive();
-            this.VirtualPlayer = false;
         }
 
         public PirateClient (string name, string ip, int port) : this(name, IPAddress.Parse(ip), port) {
@@ -52,9 +54,11 @@ namespace PirateSpades.Network {
 
         private void Init() {
             BufferSize = PirateMessage.BufferSize;
-            this.CardPlayed += this.OnCardPlayed;
-            this.CardDealt += this.OnCardDealt;
-            this.BetSet += this.OnBetSet;
+            if (!VirtualPlayer) {
+                this.CardPlayed += this.OnCardPlayed;
+                this.CardDealt += this.OnCardDealt;
+                this.BetSet += this.OnBetSet;
+            }
         }
 
         public void InitConnection() {
@@ -77,7 +81,7 @@ namespace PirateSpades.Network {
         }
 
         private void OnBetSet(int bet) {
-            if(!VirtualPlayer) PirateClientCommands.SetBet(this, bet);
+            PirateClientCommands.SetBet(this, bet);
         }
 
         public void SetName(string name) {
@@ -156,11 +160,17 @@ namespace PirateSpades.Network {
                 case PirateMessageHead.Xcrd:
                     PirateClientCommands.GetCard(this, msg);
                     break;
+                case PirateMessageHead.Pcrd:
+                    PirateClientCommands.GetPlayedCard(this, msg);
+                    break;
                 case PirateMessageHead.Pigm:
                     PirateClientCommands.GetPlayersInGame(this, msg);
                     break;
                 case PirateMessageHead.Gstr:
                     PirateClientCommands.GameStarted(this, msg);
+                    break;
+                case PirateMessageHead.Gfin:
+                    PirateClientCommands.GameFinished(this, msg);
                     break;
                 case PirateMessageHead.Nrnd:
                     PirateClientCommands.NewRound(this, msg);
@@ -171,7 +181,21 @@ namespace PirateSpades.Network {
                 case PirateMessageHead.Frnd:
                     PirateClientCommands.FinishRound(this, msg);
                     break;
+                case PirateMessageHead.Breq:
+                    this.RequestBet();
+                    break;
+                case PirateMessageHead.Creq:
+                    this.RequestCard();
+                    break;
             }
+        }
+
+        public void RequestBet() {
+            if(BetRequested != null) BetRequested(this);
+        }
+
+        public void RequestCard() {
+            if (CardRequested != null) CardRequested(this);
         }
 
         public override string ToString() {

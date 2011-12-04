@@ -44,18 +44,24 @@
         }
 
         private void UpdateHand() {
-            this.Hand = this.Cards.ToList().AsReadOnly();
+            lock (this.Cards) {
+                this.Hand = this.Cards.ToList().AsReadOnly();
+            }
         }
 
         public void GetCard(Card card) {
             Contract.Requires(card != null);
-            this.Cards.Add(card);
+            lock (this.Cards) {
+                this.Cards.Add(card);
+            }
             this.UpdateHand();
         }
 
         public void RemoveCard(Card card) {
             Contract.Requires(card != null && this.Cards.Contains(card));
-            this.Cards.Remove(card);
+            lock (this.Cards) {
+                this.Cards.Remove(card);
+            }
             this.UpdateHand();
         }
 
@@ -64,13 +70,8 @@
             this.UpdateHand();
         }
 
-        public bool AnyCard(Suit suit) {
-            return Hand.Any(c => c.Suit == suit);
-        }
-
         public void PlayCard(Card card) {
-            Contract.Requires(card != null);
-            Contract.Requires(this.Cards.Contains(card));
+            Contract.Requires(card != null && this.HasCard(card) && this.CardPlayable(card, Game.Round.BoardCards.FirstCard));
             Contract.Ensures(!this.Cards.Contains(card) && CardsOnHand == Contract.OldValue(CardsOnHand) - 1);
             CardToPlay = card;
             Game.Round.PlayCard(this, card);
@@ -90,9 +91,24 @@
             }
         }
 
-        public bool HasCard(Card card) {
-            return this.Cards.Contains(card);
+        [Pure]
+        public bool CardPlayable(Card toPlay, Card mustMatch) {
+            Contract.Requires(toPlay != null && mustMatch != null && this.HasCard(toPlay));
+            return !this.HasCardOf(mustMatch.Suit) || toPlay.SameSuit(mustMatch);
         }
+
+        [Pure]
+        public bool HasCardOf(Suit suit) {
+            return Hand.Any(c => c.Suit == suit);
+        }
+
+        [Pure]
+        public bool HasCard(Card card) {
+            lock (Cards) {
+                return this.Cards.Contains(card);
+            }
+        }
+
 
         public void SetBet(int bet) {
             Contract.Requires(this.Game != null && bet >= 0);
@@ -106,6 +122,7 @@
             this.Game = game;
         }
 
+        [Pure]
         public Card GetPlayableCard() {
             Contract.Requires(Game != null && Game.Active && !Game.Round.BoardCards.HasPlayed(this) && Hand.Count > 0);
             var toPlay = Hand[0];
@@ -116,14 +133,15 @@
             return toPlay;
         }
 
+        [Pure]
         public override string ToString() {
             return Name;
         }
-        
+
         [ContractInvariantMethod]
         private void ObjectInvariant() {
-            Contract.Invariant(CardsOnHand >= 0 && CardsOnHand <= 10);
-            Contract.Invariant(Tricks >= 0);
+            Contract.Invariant(CardsOnHand >= 0 && CardsOnHand <= 10, "[" + Name + "] Cards: " + CardsOnHand);
+            Contract.Invariant(Tricks >= 0, "[" + Name + "] Tricks: " + Tricks);
         }
     }
 }
