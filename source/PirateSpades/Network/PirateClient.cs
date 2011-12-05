@@ -16,9 +16,9 @@ namespace PirateSpades.Network {
     using System.Net.Sockets;
     using System.Text.RegularExpressions;
 
-    using PirateSpades.GameLogic;
+    using PirateSpades.GameLogicV2;
 
-    public class PirateClient : GameLogic.Player {
+    public class PirateClient : Player {
         public readonly Socket Socket;
         public int BufferSize { get; private set; }
 
@@ -27,23 +27,25 @@ namespace PirateSpades.Network {
         public delegate void PirateClientDelegate(PirateClient pclient);
         public event PirateClientDelegate Disconnected;
         public event PirateClientDelegate NameRequested;
+        public event PirateClientDelegate BetRequested;
+        public event PirateClientDelegate CardRequested;
 
         private static readonly HashSet<SocketError> IgnoreSocketErrors = new HashSet<SocketError>() { SocketError.ConnectionReset };
 
         public PirateClient (Socket socket) : base("") {
             Contract.Requires(socket != null);
             this.Socket = socket;
-            this.Init();
             this.VirtualPlayer = true;
+            this.Init();
         }
 
         public PirateClient(string name, IPAddress ip, int port) : base(name) {
             Contract.Requires(name != null && ip != null && port > 0 && port <= 65535);
             this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this.Socket.Connect(ip, port);
+            this.VirtualPlayer = false;
             this.Init();
             this.SocketMessageReceive();
-            this.VirtualPlayer = false;
         }
 
         public PirateClient (string name, string ip, int port) : this(name, IPAddress.Parse(ip), port) {
@@ -52,8 +54,11 @@ namespace PirateSpades.Network {
 
         private void Init() {
             BufferSize = PirateMessage.BufferSize;
-            this.CardPlayed += OnCardPlayed;
-            this.CardDealt += this.OnCardDealt;
+            if (!VirtualPlayer) {
+                this.CardPlayed += this.OnCardPlayed;
+                this.CardDealt += this.OnCardDealt;
+                this.BetSet += this.OnBetSet;
+            }
         }
 
         public void InitConnection() {
@@ -75,7 +80,7 @@ namespace PirateSpades.Network {
             PirateClientCommands.DealCard(this, p, c);
         }
 
-        private void OnBetSet(Player p, int bet) {
+        private void OnBetSet(int bet) {
             PirateClientCommands.SetBet(this, bet);
         }
 
@@ -139,14 +144,15 @@ namespace PirateSpades.Network {
 
         private void HandleMessage(PirateMessage msg) {
             switch(msg.Head) {
+                case PirateMessageHead.Erro:
+                    PirateClientCommands.ErrorMessage(this, msg);
+                    break;
                 case PirateMessageHead.Init:
                     PirateClientCommands.VerifyConnection(this, msg);
                     break;
                 case PirateMessageHead.Pnfo:
                     if (string.IsNullOrEmpty(Name)) {
-                        if (NameRequested != null) {
-                            NameRequested(this);
-                        }
+                        if (NameRequested != null) NameRequested(this);
                     } else {
                         PirateClientCommands.SendPlayerInfo(this);
                     }
@@ -154,30 +160,66 @@ namespace PirateSpades.Network {
                 case PirateMessageHead.Xcrd:
                     PirateClientCommands.GetCard(this, msg);
                     break;
+                case PirateMessageHead.Pcrd:
+                    PirateClientCommands.GetPlayedCard(this, msg);
+                    break;
                 case PirateMessageHead.Pigm:
                     PirateClientCommands.GetPlayersInGame(this, msg);
+                    break;
+                case PirateMessageHead.Gstr:
+                    PirateClientCommands.GameStarted(this, msg);
+                    break;
+                case PirateMessageHead.Gfin:
+                    PirateClientCommands.GameFinished(this, msg);
+                    break;
+                case PirateMessageHead.Nrnd:
+                    PirateClientCommands.NewRound(this, msg);
+                    break;
+                case PirateMessageHead.Bgrn:
+                    PirateClientCommands.BeginRound(this, msg);
+                    break;
+                case PirateMessageHead.Frnd:
+                    PirateClientCommands.FinishRound(this, msg);
+                    break;
+                case PirateMessageHead.Breq:
+                    this.RequestBet();
+                    break;
+                case PirateMessageHead.Creq:
+                    this.RequestCard();
                     break;
             }
         }
 
+        public void RequestBet() {
+            if(BetRequested != null) BetRequested(this);
+        }
+
+        public void RequestCard() {
+            if (CardRequested != null) CardRequested(this);
+        }
+
         public override string ToString() {
+            Contract.Ensures(Contract.Result<string>() != null);
             return NameToString(Name);
         }
 
         public static string NameToString(string name) {
+            Contract.Requires(name != null);
+            Contract.Ensures(Contract.Result<string>() != null);
             return "player_name: " + name;
         }
 
         public static string NameFromString(string s) {
-            Contract.Requires(s != null);
-            var m = Regex.Match(s, @"^player_name: ([a-zA-Z0-9_-]{3,20})$", RegexOptions.Multiline);
-            return m.Success ? m.Groups[1].Value : null;
+            Contract.Requires(s != null && Regex.IsMatch(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline));
+            Contract.Ensures(Contract.Result<string>() != null);
+            return Regex.Match(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline).Groups[1].Value;
         }
 
         public static HashSet<string> NamesFromString(string s) {
             Contract.Requires(s != null);
+            Contract.Ensures(Contract.Result<HashSet<string>>() != null);
             var res = new HashSet<string>();
-            foreach(Match m in Regex.Matches(s, @"^player_name: ([a-zA-Z0-9_-]{3,20})$", RegexOptions.Multiline)) {
+            foreach(Match m in Regex.Matches(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline)) {
                 res.Add(m.Groups[1].Value);
             }
             return res;

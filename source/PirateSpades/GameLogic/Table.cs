@@ -55,6 +55,7 @@ namespace PirateSpades.GameLogic {
 
         public bool IsStarted { get { return started; } }
 
+        [Pure]
         public bool SameSuit(Player p, Card c) {
             Contract.Requires(c != null && p != null);
             Contract.Ensures(c.Suit == OpeningCard.Suit || !p.AnyCard(OpeningCard.Suit) ? Contract.Result<bool>() : true);
@@ -81,6 +82,7 @@ namespace PirateSpades.GameLogic {
             this.players.Clear();
         }
 
+        [Pure]
         public IEnumerable<Player> GetPlayers() {
             Contract.Requires(Players > 1);
             return this.players;
@@ -122,6 +124,7 @@ namespace PirateSpades.GameLogic {
             CardsPlayed = 0;
         }
 
+        [Pure]
         public bool IsRoundFinished() {
             Contract.Ensures(Cards == Players ? Contract.Result<bool>() : true);
             return Cards == Players;

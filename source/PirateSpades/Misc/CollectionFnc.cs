@@ -5,6 +5,7 @@ namespace PirateSpades.Misc
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using System.Linq;
 
     /// <summary>
     /// A shuffle algorithm, which is unbiased. Iterates through the whole collection and swaps the item at index i, with an item 
@@ -38,6 +39,28 @@ namespace PirateSpades.Misc
                     i--;
                 }
             }*/
+        }
+
+        public static T PickRandom<T>(ICollection<T> c) {
+            Contract.Requires(c != null && c.Count > 0);
+
+            return PickRandom(c.ToList());
+        }
+
+        public static T PickRandom<T>(IEnumerable<T> c) {
+            Contract.Requires(c != null);
+
+            return PickRandom(c.ToList());
+        }
+
+        public static T PickRandom<T>(List<T> c) {
+            Contract.Requires(c != null && c.Count > 0);
+
+            return c[R.Next(c.Count)];
+        }
+
+        public static int PickRandom(int min, int max) {
+            return max < min ? PickRandom(max, min) : R.Next(min, max + 1);
         }
     }
 }

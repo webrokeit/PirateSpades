@@ -10,16 +10,40 @@ namespace PirateSpades.Network {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Sockets;
     using System.Text;
     using System.Diagnostics.Contracts;
-    using PirateSpades.GameLogic;
+    using PirateSpades.GameLogicV2;
 
     public class PirateClientCommands {
-        private static Table pTable = null;
+        public static bool KnockKnock(Socket client) {
+            Contract.Requires(client != null);
+            var knock = new PirateMessage(PirateMessageHead.Knck, "");
+            client.Send(knock.GetBytes());
+            var buffer = new byte[PirateMessage.BufferSize];
+            var read = client.Receive(buffer);
+            return read > 4 && PirateMessage.GetMessages(buffer, read).Any(msg => msg.Head == PirateMessageHead.Knck);
+        }
 
-        private static Table Table {
-            get {
-                return pTable ?? (pTable = Table.GetTable());
+        public static void ErrorMessage(PirateClient pclient, PirateMessage msg) {
+            Contract.Requires(pclient != null && msg != null && msg.Head == PirateMessageHead.Erro);
+            var err = PirateMessage.GetError(msg.Body);
+            switch(err) {
+                case PirateError.AlreadyConnected:
+                    Console.WriteLine("You're already conncted!");
+                    break;
+                case PirateError.InvalidBet:
+                    Console.WriteLine("Invalid bet specified!");
+                    break;
+                case PirateError.NameAlreadyTaken:
+                    Console.WriteLine("Name is already taken!");
+                    break;
+                case PirateError.NoNewConnections:
+                    Console.WriteLine("No more players can connect!");
+                    break;
+                case PirateError.Unknown:
+                    Console.WriteLine("Unknown error happened!");
+                    break;
             }
         }
 
@@ -44,14 +68,39 @@ namespace PirateSpades.Network {
         public static void GetPlayersInGame(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null);
 
-            Table.ClearPlayers();
+            pclient.Game.ClearPlayers();
             var players = PirateClient.NamesFromString(data.Body);
             if(players.Count > 0) {
                 Console.WriteLine("Current players in game:");
                foreach(var player in players) {
-                   Table.AddPlayer(new Player(player));
+                   var p = pclient.Name == player ? pclient : new Player(player);
+                   p.SetGame(pclient.Game);
+                   pclient.Game.AddPlayer(p);
                    Console.WriteLine("\t" + player + (pclient.Name == player ? " (YOU)" : ""));
-               } 
+               }
+            }
+        }
+
+        public static void GameStarted(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Gstr);
+
+            var startPlayer = PirateMessage.GetStartingPlayer(data);
+            if (startPlayer == null) return;
+
+            if (!pclient.Game.Contains(startPlayer)) return;
+
+            pclient.Game.Start(pclient.Game.PlayerIndex(startPlayer));
+        }
+
+        public static void GameFinished(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Gfin);
+
+            var scores = PirateMessage.GetPlayerScores(data);
+            var winner = PirateMessage.GetWinner(data);
+
+            Console.WriteLine("GAME FINISHED - Scores:");
+            foreach (var kvp in scores) {
+                Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value + (kvp.Key == winner ? " [WINNER!!!]" : ""));
             }
         }
 
@@ -62,15 +111,29 @@ namespace PirateSpades.Network {
             pclient.SendMessage(msg);
         }
 
+        public static void GetPlayedCard(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Pcrd);
+
+            var playerName = PirateClient.NameFromString(data.Body);
+            if (playerName == null) return;
+
+            var player = pclient.Game.GetPlayer(playerName);
+            var card = Card.FromString(data.Body);
+            
+            if (pclient.Name != playerName) {
+                player.GetCard(card);
+                player.PlayCard(card);
+            }
+
+            Console.WriteLine(player.Name + " plays " + card.Suit + ";" + card.Value);
+        }
+
         public static void DealCard(PirateClient pclient, Player receiver, Card card) {
             Contract.Requires(pclient != null && receiver != null && card != null);
             var body = PirateMessage.ConstructBody(PirateClient.NameToString(receiver.Name), card.ToString());
             var msg = new PirateMessage(PirateMessageHead.Xcrd, body);
 
             Console.WriteLine(pclient.Name + ": Dealing " + card + " to " + receiver.Name);
-
-            //Table.GetPlayers().First(player => player.Name == receiver.Name).ReceiveCard(card);
-
             pclient.SendMessage(msg);
         }
 
@@ -80,21 +143,64 @@ namespace PirateSpades.Network {
             if(card == null) return;
 
             Console.WriteLine(pclient.Name + ": Received " + card);
-
-            //pclient.ReceiveCard(card);
+            if (!pclient.IsDealer) {
+                pclient.GetCard(card);
+            }
         }
 
         public static void SetBet(PirateClient pclient, int bet) {
             Contract.Requires(pclient != null & bet >= 0);
 
-            var msg = new PirateMessage(PirateMessageHead.Satk, bet.ToString());
+            var msg = new PirateMessage(PirateMessageHead.Pbet, bet.ToString());
             pclient.SendMessage(msg);
         }
 
-        public static void GetPlayerBets(PirateMessage msg) {
-            Contract.Requires(msg != null);
-            var bets = PirateMessage.GetPlayerBets(msg);
+        public static void NewRound(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Nrnd);
 
+            var dealerName = PirateMessage.GetDealer(data);
+            var round = PirateMessage.GetRound(data);
+
+            if (pclient.Game.CurrentRound + 1 != round) return;
+            Console.WriteLine("Starting new round: " + round + " - Dealer is " + dealerName);
+
+            pclient.Game.NewRound();
+            if(dealerName == pclient.Name) {
+                pclient.DealCards();
+            }
+        }
+
+        public static void BeginRound(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Bgrn);
+            var bets = PirateMessage.GetPlayerBets(data);
+            var round = PirateMessage.GetRound(data);
+
+            if (pclient.Game.CurrentRound != round) return;
+
+            Console.WriteLine("Player bets:");
+            foreach(var kvp in bets) {
+                pclient.Game.Round.PlayerBet(kvp.Key, kvp.Value);
+                Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value);
+            }
+
+            if (!pclient.Game.Round.BetsDone) return;
+            Console.WriteLine("Round " + round + " has begun.");
+
+            pclient.Game.Round.Begin();
+        }
+
+        public static void FinishRound(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Frnd);
+            var scores = PirateMessage.GetPlayerScores(data);
+
+            if (!pclient.Game.Round.Finished) {
+                return;
+            }
+
+            Console.WriteLine("Round " + pclient.Game.CurrentRound + " finished - Scores:");
+            foreach(var kvp in scores) {
+                Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value);
+            }
         }
     }
 }

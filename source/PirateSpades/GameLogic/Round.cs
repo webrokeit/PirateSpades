@@ -43,11 +43,13 @@ namespace PirateSpades.GameLogic {
 
         public int NumberOfCardsPlayed { get { return table.CardsPlayed; } }
 
+        [Pure]
         public bool IsFinished() {
             Contract.Ensures(NumberOfCardsPlayed == TotalCards ? Contract.Result<bool>() : true);
             return NumberOfCardsPlayed == TotalCards;
         }
 
+        [Pure]
         public Player DealingPlayer() {
             Contract.Ensures(Contract.Result<Player>().IsDealer == true);
             return dealer;
@@ -59,23 +61,27 @@ namespace PirateSpades.GameLogic {
             p.Bet = bet;
         }
 
+        [Pure]
         public bool HasPlayerBet(Player p) {
             Contract.Requires(p != null);
             return bets.ContainsKey(p);
         }
 
+        [Pure]
         public int PlayerBet(Player p) {
             Contract.Requires(p != null && HasPlayerBet(p));
             Contract.Ensures(Contract.Result<int>() >= 0);
             return bets[p];
         }
 
+        [Pure]
         public int NumberOfTricks(Player p) {
             Contract.Requires(p != null);
             Contract.Ensures(Contract.Result<int>() >= 0);
             return p.Tricks;
         }
 
+        [Pure]
         public bool MatchTrick(Player p) {
             Contract.Requires(p != null);
             Contract.Ensures(this.NumberOfTricks(p) == this.PlayerBet(p) ? Contract.Result<bool>() : true);
