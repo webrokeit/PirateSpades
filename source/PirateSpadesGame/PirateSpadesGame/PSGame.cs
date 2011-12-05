@@ -21,17 +21,19 @@ namespace PirateSpadesGame {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private IGameMode gameMode;
-        private List<Button> buttons;
-        private int numberOfButtons = 5;
-        private Color color = Color.CornflowerBlue;
-        private bool mpressed = false;
-        private bool prevmpressed = false;
-        private double frametime;
-        private Sprite title;
+        private Rectangle textbox;
+        private Texture2D debugColor;
+        private SpriteFont font;
+        private String text;
+        private String parsedText;
+        private String typedText;
+        private double typedTextLength;
+        private int delayInMilliseconds;
+        private bool isDoneDrawing;
+
 
         public PsGame() {
-            graphics = new GraphicsDeviceManager(this)
-            { PreferredBackBufferWidth = 1024, PreferredBackBufferHeight = 720 };
+            graphics = new GraphicsDeviceManager(this) { PreferredBackBufferWidth = 1024, PreferredBackBufferHeight = 720 };
             Content.RootDirectory = "Content";
             State = GameState.StartUp;
             Color = Color.CornflowerBlue;
@@ -52,6 +54,8 @@ namespace PirateSpadesGame {
             this.IsMouseVisible = true;
 
             gameMode = new StartUp(Window);
+            textbox = new Rectangle(10, 10, 300, 300);
+
 
             base.Initialize();
         }
@@ -63,10 +67,16 @@ namespace PirateSpadesGame {
         protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+
             // TODO: use this.Content to load your game content here
 
             gameMode.LoadContent(this.Content);
+            debugColor = Content.Load<Texture2D>("solidred");
+            font = Content.Load<SpriteFont>("font");
+            text = "Hello World";
+            parsedText = ParseText(text);
+            delayInMilliseconds = 50;
+            isDoneDrawing = false;
         }
 
         /// <summary>
@@ -106,6 +116,22 @@ namespace PirateSpadesGame {
                     this.Exit();
                     break;
             }
+
+            if(!isDoneDrawing) {
+                if(delayInMilliseconds == 0) {
+                    typedText = parsedText;
+                    isDoneDrawing = true;
+                } else if(typedTextLength < parsedText.Length) {
+                    typedTextLength = typedTextLength + gameTime.ElapsedGameTime.TotalMilliseconds / delayInMilliseconds;
+
+                    if(typedTextLength >= parsedText.Length) {
+                        typedTextLength = parsedText.Length;
+                        isDoneDrawing = true;
+                    }
+
+                    typedText = parsedText.Substring(0, (int)typedTextLength);
+                }
+            }
             base.Update(gameTime);
         }
 
@@ -119,9 +145,27 @@ namespace PirateSpadesGame {
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             gameMode.Draw(this.spriteBatch);
+            //spriteBatch.Draw(debugColor, textbox, Color.White);
+            spriteBatch.DrawString(font, typedText, new Vector2(textbox.X, textbox.Y), Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+        private String ParseText(String textToParse) {
+            String line = String.Empty;
+            String returnString = String.Empty;
+            String[] wordArray = textToParse.Split(' ');
+
+            foreach(String word in wordArray) {
+                if(font.MeasureString(line + word).Length() > textbox.Width) {
+                    returnString = returnString + line + '\n';
+                    line = String.Empty;
+                }
+
+                line = line + word + ' ';
+            }
+
+            return returnString + line;
         }
     }
 
