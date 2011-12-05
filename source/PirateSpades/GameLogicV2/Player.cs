@@ -92,9 +92,18 @@
         }
 
         [Pure]
+        public bool CardPlayable(Card toPlay) {
+            Contract.Requires(toPlay != null);
+            Contract.Requires(this.HasCard(toPlay));
+            Contract.Requires(this.Game.Started && this.Game.Round != null);
+            return CardPlayable(toPlay, Game.Round.BoardCards.FirstCard);
+        }
+
+        [Pure]
         public bool CardPlayable(Card toPlay, Card mustMatch) {
-            Contract.Requires(toPlay != null && mustMatch != null && this.HasCard(toPlay));
-            return !this.HasCardOf(mustMatch.Suit) || toPlay.SameSuit(mustMatch);
+            Contract.Requires(toPlay != null);
+            Contract.Requires(this.HasCard(toPlay));
+            return mustMatch == null || (!this.HasCardOf(mustMatch.Suit) || toPlay.SameSuit(mustMatch));
         }
 
         [Pure]
@@ -126,10 +135,12 @@
         public Card GetPlayableCard() {
             Contract.Requires(Game != null && Game.Active && !Game.Round.BoardCards.HasPlayed(this) && Hand.Count > 0);
             var toPlay = Hand[0];
-            foreach (var card in this.Hand.Where(card => card.Suit == this.Game.Round.BoardCards.FirstCard.Suit)) {
-                toPlay = card;
-                break;
-            }
+            if(Game.Round.BoardCards.FirstCard != null) {
+                foreach (var card in this.Hand.Where(card => this.CardPlayable(card, this.Game.Round.BoardCards.FirstCard))) {
+                    toPlay = card;
+                    break;
+                }
+            };
             return toPlay;
         }
 

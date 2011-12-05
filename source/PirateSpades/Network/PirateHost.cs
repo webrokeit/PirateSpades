@@ -204,10 +204,20 @@ namespace PirateSpades.Network {
 
         private void MessageSent(IAsyncResult ar) {
             Contract.Requires(ar != null && ar.AsyncState is SendObject);
-            var sendObj = (SendObject)ar.AsyncState;
-            int sent = sendObj.PirateClient.Socket.EndSend(ar);
-            var msg = sendObj.PirateMessage;
-            // TODO: Log that the message has been sent?
+            try {
+                var sendObj = (SendObject)ar.AsyncState;
+                if(!sendObj.PirateClient.IsDead) {
+                    int sent = sendObj.PirateClient.Socket.EndSend(ar);
+                    var msg = sendObj.PirateMessage;
+                    // TODO: Log that the message has been sent?
+                }
+            } catch(SocketException ex) {
+                if(!IgnoreSocketErrors.Contains(ex.SocketErrorCode)) Console.WriteLine("SocketException:" + ex);
+            } catch(Exception ex) {
+                if(!(ex is ObjectDisposedException)) {
+                    Console.WriteLine(ex);
+                }
+            }
         }
 
         private void HandleMessage(PirateClient pclient, PirateMessage msg) {
