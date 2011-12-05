@@ -10,10 +10,11 @@ namespace PirateSpades.Network {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
 
-    using PirateSpades.GameLogic;
+    using PirateSpades.GameLogicV2;
 
     public class PirateMessage {
         public static int BufferSize = 4096;
@@ -66,24 +67,109 @@ namespace PirateSpades.Network {
             return msg;
         }
 
-        public PirateError GetError(string s) {
+        public static PirateError GetError(string s) {
             PirateError err;
             return Enum.TryParse(s, true, out err) ? err : PirateError.Unknown;
         }
 
         public static string ConstructBody(params string[] inputs) {
             Contract.Requires(inputs != null);
+            Contract.Ensures(Contract.Result<string>() != null);
             return string.Join("\n", inputs);
         }
 
-        public static string ConstructPlayerBet(Player p) {
-            return "player_bet: " + p.Name + ";" + p.Bet;
+        public static string ConstructBody(IEnumerable<string> inputs) {
+            Contract.Requires(inputs != null);
+            Contract.Ensures(Contract.Result<string>() != null);
+            return ConstructBody(inputs.ToArray());
+        }
+
+        public static string AppendBody(string body, params string[] inputs) {
+            Contract.Requires(body != null && inputs != null);
+            Contract.Ensures(Contract.Result<string>() != null);
+            if(string.IsNullOrEmpty(body)) {
+                return ConstructBody(inputs);
+            }
+            return body + "\n" + ConstructBody(inputs);
+        }
+
+        public static string ConstructPlayerBet(Player player) {
+            Contract.Requires(player != null);
+            return "player_bet: " + player.Name + ";" + player.Bet;
         }
 
         public static Dictionary<string, int> GetPlayerBets(PirateMessage msg) {
             Contract.Requires(msg != null);
+            Contract.Ensures(Contract.Result<Dictionary<string, int>>() != null);
             var res = new Dictionary<string, int>();
             foreach(Match m in Regex.Matches(msg.Body, @"^player_bet: (\w+);([0-9])$", RegexOptions.Multiline)) {
+                res[m.Groups[1].Value] = int.Parse(m.Groups[2].Value);
+            }
+            return res;
+        }
+
+        public static string ConstructRoundNumber(int round) {
+            Contract.Requires(round >= 1 && round <= 20);
+            return "round: " + round;
+        }
+
+        public static int GetRound(PirateMessage msg) {
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^round: ([1-9]|1[0-9]|20)$", RegexOptions.Multiline));
+            Contract.Ensures(Contract.Result<int>() >= 1 && Contract.Result<int>() <= 20);
+            return
+                int.Parse(Regex.Match(msg.Body, @"^round: ([1-9]|1[0-9]|20)$", RegexOptions.Multiline).Groups[1].Value);
+        }
+
+        public static string ConstructDealer(string name) {
+            Contract.Requires(name != null);
+            return "dealer: " + name;
+        }
+
+        public static string GetDealer(PirateMessage msg) {
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^dealer: \w+$", RegexOptions.Multiline));
+            Contract.Ensures(Contract.Result<string>() != null);
+            return Regex.Match(msg.Body, @"^dealer: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
+        }
+
+        public static string ConstructStartingPlayer(Player player) {
+            Contract.Requires(player != null);
+            return "starting_player: " + player.Name;
+        }
+
+        public static string GetStartingPlayer(PirateMessage msg) {
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^starting_player: \w+$", RegexOptions.Multiline));
+            Contract.Ensures(Contract.Result<string>() != null);
+            return Regex.Match(msg.Body, @"^starting_player: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
+        }
+
+        public static string ConstructWinner(Player player) {
+            Contract.Requires(player != null);
+            return "winning_player: " + player.Name;
+        }
+
+        public static string GetWinner(PirateMessage msg) {
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^winning_player: \w+$", RegexOptions.Multiline));
+            Contract.Ensures(Contract.Result<string>() != null);
+            return Regex.Match(msg.Body, @"^winning_player: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
+        }
+
+
+        public static string ConstructPlayerScore(Player player, int score) {
+            Contract.Requires(player != null);
+            return "player_score: " + player.Name + ";" + score;
+        }
+
+        public static IList<string> ContstructPlayerScores(Dictionary<Player, int> scores) {
+            Contract.Requires(scores != null);
+            Contract.Ensures(Contract.Result<IList<string>>() != null);
+            return scores.Select(kvp => ConstructPlayerScore(kvp.Key, kvp.Value)).ToList();
+        }
+
+        public static Dictionary<string, int> GetPlayerScores(PirateMessage msg) {
+            Contract.Requires(msg != null);
+            Contract.Ensures(Contract.Result<Dictionary<string, int>>() != null);
+            var res = new Dictionary<string, int>();
+            foreach (Match m in Regex.Matches(msg.Body, @"^player_score: (\w+);(-?[0-9]+)$", RegexOptions.Multiline)) {
                 res[m.Groups[1].Value] = int.Parse(m.Groups[2].Value);
             }
             return res;
@@ -96,6 +182,9 @@ namespace PirateSpades.Network {
 
         /// <summary>Error</summary>
         Erro,
+
+        /// <summary>Knock Knock (For scanning)</summary>
+        Knck,
 
         /// <summary>Init Player Connection</summary>
         Init,
@@ -112,6 +201,12 @@ namespace PirateSpades.Network {
         /// <summary>Player Accept</summary>
         Pacp,
 
+        /// <summary>Game Started</summary>
+        Gstr,
+
+        /// <summary>Game Finished</summary>
+        Gfin,
+
         /// <summary>Transfer Card</summary>
         Xcrd,
 
@@ -121,15 +216,42 @@ namespace PirateSpades.Network {
         /// <summary>Player Bet</summary>
         Pbet,
 
-        /// <summary>Set Amount of Tricks</summary>
-        Satk
+        /// <summary>New Round</summary>
+        Nrnd,
+
+        /// <summary>Begin Round</summary>
+        Bgrn,
+
+        /// <summary>Finish Round</summary>
+        Frnd,
+
+        /// <summary>Done Dealing Cards</summary>
+        Ddlc,
+
+        /// <summary>Request Bets</summary>
+        Breq,
+
+        /// <summary>Request Card</summary>
+        Creq
     }
 
     public enum PirateError {
         /// <summary>Unknown error. Also used if error send could not be identified.</summary>
         Unknown,
 
+        /// <summary>You're already connected.</summary>
+        AlreadyConnected,
+
+        /// <summary>No new connection allowed.</summary>
+        NoNewConnections,
+
         /// <summary>The name the user wanted to use was already taken.</summary>
-        NameAlreadyTaken
+        NameAlreadyTaken,
+
+        /// <summary>Invalid bet.</summary>
+        InvalidBet,
+
+        /// <summary>Card not playable.</summary>
+        CardNotPlayable
     }
 }

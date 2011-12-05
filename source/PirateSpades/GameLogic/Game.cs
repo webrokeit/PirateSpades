@@ -1,8 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+﻿// <copyright file="Game.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      The functionalities for the PirateSpades game.
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
 
 namespace PirateSpades.GameLogic {
-    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
 
     public class Game {
@@ -37,15 +43,18 @@ namespace PirateSpades.GameLogic {
 
         public bool IsStarted { get { return started; } }
 
+        [Pure]
         public int RoundsLeft() {
             return Rounds - RoundsPlayed;
         }
 
+        [Pure]
         public Player PlayerToDeal() {
             Contract.Ensures(Contract.Result<Player>().IsDealer == true);
             return dealer;
         }
 
+        [Pure]
         public bool IsFinished() {
             Contract.Ensures(this.RoundsLeft() == 0 ? Contract.Result<bool>() : true);
             return this.RoundsLeft() == 0;
@@ -79,8 +88,9 @@ namespace PirateSpades.GameLogic {
             Round r = this.roundPoints.Keys.FirstOrDefault(key => key.Number == number);
             var roundp = this.players.Select(p => this.roundPoints[r][p]).ToList();
             return roundp;
-        } 
+        }
 
+        [Pure]
         public int Points(Player p) {
             Contract.Requires(p != null);
             return this.points[p];
@@ -92,6 +102,7 @@ namespace PirateSpades.GameLogic {
             points[p] += point;
         }
 
+        [Pure]
         public bool HasAllPlayersBet(Round r) {
             return this.players.All(r.HasPlayerBet);
         }

@@ -1,9 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
+﻿// <copyright file="Table.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      A table for the PirateSpades game.
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
 
 namespace PirateSpades.GameLogic {
-    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
+    using System.Linq;
 
     public class Table {
         private Card open;
@@ -41,12 +47,15 @@ namespace PirateSpades.GameLogic {
 
         public int CardsPlayed { get; set; }
 
+        public List<Card> PlayedCards { get { return cards; } }
+
         public Player PlayerTurn { get; set; }
 
         public Player StartingPlayer { get; set; }
 
         public bool IsStarted { get { return started; } }
 
+        [Pure]
         public bool SameSuit(Player p, Card c) {
             Contract.Requires(c != null && p != null);
             Contract.Ensures(c.Suit == OpeningCard.Suit || !p.AnyCard(OpeningCard.Suit) ? Contract.Result<bool>() : true);
@@ -73,6 +82,7 @@ namespace PirateSpades.GameLogic {
             this.players.Clear();
         }
 
+        [Pure]
         public IEnumerable<Player> GetPlayers() {
             Contract.Requires(Players > 1);
             return this.players;
@@ -114,6 +124,7 @@ namespace PirateSpades.GameLogic {
             CardsPlayed = 0;
         }
 
+        [Pure]
         public bool IsRoundFinished() {
             Contract.Ensures(Cards == Players ? Contract.Result<bool>() : true);
             return Cards == Players;

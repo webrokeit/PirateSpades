@@ -59,3 +59,19 @@ dd.mm.yyyy
 [TODO]	Make a method that returns a boolean indicating whether or not all players have made bets
 [TODO]	Make a begin round method
 
+05.12.2011
+==========
+[TODO]	Ingame graphics
+	Settings 
+	Joingame graphics
+	Creategame graphics
+	Background for startup screen
+	Show scoreboard
+
+	Settings
+		- Volume adjuster
+		- Player name
+		- Scoreboard key
+		- (Picture for card-back) Only if we have a lot of spare time
+
+

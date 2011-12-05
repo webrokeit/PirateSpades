@@ -13,6 +13,8 @@ namespace PirateSpades.Network {
     using System.Linq;
     using System.Net;
     using System.Net.Sockets;
+
+    using PirateSpades.GameLogicV2;
     using PirateSpades.Misc;
 
     public class PirateHost {
@@ -20,10 +22,13 @@ namespace PirateSpades.Network {
         private int Port { get; set; }
 
         public bool Started { get; private set; }
+        public bool AcceptNewConnections { get; private set; }
 
         private int BufferSize { get; set; }
 
         public bool DebugMode { get; set; }
+
+        public Game Game { get; private set; }
 
         public int PlayerCount {
             get {
@@ -64,9 +69,15 @@ namespace PirateSpades.Network {
         public void Start() {
             Contract.Requires(!Started);
             Contract.Ensures(Started);
+            this.NewGame();
             this.Listener.Start();
             this.WaitForSocket();
             Started = true;
+            AcceptNewConnections = true;
+        }
+
+        public void StopAccepting() {
+            AcceptNewConnections = false;
         }
 
         public void Stop() {
@@ -90,19 +101,21 @@ namespace PirateSpades.Network {
                 var host = (PirateHost)ar.AsyncState;
                 if (Started) {
                     var client = host.Listener.EndAcceptSocket(ar);
-
-                    if (DebugMode) Console.WriteLine("Client connected: " + client.RemoteEndPoint.ToString());
-
-                    host.WaitForSocket(); // Wait for more
-
                     var pclient = new PirateClient(client);
-                    if (!host.Clients.ContainsKey(pclient.Socket)) {
-                        host.Clients.Add(pclient.Socket, pclient);
-                        SocketMessageReceive(pclient);
+
+                    if(AcceptNewConnections) {
+                        if (DebugMode) Console.WriteLine("Client connected: " + client.RemoteEndPoint.ToString());
+
+                        host.WaitForSocket(); // Wait for more
+                        
+                        if (!host.Clients.ContainsKey(pclient.Socket)) {
+                            host.Clients.Add(pclient.Socket, pclient);
+                            SocketMessageReceive(pclient);
+                        } else {
+                            PirateHostCommands.ErrorMessage(this, pclient, PirateError.AlreadyConnected);
+                        }
                     } else {
-                        const string Body = "You're already connected.";
-                        var msg = new PirateMessage(PirateMessageHead.Erro, Body);
-                        this.SendMessage(pclient, msg);
+                        PirateHostCommands.ErrorMessage(this, pclient, PirateError.NoNewConnections);
                     }
                 }
             } catch (SocketException ex) {
@@ -201,6 +214,9 @@ namespace PirateSpades.Network {
             Contract.Requires(pclient != null && msg != null);
             if (!Players.ContainsKey(pclient.Name)) {
                 switch (msg.Head) {
+                    case PirateMessageHead.Knck:
+                        PirateHostCommands.KnockKnock(this, pclient);
+                        break;
                     case PirateMessageHead.Init:
                         PirateHostCommands.InitConnection(this, pclient, msg);
                         break;
@@ -218,6 +234,9 @@ namespace PirateSpades.Network {
                         break;
                     case PirateMessageHead.Pcrd:
                         PirateHostCommands.PlayCard(this, msg);
+                        break;
+                    case PirateMessageHead.Pbet:
+                        PirateHostCommands.ReceiveBet(this, pclient, msg);
                         break;
                 }
             }
@@ -256,20 +275,49 @@ namespace PirateSpades.Network {
         }
 
         public PirateClient PlayerFromSocket(Socket socket) {
-            Contract.Requires(socket != null);
+            Contract.Requires(socket != null && this.Clients.ContainsKey(socket));
+            Contract.Ensures(Contract.Result<PirateClient>() != null);
             lock (Clients) {
-                return this.Clients.ContainsKey(socket) ? this.Clients[socket] : null;
+                return this.Clients[socket];
             }
         }
 
         public PirateClient PlayerFromString(string s) {
-            Contract.Requires(s != null);
-            if(this.Players.ContainsKey(s)) {
-                if(this.Clients.ContainsKey(this.Players[s])) {
-                    return this.Clients[this.Players[s]];
-                }
+            Contract.Requires(s != null && this.Players.ContainsKey(s));
+            Contract.Ensures(Contract.Result<PirateClient>() != null);
+            Socket socket;
+            lock(Players) {
+                socket = this.Players[s];
             }
-            return null;
+            lock(Clients) {
+                return this.Clients[socket];
+            }
+        }
+
+        public PirateClient PlayerFromIndex(int i) {
+            Contract.Requires(i >= 0 && i < Clients.Count);
+            lock(Clients) {
+                return Clients[i];
+            }
+        }
+
+        public bool ContainsPlayer(PirateClient pclient) {
+            Contract.Requires(pclient != null);
+            return ContainsPlayer(pclient.Socket);
+        }
+
+        public bool ContainsPlayer(Socket socket) {
+            Contract.Requires(socket != null);
+            lock(Clients) {
+                return Clients.ContainsKey(socket);
+            }
+        }
+
+        public bool ContainsPlayer(string playerName) {
+            Contract.Requires(playerName != null);
+            lock(Players) {
+                return Players.ContainsKey(playerName);
+            }
         }
 
         public void SetPlayerName(PirateClient pclient, string name) {
@@ -283,15 +331,48 @@ namespace PirateSpades.Network {
                 this.Players.Add(name, pclient.Socket);
             }
 
-            lock (Clients) {
-                this.Clients[pclient.Socket].SetName(name);
-            }
+            pclient.SetName(name);
 
             Console.WriteLine("Set name for " + pclient.Socket.RemoteEndPoint + " to " + name);
         }
 
         public IEnumerable<PirateClient> GetPlayers() {
             return this.Clients.Values;
+        }
+
+        public void StartGame() {
+            Contract.Requires(Game != null && !Game.Started);
+            PirateHostCommands.StartGame(this);
+        }
+
+        private void NewGame() {
+            if(Game != null) {
+                Game.RoundStarted -= RoundStarted;
+                Game.RoundBegun -= RoundBegun;
+                Game.RoundFinished -= RoundFinished;
+                Game.GameFinished -= GameFinished;
+            }
+            Game = new Game();
+            Game.RoundStarted += RoundStarted;
+            Game.RoundBegun += RoundBegun;
+            Game.RoundFinished += RoundFinished;
+            Game.GameFinished += GameFinished;
+        }
+
+        private void RoundStarted(Game game) {
+            PirateHostCommands.NewRound(this);
+        }
+
+        private void RoundBegun(Game game) {
+            PirateHostCommands.RequestCard(this, Clients[game.Round.CurrentPlayer]);
+        }
+
+        private void RoundFinished(Game game) {
+            PirateHostCommands.RoundFinished(this);
+        }
+
+        private void GameFinished(Game game) {
+            PirateHostCommands.GameFinished(this);
         }
     }
 }

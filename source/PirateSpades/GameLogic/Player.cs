@@ -1,8 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
+﻿// <copyright file="Player.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      A player for the PirateSpades game.
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
 
 namespace PirateSpades.GameLogic {
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
+    using System.Linq;
+
     public class Player {
         private readonly List<Card> hand;
         private int bet;
@@ -46,10 +54,12 @@ namespace PirateSpades.GameLogic {
             }
         }
 
+        [Pure]
         public List<Card> GetHand() {
             return hand;
         }
 
+        [Pure]
         public Card GetPlayableCard() {
             int i = 0;
             while(!this.Playable(this.Hand(i))) {
@@ -58,6 +68,7 @@ namespace PirateSpades.GameLogic {
             return this.Hand(i);
         }
 
+        [Pure]
         public Card Hand(int idx) {
             Contract.Requires(idx >= 0 && idx < NumberOfCards);
             Contract.Ensures(this.HaveCard(Contract.Result<Card>()));
@@ -89,15 +100,18 @@ namespace PirateSpades.GameLogic {
             Bet = 0;
         }
 
+        [Pure]
         public bool HaveCard(Card c) {
             Contract.Requires(c != null);
             return hand.Contains(c);
         }
 
+        [Pure]
         public bool AnyCard(Suit s) {
             return hand.Any(c => c.Suit == s);
         }
 
+        [Pure]
         public bool Playable(Card c) {
             Contract.Requires(c != null);
             Contract.Ensures(Contract.OldValue(table.OpeningCard) == null || c.Suit == table.OpeningCard.Suit || !this.AnyCard(table.OpeningCard.Suit) ? Contract.Result<bool>() : true);
@@ -146,6 +160,7 @@ namespace PirateSpades.GameLogic {
             }
         }
 
+        [Pure]
         public override string ToString() {
             return Name;
         }

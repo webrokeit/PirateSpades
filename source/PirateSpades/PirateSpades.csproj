@@ -73,7 +73,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameLogicV2\Card.cs" />
+    <Compile Include="GameLogicV2\Deck.cs" />
+    <Compile Include="GameLogicV2\Game.cs" />
+    <Compile Include="GameLogicV2\Player.cs" />
+    <Compile Include="GameLogicV2\Round.cs" />
+    <Compile Include="GameLogicV2\Trick.cs" />
     <Compile Include="Misc\CollectionFnc.cs" />
+    <Compile Include="Misc\ImmutableOrderedDictionary.cs" />
     <Compile Include="Misc\Sorting.cs" />
     <Compile Include="GameLogic\Card.cs" />
     <Compile Include="GameLogic\Deck.cs" />

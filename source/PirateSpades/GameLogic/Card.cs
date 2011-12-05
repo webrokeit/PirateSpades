@@ -1,8 +1,15 @@
-﻿using System.Diagnostics.Contracts;
-using System;
+﻿// <copyright file="Card.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      A card, its suit and value for the PirateSpades game.
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
 
 namespace PirateSpades.GameLogic {
     using System.Text.RegularExpressions;
+    using System.Diagnostics.Contracts;
+    using System;
 
     public class Card : IComparable {
 
@@ -15,6 +22,7 @@ namespace PirateSpades.GameLogic {
 
         public Suit Suit { get; private set; }
 
+        [Pure]
         public int CompareTo(Object obj) {
             if(obj == null || !(obj is Card)) {
                 return 0;
@@ -32,16 +40,19 @@ namespace PirateSpades.GameLogic {
             return -1;
         }
 
+        [Pure]
         public bool SameSuit(Card c) {
             Contract.Requires(c != null);
             Contract.Ensures(this.Suit != c.Suit || Contract.Result<bool>());
             return Suit == c.Suit;
         }
 
+        [Pure]
         public override string ToString() {
             return "card: " + Suit.ToString() + ";" + Value.ToString();
         }
 
+        [Pure]
         public static Card FromString(string s) {
             Contract.Requires(Regex.IsMatch(s, @"^card: \w{5,8};\w{3,5}$", RegexOptions.Multiline));
             var m = Regex.Match(s, @"^card: (\w{5,8});(\w{3,5})$", RegexOptions.Multiline);
