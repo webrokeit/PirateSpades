@@ -9,8 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using PirateSpadesGame;
+
 namespace PirateSpadesGame {
-    using PirateSpades.GameLogic;
+    using PirateSpadesGame.GameModes;
 
     /// <summary>
     /// This is the main type for your game
@@ -18,14 +20,26 @@ namespace PirateSpadesGame {
     public class PsGame : Microsoft.Xna.Framework.Game {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private CardSprite cSprite;
+        private IGameMode gameMode;
+        private List<Button> buttons;
+        private int numberOfButtons = 5;
+        private Color color = Color.CornflowerBlue;
+        private bool mpressed = false;
+        private bool prevmpressed = false;
+        private double frametime;
+        private Sprite title;
 
         public PsGame() {
-            graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 720;
+            graphics = new GraphicsDeviceManager(this)
+            { PreferredBackBufferWidth = 1024, PreferredBackBufferHeight = 720 };
             Content.RootDirectory = "Content";
+            State = GameState.StartUp;
+            Color = Color.CornflowerBlue;
         }
+
+        public static GameState State { get; set; }
+
+        public static Color Color { get; set; }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -37,7 +51,8 @@ namespace PirateSpadesGame {
             // TODO: Add your initialization logic here
             this.IsMouseVisible = true;
 
-            cSprite = new CardSprite(new Card(Suit.Clubs, CardValue.Eight), new Vector2(150, 100));
+            gameMode = new StartUp(Window);
+
             base.Initialize();
         }
 
@@ -50,7 +65,8 @@ namespace PirateSpadesGame {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
             // TODO: use this.Content to load your game content here
-            cSprite.LoadContent(this.Content);
+
+            gameMode.LoadContent(this.Content);
         }
 
         /// <summary>
@@ -72,8 +88,24 @@ namespace PirateSpadesGame {
                 this.Exit();
 
             // TODO: Add your update logic here
-            cSprite.Update(gameTime);
 
+            switch(State) {
+                case GameState.StartUp:
+                    if(!(gameMode is StartUp)) {
+                        gameMode = new StartUp(Window);
+                    }
+                    gameMode.Update(gameTime);
+                    break;
+                case GameState.InGame:
+                    break;
+                case GameState.JoinGame:
+                    break;
+                case GameState.CreateGame:
+                    break;
+                case GameState.Exit:
+                    this.Exit();
+                    break;
+            }
             base.Update(gameTime);
         }
 
@@ -82,14 +114,18 @@ namespace PirateSpadesGame {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            
+            GraphicsDevice.Clear(Color);
+
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            cSprite.Draw(this.spriteBatch);
+            gameMode.Draw(this.spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
+    }
+
+    public enum GameState {
+        StartUp, InGame, JoinGame, CreateGame, Exit
     }
 }

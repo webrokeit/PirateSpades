@@ -107,7 +107,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Button.cs" />
     <Compile Include="CardSprite.cs" />
+    <Compile Include="GameMode.cs" />
+    <Compile Include="GameModes\CreateGame.cs" />
+    <Compile Include="GameModes\InGame.cs" />
+    <Compile Include="GameModes\JoinGame.cs" />
+    <Compile Include="GameModes\StartUp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PSGame.cs" />
