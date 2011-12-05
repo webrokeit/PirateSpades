@@ -123,8 +123,8 @@ namespace AndreasTest {
         }
 
         private static void OnBetRequest(PirateClient pclient) {
-            pclient.SetBet(CollectionFnc.PickRandom(0, pclient.Hand.Count));
-            return;
+            /*pclient.SetBet(CollectionFnc.PickRandom(0, pclient.Hand.Count));
+            return;*/
             var bet = string.Empty;
             var pbet = 0;
             while(string.IsNullOrEmpty(bet)) {
@@ -144,8 +144,8 @@ namespace AndreasTest {
         }
 
         private static void OnCardRequest(PirateClient pclient) {
-            pclient.PlayCard(pclient.Hand[0]);
-            return;
+            /*pclient.PlayCard(pclient.GetPlayableCard());
+            return;*/
             var cardIndex = string.Empty;
             Card card = null;
             while(string.IsNullOrEmpty(cardIndex)) {
@@ -165,6 +165,10 @@ namespace AndreasTest {
                         cardIndex = string.Empty;
                     }else {
                         card = pclient.Hand[index];
+                        if(!pclient.CardPlayable(card)) {
+                            Console.WriteLine("Card not playable, you must play cards of the same suit when possible!");
+                            cardIndex = string.Empty;
+                        }
                     }
                 }
             }
