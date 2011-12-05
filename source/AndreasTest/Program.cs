@@ -52,7 +52,15 @@ namespace AndreasTest {
                 switch(cmd) {
                     case "start":
                     case "s":
-                        host.StartGame();
+                        if (!host.Game.Started) {
+                            if (host.Game.Players.Count >= 2) {
+                                host.StartGame();
+                            } else {
+                                Console.WriteLine("Not enough players to start the game!");
+                            }
+                        }else {
+                            Console.WriteLine("Game already started!");
+                        }
                         break;
 
                     case "exit":
@@ -70,23 +78,51 @@ namespace AndreasTest {
             if(!string.IsNullOrEmpty(strIp)) {
                 if(!IPAddress.TryParse(strIp, out ip)) {
                     Console.WriteLine("Invalid IP specified!");
+                    Player();
                     return;
                 }
 
-                if(!PirateScanner.CheckIp(ip, 4939, 50)) {
+                if(!PirateScanner.CheckIp(ip, 4939, 5000)) {
                     Console.WriteLine("No game is hosted at the specified ip!");
+                    Player();
                     return;
                 }
             }else {
-                Console.WriteLine("Scanning for IP...");
-                var d = DateTime.Now;
+                Console.WriteLine("Scanning for IPs...");
+                /*var d = DateTime.Now;
                 ip = new PirateScanner().ScanForIp(4939);
                 Console.WriteLine("Scan took " + (DateTime.Now - d).TotalMilliseconds + " milliseconds");
                 if (ip == null) {
                     Console.WriteLine("No IP found... Make sure there's a host!");
                     return;
                 }
-                Console.WriteLine("IP Found: " + ip);
+                Console.WriteLine("IP Found: " + ip);*/
+
+                var ips = new PirateScanner().ScanForIps(4939, 30000, 1);
+                if(ips.Count > 0) {
+                    for(var i = 0; i < ips.Count; i++) {
+                        Console.WriteLine("\t[" + i + "] " + ips[i].ToString());
+                    }
+                    Console.Write("Select IP (index): ");
+                    var ipIndex = Console.ReadLine();
+                    if(ipIndex == null || !Regex.IsMatch(ipIndex, "^[0-9]+$")) {
+                        Console.WriteLine("Invalid index specified...");
+                        Player();
+                        return;
+                    } else {
+                        int index = int.Parse(ipIndex);
+                        if(index >= ips.Count) {
+                            Console.WriteLine("Invalid index specified...");
+                            Player();
+                            return;
+                        }
+                        ip = ips[index];
+                    }
+                }else {
+                    Console.WriteLine("No IP found... Make sure there's a host!");
+                    Player();
+                    return;
+                }
             }
             Console.WriteLine();
 
@@ -127,15 +163,19 @@ namespace AndreasTest {
             return;*/
             var bet = string.Empty;
             var pbet = 0;
-            while(string.IsNullOrEmpty(bet)) {
+            Console.WriteLine("Your hand:");
+            for (var i = 0; i < pclient.Hand.Count; i++) {
+                Console.WriteLine("\t" + "[" + i + "] " + pclient.Hand[i].ToShortString());
+            }
+            while (string.IsNullOrEmpty(bet)) {
                 Console.Write("Input bet (0 - " + pclient.Game.Round.Cards + "): ");
                 bet = Console.ReadLine();
-                if(bet == null || !Regex.IsMatch(bet, "^[0-9]+$")) {
+                if (bet == null || !Regex.IsMatch(bet, "^[0-9]+$")) {
                     Console.WriteLine("Invalid bet specified, try again...");
                     bet = string.Empty;
-                }else {
+                } else {
                     pbet = int.Parse(bet);
-                    if(pbet > pclient.Game.Round.Cards) {
+                    if (pbet > pclient.Game.Round.Cards) {
                         pbet = pclient.Game.Round.Cards;
                     }
                 }
@@ -151,7 +191,7 @@ namespace AndreasTest {
             while(string.IsNullOrEmpty(cardIndex)) {
                 Console.WriteLine("Your hand:");
                 for(var i = 0; i < pclient.Hand.Count; i++) {
-                    Console.WriteLine("\t" + "[" + i + "] " + pclient.Hand[i].Suit + ";" + pclient.Hand[i].Value);
+                    Console.WriteLine("\t" + "[" + i + "] " + pclient.Hand[i].ToShortString());
                 }
                 Console.Write("Pick card to play (index): ");
                 cardIndex = Console.ReadLine();

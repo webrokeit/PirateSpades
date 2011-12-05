@@ -8,10 +8,8 @@
 
 namespace PirateSpades.Network {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Sockets;
-    using System.Text;
     using System.Diagnostics.Contracts;
     using PirateSpades.GameLogicV2;
 
@@ -37,6 +35,7 @@ namespace PirateSpades.Network {
                     break;
                 case PirateError.NameAlreadyTaken:
                     Console.WriteLine("Name is already taken!");
+                    pclient.NameNotAvailable();
                     break;
                 case PirateError.NoNewConnections:
                     Console.WriteLine("No more players can connect!");
@@ -125,7 +124,7 @@ namespace PirateSpades.Network {
                 player.PlayCard(card);
             }
 
-            Console.WriteLine(player.Name + " plays " + card.Suit + ";" + card.Value);
+            Console.WriteLine(player.Name + " plays " + card.ToShortString());
         }
 
         public static void DealCard(PirateClient pclient, Player receiver, Card card) {
@@ -133,7 +132,7 @@ namespace PirateSpades.Network {
             var body = PirateMessage.ConstructBody(PirateClient.NameToString(receiver.Name), card.ToString());
             var msg = new PirateMessage(PirateMessageHead.Xcrd, body);
 
-            Console.WriteLine(pclient.Name + ": Dealing " + card + " to " + receiver.Name);
+            if(pclient.DebugMode) Console.WriteLine(pclient.Name + ": Dealing " + card.ToShortString() + " to " + receiver.Name);
             pclient.SendMessage(msg);
         }
 
@@ -142,7 +141,7 @@ namespace PirateSpades.Network {
             var card = Card.FromString(data.Body);
             if(card == null) return;
 
-            Console.WriteLine(pclient.Name + ": Received " + card);
+            if (pclient.DebugMode) Console.WriteLine(pclient.Name + ": Received " + card.ToShortString());
             if (!pclient.IsDealer) {
                 pclient.GetCard(card);
             }
@@ -187,6 +186,19 @@ namespace PirateSpades.Network {
             Console.WriteLine("Round " + round + " has begun.");
 
             pclient.Game.Round.Begin();
+        }
+
+        public static void NewPile(PirateClient pclient, PirateMessage data) {
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Trdn);
+
+            var winner = PirateMessage.GetWinner(data);
+            var tricks = PirateMessage.GetPlayerTricks(data);
+
+            Console.WriteLine((winner == pclient.Name ? "You" : winner) + " won the trick!");
+            Console.WriteLine("Tricks:");
+            foreach(var kvp in tricks) {
+                Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value);
+            }
         }
 
         public static void FinishRound(PirateClient pclient, PirateMessage data) {

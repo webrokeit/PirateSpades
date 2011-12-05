@@ -22,6 +22,8 @@ namespace PirateSpades.Network {
         public readonly Socket Socket;
         public int BufferSize { get; private set; }
 
+        public bool DebugMode { get; set; }
+
         public bool VirtualPlayer { get; private set; }
         public bool IsDead { get; private set; }
 
@@ -177,6 +179,9 @@ namespace PirateSpades.Network {
                 case PirateMessageHead.Gfin:
                     PirateClientCommands.GameFinished(this, msg);
                     break;
+                case PirateMessageHead.Trdn:
+                    PirateClientCommands.NewPile(this, msg);
+                    break;
                 case PirateMessageHead.Nrnd:
                     PirateClientCommands.NewRound(this, msg);
                     break;
@@ -195,21 +200,16 @@ namespace PirateSpades.Network {
             }
         }
 
-        public bool IsSocketDisposed() {
-            try {
-                var lep = Socket.LocalEndPoint.ToString();
-                return true;
-            } catch(ObjectDisposedException ex) {
-                return true;
-            }
-        }
-
         public void RequestBet() {
             if(BetRequested != null) BetRequested(this);
         }
 
         public void RequestCard() {
             if (CardRequested != null) CardRequested(this);
+        }
+
+        public void NameNotAvailable() {
+            if (NameRequested != null) NameRequested(this);
         }
 
         public override string ToString() {

@@ -63,7 +63,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Pex.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -89,6 +88,7 @@
     <Compile Include="GameLogic\Round.cs" />
     <Compile Include="GameLogic\Table.cs" />
     <Compile Include="Misc\OrderedDictionary.cs" />
+    <Compile Include="Network\PirateBroadcaster.cs" />
     <Compile Include="Network\PirateClient.cs" />
     <Compile Include="Network\PirateClientCommands.cs" />
     <Compile Include="Network\PirateHost.cs" />
@@ -96,6 +96,7 @@
     <Compile Include="Network\PirateMessage.cs" />
     <Compile Include="Network\PirateMessageObj.cs" />
     <Compile Include="Network\PirateScanner.cs" />
+    <Compile Include="Network\PirateScannerObj.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
