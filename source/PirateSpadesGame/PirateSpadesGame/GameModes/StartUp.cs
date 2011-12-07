@@ -85,7 +85,7 @@ namespace PirateSpadesGame.GameModes {
             playerNamePos = new Vector2(settingsX+100, settingsY + 125);
             var volumeRect = new Rectangle(settingsX + (600 - 325) + 100, settingsY + 185, 100, 50);
             var a = (int)Math.Round(game.MusicVolume);
-            volume = new Numberbox(volumeRect, "volumebox") { Number = a * 100 };
+            volume = new Numberbox(volumeRect, "volumebox", 3) { Number = a * 100 };
             volume.Text = volume.Number.ToString();
             volumePos = new Vector2(settingsX + 100, settingsY + 200);
             scoreboardPos = new Vector2(settingsX + 100, settingsY + 250);

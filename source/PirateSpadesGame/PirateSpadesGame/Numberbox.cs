@@ -21,10 +21,12 @@ namespace PirateSpadesGame {
         private SpriteFont font;
         private Texture2D tex;
         private string name;
+        private int maxNumber;
 
-        public Numberbox(Rectangle rect, string name) {
+        public Numberbox(Rectangle rect, string name, int maxNumber) {
             box = rect;
             this.name = name;
+            this.maxNumber = maxNumber;
         }
 
         public int Number { get; set; }
@@ -47,6 +49,7 @@ namespace PirateSpadesGame {
             
             if(typable) {
                 currentKeyboardState = Keyboard.GetState();
+                
                 foreach(var k in this.keysToCheck.Where(this.CheckKey)) {
                     this.AddLetter(k);
                     break;
@@ -70,8 +73,8 @@ namespace PirateSpadesGame {
 
         private void AddLetter(Keys k) {
             var newChar = "";
-
-            if(Text.Length == 3 && k != Keys.Back)
+            
+            if(Text.Length == maxNumber && k != Keys.Back)
                 return;
 
             switch(k) {
