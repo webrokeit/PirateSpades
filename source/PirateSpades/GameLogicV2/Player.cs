@@ -3,7 +3,6 @@
     using System.Diagnostics.Contracts;
     using System.Linq;
 
-
     public class Player {
         public Game Game { get; private set; }
         public string Name { get; protected set; }
@@ -82,12 +81,12 @@
         public void DealCards() {
             Contract.Requires(IsDealer && Game != null);
             var deck = Deck.GetShuffledDeck();
+            var dealTo = (Game.Round.Dealer + 1) % Game.Players.Count;
             for(var i = 0; i < Game.CardsToDeal; i++) {
-                foreach(var player in Game.Players) {
-                    var card = deck.Pop();
-                    player.GetCard(card);
-                    if(CardDealt != null) CardDealt(player, card);
-                }
+                var card = deck.Pop();
+                Game.Players[dealTo].GetCard(card);
+                if (CardDealt != null) CardDealt(Game.Players[dealTo], card);
+                dealTo = (dealTo + 1) % Game.Players.Count;
             }
         }
 
@@ -117,7 +116,6 @@
                 return this.Cards.Contains(card);
             }
         }
-
 
         public void SetBet(int bet) {
             Contract.Requires(this.Game != null && bet >= 0);

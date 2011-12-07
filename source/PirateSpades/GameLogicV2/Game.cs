@@ -71,6 +71,7 @@ namespace PirateSpades.GameLogicV2 {
         public event GameEventDelegate RoundStarted;
         public event GameEventDelegate RoundBegun;
         public event GameEventDelegate RoundFinished;
+        public event GameEventDelegate RoundNewPile;
         public event GameEventDelegate GameFinished;
 
         public Game() {
@@ -120,6 +121,7 @@ namespace PirateSpades.GameLogicV2 {
                 if(IsHost) {
                     r.RoundBegun += this.OnRoundBegun;
                     r.RoundFinished += this.OnRoundFinished;
+                    r.NewPile += this.OnRoundNewPile;
                 }
                 Rounds.Add(CurrentRound, r);
                 r.Start();
@@ -143,8 +145,13 @@ namespace PirateSpades.GameLogicV2 {
             if (RoundFinished != null) RoundFinished(this);
             if (IsHost) {
                 round.RoundFinished -= this.OnRoundFinished;
+                round.NewPile -= this.OnRoundNewPile;
                 //this.NewRound();
             }
+        }
+
+        private void OnRoundNewPile(Round round) {
+            if (RoundNewPile != null) RoundNewPile(this);
         }
 
         public void AddPlayer(Player player) {

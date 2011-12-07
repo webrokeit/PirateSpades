@@ -29,6 +29,7 @@ namespace PirateSpades.Network {
         public bool DebugMode { get; set; }
 
         public Game Game { get; private set; }
+        public PirateBroadcaster Broadcaster { get; private set; }
 
         public int PlayerCount {
             get {
@@ -64,6 +65,9 @@ namespace PirateSpades.Network {
             this.Clients = new OrderedDictionary<Socket, PirateClient>();
             this.Players = new Dictionary<string, Socket>();
             this.Listener = new TcpListener(new IPEndPoint(IPAddress.Any, this.Port));
+
+            var msg = new PirateMessage(PirateMessageHead.Bcst, PirateScanner.GetLocalIpV4().ToString());
+            this.Broadcaster = new PirateBroadcaster(msg.GetBytes(), this.Port, 7500);
         }
 
         public void Start() {
@@ -72,6 +76,10 @@ namespace PirateSpades.Network {
             this.NewGame();
             this.Listener.Start();
             this.WaitForSocket();
+
+            Broadcaster.BroadcastExecuted += this.OnBroadcastExecuted;
+            Broadcaster.Start();
+            
             Started = true;
             AcceptNewConnections = true;
         }
@@ -84,6 +92,7 @@ namespace PirateSpades.Network {
             Contract.Requires(Started);
             Contract.Ensures(!Started);
             Started = false;
+            Broadcaster.Stop();
             var tmpClients = new List<PirateClient>(Clients.Values);
             foreach(var pclient in tmpClients) {
                 this.SocketDisconnect(pclient);
@@ -252,7 +261,11 @@ namespace PirateSpades.Network {
             }
         }
 
-        public void AddClient(PirateClient pclient) {
+        public void OnBroadcastExecuted(PirateBroadcaster broadcaster) {
+            if(DebugMode) Console.WriteLine("Broadcasted IP");
+        }
+
+        /*public void AddClient(PirateClient pclient) {
             Contract.Requires(pclient != null);
             lock (Clients) {
                 Clients[pclient.Socket] = pclient;
@@ -263,7 +276,7 @@ namespace PirateSpades.Network {
                     Players[pclient.Name] = pclient.Socket;
                 }
             }
-        }
+        }*/
 
         public void RemoveClient(PirateClient pclient) {
             Contract.Requires(pclient != null);
@@ -361,12 +374,14 @@ namespace PirateSpades.Network {
                 Game.RoundBegun -= RoundBegun;
                 Game.RoundFinished -= RoundFinished;
                 Game.GameFinished -= GameFinished;
+                Game.RoundNewPile -= this.RoundNewPile;
             }
             Game = new Game();
             Game.RoundStarted += RoundStarted;
             Game.RoundBegun += RoundBegun;
             Game.RoundFinished += RoundFinished;
             Game.GameFinished += GameFinished;
+            Game.RoundNewPile += this.RoundNewPile;
         }
 
         private void RoundStarted(Game game) {
@@ -375,6 +390,10 @@ namespace PirateSpades.Network {
 
         private void RoundBegun(Game game) {
             PirateHostCommands.RequestCard(this, Clients[game.Round.CurrentPlayer]);
+        }
+
+        private void RoundNewPile(Game game) {
+            PirateHostCommands.NewPile(this);
         }
 
         private void RoundFinished(Game game) {

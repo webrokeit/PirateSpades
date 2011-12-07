@@ -153,6 +153,26 @@ namespace PirateSpades.Network {
             return Regex.Match(msg.Body, @"^winning_player: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
         }
 
+        public static string ConstructPlayerTrick(Round round, Player player) {
+            Contract.Requires(round != null && player != null && round.PlayerTricks.ContainsKey(player));
+            return "player_tricks: " + player.Name + ";" + round.PlayerTricks[player].Count;
+        }
+
+        public static IList<string> ConstructPlayerTricks(Round round) {
+            Contract.Requires(round != null);
+            Contract.Ensures(Contract.Result<IList<string>>() != null);
+            return round.PlayerTricks.Select(kvp => ConstructPlayerTrick(round, kvp.Key)).ToList();
+        }
+
+        public static Dictionary<string, int> GetPlayerTricks(PirateMessage msg) {
+            Contract.Requires(msg != null);
+            Contract.Ensures(Contract.Result<Dictionary<string, int>>() != null);
+            var res = new Dictionary<string, int>();
+            foreach (Match m in Regex.Matches(msg.Body, @"^player_tricks: (\w+);([0-9]+)$", RegexOptions.Multiline)) {
+                res[m.Groups[1].Value] = int.Parse(m.Groups[2].Value);
+            }
+            return res;
+        }
 
         public static string ConstructPlayerScore(Player player, int score) {
             Contract.Requires(player != null);
@@ -186,6 +206,9 @@ namespace PirateSpades.Network {
         /// <summary>Knock Knock (For scanning)</summary>
         Knck,
 
+        /// <summary>Broadcast</summary>
+        Bcst,
+
         /// <summary>Init Player Connection</summary>
         Init,
 
@@ -212,6 +235,9 @@ namespace PirateSpades.Network {
 
         /// <summary>Play Card</summary>
         Pcrd,
+
+        /// <summary>Trick Done</summary>
+        Trdn,
 
         /// <summary>Player Bet</summary>
         Pbet,

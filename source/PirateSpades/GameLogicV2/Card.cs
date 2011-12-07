@@ -47,6 +47,43 @@
         }
 
         [Pure]
+        public string ToShortString() {
+            var suit = "♥";
+            switch(Suit) {
+                case Suit.Clubs:
+                    suit = "♣";
+                    break;
+                case Suit.Diamonds:
+                    suit = "♦";
+                    break;
+                case Suit.Spades:
+                    suit = "♠";
+                    break;
+            }
+
+            var value = ((int)Value).ToString();
+            switch(Value) {
+                case CardValue.Ten:
+                    value = "T";
+                    break;
+                case CardValue.Jack:
+                    value = "J";
+                    break;
+                case CardValue.Queen:
+                    value = "Q";
+                    break;
+                case CardValue.King:
+                    value = "K";
+                    break;
+                case CardValue.Ace:
+                    value = "A";
+                    break;
+            }
+
+            return suit + value;
+        }
+
+        [Pure]
         public static Card FromString(string s) {
             Contract.Requires(Regex.IsMatch(s, "^card: " + EnumRegexString(typeof(Suit)) + ";" + EnumRegexString(typeof(CardValue)) + "$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<Card>() != null);
