@@ -11,6 +11,11 @@ namespace PirateSpadesGame {
     /// This is the main type for your game
     /// </summary>
     public class PsGame : Microsoft.Xna.Framework.Game {
+        private GraphicsDeviceManager graphics;
+
+        private SpriteBatch spriteBatch;
+
+        private IGameMode gameMode;
 
         public PsGame() {
             graphics = new GraphicsDeviceManager(this)

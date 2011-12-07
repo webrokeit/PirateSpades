@@ -39,6 +39,64 @@ namespace PirateSpades.Network {
             this.IpsChecked = 0;
         }
 
+        public IList<IPAddress> ScanForIps(int port, int timeout, int amount = 0) {
+            Contract.Requires(port >= 0 && port <= 65535 && timeout >= 0);
+            var ips = new HashSet<IPAddress>();
+            var sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            var iep = new IPEndPoint(IPAddress.Any, port);
+            var start = DateTime.Now;
+
+            try {
+                sock.Bind(iep);
+
+                while((DateTime.Now - start).TotalMilliseconds < timeout) {
+                    var ep = (EndPoint)iep;
+
+                    var del = new WaitForBroadcastDelegate(this.WaitForBroadcast);
+                    var ar = del.BeginInvoke(sock, ep, null, null);
+                    var maxWait = timeout - (int)(DateTime.Now - start).TotalMilliseconds;
+                    if(maxWait < 1)
+                        break;
+                    ar.AsyncWaitHandle.WaitOne(maxWait);
+                    if(ar.IsCompleted) {
+                        foreach(var ipString in del.EndInvoke(ar)) {
+                            IPAddress ip = null;
+                            if(IPAddress.TryParse(ipString, out ip)) {
+                                ips.Add(ip);
+                            }
+                        }
+                        if(amount > 0 && ips.Count >= amount) break;
+                    }
+                }
+
+                sock.Close();
+            } catch(Exception ex) {
+                Console.WriteLine(ex);
+            }
+
+            return ips.ToList();
+        }
+
+        private delegate IList<string> WaitForBroadcastDelegate(Socket sock, EndPoint ep); 
+
+        private IList<string> WaitForBroadcast(Socket sock, EndPoint ep) {
+            var res = new List<string>();
+            try {
+                var buffer = new byte[512];
+                var read = sock.ReceiveFrom(buffer, ref ep);
+                if(read > 4) {
+                    res.AddRange(
+                        PirateMessage.GetMessages(buffer, read).Where(msg => msg.Head == PirateMessageHead.Bcst).Select(
+                            msg => msg.Body));
+                }
+            } catch(Exception ex) {
+                if(!(ex is ObjectDisposedException)) {
+                    Console.WriteLine(ex);
+                }
+            }
+            return res;
+        }
+
         public IPAddress ScanForIp(int port) {
             Contract.Requires(port >= 0 && port <= 65535 && !CheckRunning);
             Contract.Ensures(!CheckRunning);
@@ -92,7 +150,11 @@ namespace PirateSpades.Network {
             return res;
         }
 
-        private static IEnumerable<IPAddress> GetLocalIpsV4() {
+        public static IPAddress GetLocalIpV4() {
+            return GetLocalIpsV4().First();
+        }
+
+        public static IEnumerable<IPAddress> GetLocalIpsV4() {
             return Dns.GetHostAddresses(Dns.GetHostName()).Where(ip => Regex.IsMatch(ip.ToString(), @"[0-9]{0,3}\.[0-9]{0,3}\.[0-9]{0,3}\.[0-9]{0,3}")).Distinct();
         }
     }

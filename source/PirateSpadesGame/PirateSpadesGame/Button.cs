@@ -3,6 +3,10 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PirateSpadesGame {
+
+    /// <summary>
+    /// the buttons in the menu is defined in this class
+    /// </summary>
     public class Button {
         private readonly string name;
         private Texture2D buttonTexture;

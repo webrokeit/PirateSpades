@@ -3,7 +3,6 @@
     using System.Diagnostics.Contracts;
     using System.Linq;
 
-
     public class Player {
         public Game Game { get; private set; }
         public string Name { get; protected set; }
@@ -82,19 +81,28 @@
         public void DealCards() {
             Contract.Requires(IsDealer && Game != null);
             var deck = Deck.GetShuffledDeck();
+            var dealTo = (Game.Round.Dealer + 1) % Game.Players.Count;
             for(var i = 0; i < Game.CardsToDeal; i++) {
-                foreach(var player in Game.Players) {
-                    var card = deck.Pop();
-                    player.GetCard(card);
-                    if(CardDealt != null) CardDealt(player, card);
-                }
+                var card = deck.Pop();
+                Game.Players[dealTo].GetCard(card);
+                if (CardDealt != null) CardDealt(Game.Players[dealTo], card);
+                dealTo = (dealTo + 1) % Game.Players.Count;
             }
         }
 
         [Pure]
+        public bool CardPlayable(Card toPlay) {
+            Contract.Requires(toPlay != null);
+            Contract.Requires(this.HasCard(toPlay));
+            Contract.Requires(this.Game.Started && this.Game.Round != null);
+            return CardPlayable(toPlay, Game.Round.BoardCards.FirstCard);
+        }
+
+        [Pure]
         public bool CardPlayable(Card toPlay, Card mustMatch) {
-            Contract.Requires(toPlay != null && mustMatch != null && this.HasCard(toPlay));
-            return !this.HasCardOf(mustMatch.Suit) || toPlay.SameSuit(mustMatch);
+            Contract.Requires(toPlay != null);
+            Contract.Requires(this.HasCard(toPlay));
+            return mustMatch == null || (!this.HasCardOf(mustMatch.Suit) || toPlay.SameSuit(mustMatch));
         }
 
         [Pure]
@@ -108,7 +116,6 @@
                 return this.Cards.Contains(card);
             }
         }
-
 
         public void SetBet(int bet) {
             Contract.Requires(this.Game != null && bet >= 0);
@@ -126,10 +133,12 @@
         public Card GetPlayableCard() {
             Contract.Requires(Game != null && Game.Active && !Game.Round.BoardCards.HasPlayed(this) && Hand.Count > 0);
             var toPlay = Hand[0];
-            foreach (var card in this.Hand.Where(card => card.Suit == this.Game.Round.BoardCards.FirstCard.Suit)) {
-                toPlay = card;
-                break;
-            }
+            if(Game.Round.BoardCards.FirstCard != null) {
+                foreach (var card in this.Hand.Where(card => this.CardPlayable(card, this.Game.Round.BoardCards.FirstCard))) {
+                    toPlay = card;
+                    break;
+                }
+            };
             return toPlay;
         }
 

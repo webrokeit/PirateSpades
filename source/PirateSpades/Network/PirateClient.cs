@@ -22,7 +22,10 @@ namespace PirateSpades.Network {
         public readonly Socket Socket;
         public int BufferSize { get; private set; }
 
+        public bool DebugMode { get; set; }
+
         public bool VirtualPlayer { get; private set; }
+        public bool IsDead { get; private set; }
 
         public delegate void PirateClientDelegate(PirateClient pclient);
         public event PirateClientDelegate Disconnected;
@@ -53,6 +56,7 @@ namespace PirateSpades.Network {
         }
 
         private void Init() {
+            IsDead = false;
             BufferSize = PirateMessage.BufferSize;
             if (!VirtualPlayer) {
                 this.CardPlayed += this.OnCardPlayed;
@@ -66,7 +70,10 @@ namespace PirateSpades.Network {
         }
 
         private void Disconnect() {
-            if(this.Socket.Connected) this.Socket.Close();
+            if(this.Socket.Connected) {
+                this.Socket.Close();
+                IsDead = true;
+            }
             if(Disconnected != null) {
                 Disconnected(this);
             }
@@ -172,6 +179,9 @@ namespace PirateSpades.Network {
                 case PirateMessageHead.Gfin:
                     PirateClientCommands.GameFinished(this, msg);
                     break;
+                case PirateMessageHead.Trdn:
+                    PirateClientCommands.NewPile(this, msg);
+                    break;
                 case PirateMessageHead.Nrnd:
                     PirateClientCommands.NewRound(this, msg);
                     break;
@@ -196,6 +206,10 @@ namespace PirateSpades.Network {
 
         public void RequestCard() {
             if (CardRequested != null) CardRequested(this);
+        }
+
+        public void NameNotAvailable() {
+            if (NameRequested != null) NameRequested(this);
         }
 
         public override string ToString() {

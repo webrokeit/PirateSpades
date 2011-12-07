@@ -48,6 +48,7 @@ namespace PirateSpades.GameLogicV2 {
 
         public delegate void RoundEventDelegate(Round round);
 
+        public event RoundEventDelegate NewPile;
         public event RoundEventDelegate RoundStarted;
         public event RoundEventDelegate RoundBegun;
         public event RoundEventDelegate RoundFinished;
@@ -121,6 +122,8 @@ namespace PirateSpades.GameLogicV2 {
             CurrentPlayer = Game.PlayerIndex(winner);
             LastTrick = BoardCards;
             BoardCards = new Trick();
+
+            if (NewPile != null) NewPile(this);
 
             TricksDone++;
             if(Finished) {

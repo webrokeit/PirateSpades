@@ -41,7 +41,6 @@ namespace PirateSpades.Network {
         public static void VerifyConnection(PirateHost host, PirateClient pclient, PirateMessage data) {
             Contract.Requires(host != null && pclient != null && data != null && data.Head == PirateMessageHead.Verf);
             if(data.Body == WelcomePhrase) {
-                host.AddClient(pclient);
                 GetPlayerInfo(host, pclient);
             }
         }
@@ -66,7 +65,8 @@ namespace PirateSpades.Network {
             if (!host.ContainsPlayer(player)) {
                 if(host.Game.Contains(pclient)) host.Game.RemovePlayer(pclient);
                 host.SetPlayerName(pclient, player);
-                host.Game.AddPlayer(pclient);
+                host.Game.ClearPlayers();
+                host.Game.AddPlayers(host.GetPlayers());
                 pclient.SetGame(host.Game);
                 SendPlayerInfo(host);
             }else {
@@ -137,7 +137,7 @@ namespace PirateSpades.Network {
 
             pclient.GetCard(card);
 
-            Console.WriteLine("Host: Sending card " + card + " to " + pclient);
+            Console.WriteLine("Host: Sending card " + card.ToShortString() + " to " + pclient);
 
             var msg = new PirateMessage(PirateMessageHead.Xcrd, card.ToString());
             host.SendMessage(pclient, msg);
@@ -168,7 +168,7 @@ namespace PirateSpades.Network {
                 return;
             }
 
-            Console.WriteLine(player.Name + " plays " + card);
+            Console.WriteLine(player.Name + " plays " + card.ToShortString());
 
             var msg = new PirateMessage(
                 PirateMessageHead.Pcrd, PirateMessage.ConstructBody(player.ToString(), card.ToString()));
@@ -242,6 +242,18 @@ namespace PirateSpades.Network {
             }
             lock (host.Game.Round) {
                 host.Game.Round.Begin();
+            }
+        }
+
+        public static void NewPile(PirateHost host) {
+            Contract.Requires(host != null);
+
+            var body = PirateMessage.ConstructBody(PirateMessage.ConstructPlayerTricks(host.Game.Round));
+            body = PirateMessage.AppendBody(body, PirateMessage.ConstructWinner(host.Game.Round.LastTrick.Winner));
+            var msg = new PirateMessage(PirateMessageHead.Trdn, body);
+
+            foreach(var player in host.GetPlayers()) {
+                host.SendMessage(player, msg);
             }
         }
 
