@@ -200,6 +200,8 @@
     </Compile>
     <Compile Include="creategamegm.png">
       <Name>creategamegm</Name>
+    <Compile Include="Gamesettings.png">
+      <Name>Gamesettings</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
