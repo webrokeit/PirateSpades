@@ -96,8 +96,6 @@
     <Compile Include="Network\PirateMessage.cs" />
     <Compile Include="Network\PirateMessageObj.cs" />
     <Compile Include="Network\PirateScanner.cs" />
-    <Compile Include="Network\PirateScannerObj.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
