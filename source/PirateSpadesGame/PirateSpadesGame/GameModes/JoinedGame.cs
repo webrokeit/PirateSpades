@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 
 namespace PirateSpadesGame.GameModes {
+    using System.Net;
+
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +13,7 @@ namespace PirateSpadesGame.GameModes {
     public class JoinedGame : IGameMode {
         private bool host;
 
-        public JoinedGame(bool host) {
+        public JoinedGame(bool host, IPAddress ip) {
             
         }
 

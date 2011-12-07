@@ -6,4 +6,21 @@ Content\settings.xnb
 Content\pspades.xnb
 Content\Gamerules.xnb
 Content\back.xnb
+<<<<<<< HEAD
 Content\PIRATESHIP.xnb
+=======
+Content\solidred.xnb
+Content\font.xnb
+Content\playername.xnb
+Content\apply.xnb
+Content\cancel.xnb
+Content\Gamesettings.xnb
+Content\volumebox.xnb
+Content\PopUp.xnb
+Content\ok.xnb
+Content\findgame.xnb
+Content\X.xnb
+Content\refresh.xnb
+Content\jointhisgame.xnb
+Content\backjoingame.xnb
+>>>>>>> f59c20b7d44b6e2ad62cb9e1b41551428087ae70
