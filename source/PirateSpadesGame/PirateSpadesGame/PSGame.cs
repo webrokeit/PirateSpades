@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+//Helena
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-
-using PirateSpadesGame;
 
 namespace PirateSpadesGame {
+    using Microsoft.Xna.Framework.Audio;
+
     using PirateSpadesGame.GameModes;
 
     /// <summary>
@@ -19,12 +13,16 @@ namespace PirateSpadesGame {
     /// </summary>
     public class PsGame : Microsoft.Xna.Framework.Game {
         private GraphicsDeviceManager graphics;
+
         private SpriteBatch spriteBatch;
+
         private IGameMode gameMode;
+
         private StartUp startUp;
         private JoinGame joinGame;
         private CreateGame createGame;
         private Sprite title;
+        private Sprite background;
         private AudioEngine engine;
         private SoundBank soundBank;
         private WaveBank waveBank;
@@ -72,6 +70,7 @@ namespace PirateSpadesGame {
 
             //soundBank.PlayCue("music");
             title = new Sprite();
+            background = new Sprite();
             var x = this.Window.ClientBounds.Width / 2 - 200;
             title.Position = new Vector2(x, 0);
             startUp = new StartUp(this);
@@ -89,6 +88,7 @@ namespace PirateSpadesGame {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            background.LoadContent(this.Content, "PIRATESHIP");
             title.LoadContent(this.Content, "pspades");
             gameMode.LoadContent(this.Content);
 
@@ -243,6 +243,7 @@ namespace PirateSpadesGame {
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+            background.Draw(spriteBatch);
             title.Draw(spriteBatch);
             gameMode.Draw(this.spriteBatch);
             if(settingname) {

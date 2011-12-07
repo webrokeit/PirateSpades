@@ -1,4 +1,3 @@
-Content\Clubs_Eight.xnb
 Content\creategame.xnb
 Content\exit.xnb
 Content\joingame.xnb
@@ -7,6 +6,9 @@ Content\settings.xnb
 Content\pspades.xnb
 Content\Gamerules.xnb
 Content\back.xnb
+<<<<<<< HEAD
+Content\PIRATESHIP.xnb
+=======
 Content\solidred.xnb
 Content\font.xnb
 Content\playername.xnb
@@ -21,3 +23,4 @@ Content\X.xnb
 Content\refresh.xnb
 Content\jointhisgame.xnb
 Content\backjoingame.xnb
+>>>>>>> f59c20b7d44b6e2ad62cb9e1b41551428087ae70
