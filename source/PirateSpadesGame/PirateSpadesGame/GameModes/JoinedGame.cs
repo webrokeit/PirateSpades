@@ -8,15 +8,15 @@ namespace PirateSpadesGame.GameModes {
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
 
-    public class CreateGame : IGameMode {
-        private PsGame game;
+    public class JoinedGame : IGameMode {
+        private bool host;
 
-        public CreateGame(PsGame game) {
-            this.game = game;
+        public JoinedGame(bool host) {
+            
         }
 
         public void LoadContent(ContentManager contentManager) {
-            
+            //Load button "Start game" if host is true
         }
 
         public void Update(GameTime gameTime) {

@@ -112,13 +112,17 @@
     <Compile Include="GameMode.cs" />
     <Compile Include="GameModes\CreateGame.cs" />
     <Compile Include="GameModes\InGame.cs" />
+    <Compile Include="GameModes\JoinedGame.cs" />
     <Compile Include="GameModes\JoinGame.cs" />
     <Compile Include="GameModes\StartUp.cs" />
+    <Compile Include="Numberbox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PSGame.cs" />
+    <Compile Include="ServerSprite.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="TableSprite.cs" />
+    <Compile Include="Textbox.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
