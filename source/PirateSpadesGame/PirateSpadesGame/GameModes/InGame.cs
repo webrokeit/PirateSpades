@@ -1,4 +1,4 @@
-﻿
+﻿//Helena
 namespace PirateSpadesGame.GameModes {
     using System.Collections.Generic;
 
@@ -28,23 +28,18 @@ namespace PirateSpadesGame.GameModes {
         public void Update(GameTime gameTime) {
             KeyboardState state = Keyboard.GetState();
 
-            if (state.IsKeyDown(Keys.Tab))
-                ;
+            if (state.IsKeyDown(Keys.Tab)) {
+                //TODO: do this;
+            }
 
-            
         }
 
         public void Draw(SpriteBatch spriteBatch) {
             throw new System.NotImplementedException();
         }
 
-        public void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.Pink);
+        public void draw(SpriteBatch spritebatch){}
 
-            
-            batch.Draw();
-            
-        }
+      
     }
 }

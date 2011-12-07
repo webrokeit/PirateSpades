@@ -1,10 +1,11 @@
+//Helena
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using PirateSpadesGame;
-
 namespace PirateSpadesGame {
+    using Microsoft.Xna.Framework.Audio;
+
     using PirateSpadesGame.GameModes;
 
     /// <summary>
@@ -16,12 +17,12 @@ namespace PirateSpadesGame {
         private SpriteBatch spriteBatch;
 
         private IGameMode gameMode;
-<<<<<<< HEAD
-=======
+
         private StartUp startUp;
         private JoinGame joinGame;
         private CreateGame createGame;
         private Sprite title;
+        private Sprite background;
         private AudioEngine engine;
         private SoundBank soundBank;
         private WaveBank waveBank;
@@ -33,7 +34,6 @@ namespace PirateSpadesGame {
         private bool mpressed = false;
         private bool prevmpressed = false;
         private double frametime;
->>>>>>> f4810d94f15134947277bc882bf85fc39d7aa752
 
         public PsGame() {
             graphics = new GraphicsDeviceManager(this) { PreferredBackBufferWidth = 1024, PreferredBackBufferHeight = 720 };
@@ -70,6 +70,7 @@ namespace PirateSpadesGame {
 
             //soundBank.PlayCue("music");
             title = new Sprite();
+            background = new Sprite();
             var x = this.Window.ClientBounds.Width / 2 - 200;
             title.Position = new Vector2(x, 0);
             startUp = new StartUp(this);
@@ -87,6 +88,7 @@ namespace PirateSpadesGame {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            background.LoadContent(this.Content, "PIRATESHIP");
             title.LoadContent(this.Content, "pspades");
             gameMode.LoadContent(this.Content);
 
@@ -241,6 +243,7 @@ namespace PirateSpadesGame {
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+            background.Draw(spriteBatch);
             title.Draw(spriteBatch);
             gameMode.Draw(this.spriteBatch);
             if(settingname) {
