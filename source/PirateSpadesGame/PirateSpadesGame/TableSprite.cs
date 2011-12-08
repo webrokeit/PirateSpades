@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PirateSpades.GameLogic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PirateSpadesGame {
     public class TableSprite : Sprite {
-        private Table table = Table.GetTable();
+        //private Table table = Table.GetTable();
         private List<CardSprite> cards = new List<CardSprite>(); 
 
         public string Name { get { return "Table"; } }
@@ -19,7 +18,7 @@ namespace PirateSpadesGame {
             base.LoadContent(theContentManager, Name);
         }
 
-        public void Update(GameTime theGameTime) {
+        /*public void Update(GameTime theGameTime) {
             if(table.Cards > 0) {
                 foreach(var c in table.PlayedCards) {
                     new CardSprite(c, new Vector2());
@@ -28,6 +27,6 @@ namespace PirateSpadesGame {
             if(table.Cards == 0) {
                 cards.Clear();
             }
-        }
+        }*/
     }
 }

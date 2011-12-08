@@ -90,7 +90,7 @@ namespace PirateSpades.Network {
                             msg => msg.Body));
                 }
             } catch(Exception ex) {
-                if(!(ex is ObjectDisposedException)) {
+                if(!(ex is ObjectDisposedException) && !(ex is SocketException)) {
                     Console.WriteLine(ex);
                 }
             }
@@ -131,7 +131,7 @@ namespace PirateSpades.Network {
         }
 
         public static bool CheckIp(IPAddress ip, int port, int timeout) {
-            Contract.Requires(ip != null && port >= 0 && port <= 65535 && timeout >= 0);
+            Contract.Requires(ip != null && port >= 0 && port <= 65535 && timeout >= 0 && IsValidIp(ip));
             //Console.WriteLine("Checking ip: " + ip.ToString());
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             var res = false;
@@ -150,12 +150,27 @@ namespace PirateSpades.Network {
             return res;
         }
 
+        [Pure]
         public static IPAddress GetLocalIpV4() {
             return GetLocalIpsV4().First();
         }
 
+        [Pure]
         public static IEnumerable<IPAddress> GetLocalIpsV4() {
-            return Dns.GetHostAddresses(Dns.GetHostName()).Where(ip => Regex.IsMatch(ip.ToString(), @"[0-9]{0,3}\.[0-9]{0,3}\.[0-9]{0,3}\.[0-9]{0,3}")).Distinct();
+            return Dns.GetHostAddresses(Dns.GetHostName()).Where(IsValidIp).Distinct();
+        }
+
+        [Pure]
+        public static bool IsValidIp(string ip) {
+            Contract.Requires(ip != null);
+            const string Pattern = @"^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$";
+            return Regex.IsMatch(ip, Pattern);
+        }
+
+        [Pure]
+        public static bool IsValidIp(IPAddress ip) {
+            Contract.Requires(ip != null);
+            return IsValidIp(ip.ToString());
         }
     }
 }

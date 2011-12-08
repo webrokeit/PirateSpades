@@ -20,11 +20,11 @@ namespace PirateSpades.Network {
         public int Port { get; private set; }
         public double Interval {
             get {
-                Contract.Ensures(Contract.Result<double>() >= 0);
+                Contract.Ensures(Contract.Result<double>() > 0.00);
                 return this.Timer.Interval;
             }
             set {
-                Contract.Requires(value >= 0);
+                Contract.Requires(value > 0.00 && value < int.MaxValue);
                 this.Timer.Interval = value;
             }
         }
@@ -35,7 +35,7 @@ namespace PirateSpades.Network {
         public event BroadcastEventDelegate BroadcastExecuted;
 
         public PirateBroadcaster(byte[] message, int port, double interval) {
-            Contract.Requires(message != null && port >= 0 && port <= 65536 && interval >= 0);
+            Contract.Requires(message != null && port >= 0 && port <= 65536 && interval > 0.00 && interval < int.MaxValue);
             this.Message = message;
             this.Port = port;
             this.Timer = new Timer(interval);

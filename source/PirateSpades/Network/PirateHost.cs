@@ -59,6 +59,7 @@ namespace PirateSpades.Network {
         }
 
         public PirateHost(int port) {
+            Contract.Requires(port > 0 && port <= 65535);
             this.Port = port;
             this.BufferSize = 4096;
 

@@ -130,8 +130,9 @@
       <Name>PirateSpades</Name>
     </ProjectReference>
     <ProjectReference Include="..\PirateSpadesGameContent\PirateSpadesGameContent.contentproj">
-      <Name>PirateSpadesGameContent</Name>
+      <Name>PirateSpadesGameContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{991BDF3E-5AD5-40B9-ADB1-7624234E8443}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

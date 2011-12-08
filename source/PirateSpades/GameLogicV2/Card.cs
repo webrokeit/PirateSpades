@@ -5,9 +5,11 @@
 
     public class Card : IComparable {
 
-        public Card(Suit s, CardValue v) {
-            this.Suit = s;
-            this.Value = v;
+        public Card(Suit suit, CardValue value) {
+            Contract.Requires((int)suit >= (int)Suit.Diamonds && (int)suit <= (int)Suit.Spades);
+            Contract.Requires((int)value >= (int)CardValue.Two && (int)value <= (int)CardValue.Ace);
+            this.Suit = suit;
+            this.Value = value;
         }
 
         public CardValue Value { get; private set; }
@@ -85,6 +87,7 @@
 
         [Pure]
         public static Card FromString(string s) {
+            Contract.Requires(s != null);
             Contract.Requires(Regex.IsMatch(s, "^card: " + EnumRegexString(typeof(Suit)) + ";" + EnumRegexString(typeof(CardValue)) + "$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<Card>() != null);
             var m = Regex.Match(s, "^card: " + EnumRegexString(typeof(Suit)) + ";" + EnumRegexString(typeof(CardValue)) + "$", RegexOptions.Multiline);
@@ -95,6 +98,7 @@
 
         [Pure]
         public static int CardsToDeal(int round, int players) {
+            Contract.Requires(round > 0 && players > 0);
             var maxCards = 52 / players < 10 ? 52 / players : 10;
             return (round <= maxCards ? maxCards - round + 1 : round - maxCards);
         }
@@ -121,7 +125,8 @@
 
         [ContractInvariantMethod]
         private void ObjectInvariant() {
-            Contract.Invariant(Value > (CardValue)1 && Value < (CardValue)15);
+            Contract.Invariant((int)Suit >= (int)Suit.Diamonds && (int)Suit <= (int)Suit.Spades);
+            Contract.Invariant((int)Value >= (int)CardValue.Two && (int)Value <= (int)CardValue.Ace);
         }
 
         [Pure]

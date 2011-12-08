@@ -32,9 +32,9 @@
     <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
     <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
-    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
     <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
-    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
     <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
     <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
     <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
@@ -80,13 +80,6 @@
     <Compile Include="GameLogicV2\Trick.cs" />
     <Compile Include="Misc\CollectionFnc.cs" />
     <Compile Include="Misc\ImmutableOrderedDictionary.cs" />
-    <Compile Include="Misc\Sorting.cs" />
-    <Compile Include="GameLogic\Card.cs" />
-    <Compile Include="GameLogic\Deck.cs" />
-    <Compile Include="GameLogic\Game.cs" />
-    <Compile Include="GameLogic\Player.cs" />
-    <Compile Include="GameLogic\Round.cs" />
-    <Compile Include="GameLogic\Table.cs" />
     <Compile Include="Misc\OrderedDictionary.cs" />
     <Compile Include="Network\PirateBroadcaster.cs" />
     <Compile Include="Network\PirateClient.cs" />

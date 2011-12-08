@@ -32,21 +32,25 @@ namespace PirateSpades.Network {
         }
 
         public static List<PirateMessage> GetMessages(byte[] buffer, int readLen) {
-            Contract.Requires(buffer != null && readLen > 4);
+            Contract.Requires(buffer != null && readLen <= buffer.Length && readLen > 4);
 
             var messages = new List<PirateMessage>();
             var data = Encoding.UTF8.GetString(buffer, 0, readLen);
             if(data.Length > 4) {
-                int start = 0;
+                var start = 0;
                 while (start < data.Length) {
-                    int len = int.Parse(data.Substring(start, 4));
-                    if(len >= 4) {
-                        string head = data.Substring(start + 4, 4);
-                        string body = data.Substring(start + 8, len - 4);
+                    var len = 0;
+                    if(int.TryParse(data.Substring(start, 4), out len)) {
+                        if (len >= 4) {
+                            var head = data.Substring(start + 4, 4);
+                            var body = data.Substring(start + 8, len - 4);
 
-                        messages.Add(new PirateMessage(head, body));
+                            messages.Add(new PirateMessage(head, body));
+                        }
+                        start += len + 4;
+                    }else {
+                        break;
                     }
-                    start += len + 4;
                 }
             }
 
