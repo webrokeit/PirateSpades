@@ -209,7 +209,6 @@ namespace PirateSpadesGame {
                     if(textbox.Text != "PLAYER") {
                         settingname = false;
                         this.PlayerName = textbox.Text;
-                        State = GameState.JoinGame;
                     } else {
                         settingname = true;
                     }

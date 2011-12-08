@@ -32,6 +32,7 @@ namespace PirateSpadesGame.GameModes {
         private List<ServerSprite> servers;
         private PirateScanner scanner;
         private ContentManager content;
+        private bool refreshed = false;
 
         public JoinGame(PsGame game) {
             servers = new List<ServerSprite>();
@@ -39,7 +40,6 @@ namespace PirateSpadesGame.GameModes {
             this.SetUp(game.Window);
             content = game.Content;
             scanner = new PirateScanner();
-            this.Refresh();
         }
 
         private void SetUp(GameWindow window) {
@@ -160,6 +160,9 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void Refresh() {
+            if(!refreshed) {
+                refreshed = true;
+            }
             var ips = scanner.ScanForIps(4939, 15000);
             foreach(var ip in ips) {
                 servers.Add(new ServerSprite(ip, "hej", 1, 5, serversRectangle));
@@ -182,10 +185,16 @@ namespace PirateSpadesGame.GameModes {
                 back.Draw(spriteBatch);
                 refreshButton.Draw(spriteBatch);
                 joinGameButton.Draw(spriteBatch);
-                spriteBatch.DrawString(font, "Server Name", new Vector2(nameSize.X, nameSize.Y), Color.Black);
-                spriteBatch.DrawString(font, "Players / Max", new Vector2(playersSize.X, playersSize.Y), Color.Black);
-                spriteBatch.DrawString(font, "Ip Address", new Vector2(ipSize.X, ipSize.Y), Color.Black);
-                if(servers.Count > 0) {
+                spriteBatch.DrawString(font, "Server Name", new Vector2(nameSize.X, nameSize.Y), Color.White);
+                spriteBatch.DrawString(font, "Players / Max", new Vector2(playersSize.X, playersSize.Y), Color.White);
+                spriteBatch.DrawString(font, "Ip Address", new Vector2(ipSize.X, ipSize.Y), Color.White);
+                if(!refreshed) {
+                    spriteBatch.DrawString(
+                        font,
+                        "Press refresh to find servers",
+                        new Vector2(serversRectangle.X, serversRectangle.Y + 30),
+                        Color.White);
+                } else if(servers.Count > 0) {
                     foreach(var s in servers) {
                         s.Draw(spriteBatch);
                     }
@@ -194,7 +203,7 @@ namespace PirateSpadesGame.GameModes {
                         font,
                         "No servers available right now",
                         new Vector2(serversRectangle.X, serversRectangle.Y + 30),
-                        Color.Black);
+                        Color.White);
                 }
             } else {
                 inJoinedGame.Draw(spriteBatch);

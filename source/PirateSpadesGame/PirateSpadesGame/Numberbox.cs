@@ -29,6 +29,8 @@ namespace PirateSpadesGame {
             this.maxNumber = maxNumber;
         }
 
+        public int Limit { get; set; }
+
         public int Number { get; set; }
 
         public string Text { get; set; }
@@ -62,13 +64,22 @@ namespace PirateSpadesGame {
             return lastKeyboardState.IsKeyDown(k) && currentKeyboardState.IsKeyUp(k);
         }
 
-        public float ParseInput() {
-            if(Number > 100) {
-                Number = 100;
+        public float ParseInputToFloat() {
+            if(Number > Limit) {
+                Number = Limit;
                 Text = Number.ToString();
-                return 1.0f;
+                return (float) Number;
             }
-            return Number / 100f;
+            return Number /(float)Limit;
+        }
+
+        public int ParseInput() {
+            if(Number > Limit) {
+                Number = Limit;
+                Text = Number.ToString();
+                return Limit;
+            }
+            return Number;
         }
 
         private void AddLetter(Keys k) {
