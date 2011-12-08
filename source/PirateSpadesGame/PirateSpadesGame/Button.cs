@@ -3,6 +3,10 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PirateSpadesGame {
+
+    /// <summary>
+    /// the buttons in the menu is defined in this class
+    /// </summary>
     public class Button {
         private readonly string name;
         private Texture2D buttonTexture;
@@ -47,15 +51,11 @@ namespace PirateSpadesGame {
         }
 
         private bool HitAlpha(float tx, float ty, Texture2D tex, int x, int y) {
-            if(this.Hit(tx, ty, tex, x, y)) {
+            if (this.Hit(tx, ty, tex, x, y)) {
                 var data = new uint[tex.Width * tex.Height];
                 tex.GetData<uint>(data);
-                if((x - (int)tx) + (y - (int)ty) *
-                    tex.Width < tex.Width * tex.Height) {
-                    return ((data[
-                        (x - (int)tx) + (y - (int)ty) * tex.Width
-                        ] &
-                                0xFF000000) >> 24) > 20;
+                if ((x - (int)tx) + (y - (int)ty) * tex.Width < tex.Width * tex.Height) {
+                    return ((data[(x - (int)tx) + (y - (int)ty) * tex.Width] & 0xFF000000) >> 24) > 20;
                 }
             }
             return false;

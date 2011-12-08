@@ -1,5 +1,6 @@
 ﻿
 namespace PirateSpadesGame.GameModes {
+    using System;
     using System.Collections.Generic;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
@@ -7,7 +8,6 @@ namespace PirateSpadesGame.GameModes {
     using Microsoft.Xna.Framework.Input;
 
     public class StartUp : IGameMode {
-        private Sprite title;
         private List<Button> buttons;
         private const int numberOfButtons = 5;
         private bool mpressed = false;
@@ -17,25 +17,32 @@ namespace PirateSpadesGame.GameModes {
         private bool rulesEnabled = false;
         private Sprite rules;
         private Button back;
+        private Sprite settings;
+        private PsGame game;
+        private Button cancel;
+        private Button apply;
+        private Textbox playername;
+        private string playerName = "Player Name:";
+        private Vector2 playerNamePos;
+        private SpriteFont font;
+        private Numberbox volume;
+        private Vector2 volumePos;
+        private string volumeString = "Volume (in %):";
+        private string scoreboardKey = "Press and hold TAB to show scoreboard \n when ingame";
+        private Vector2 scoreboardPos;
+        private string menuKey = "Press ESC to show menu when ingame";
+        private Vector2 menuPos;
 
-        public StartUp(GameWindow window) {
-            this.SetUp(window);
+        public StartUp(PsGame game) {
+            this.game = game;
+            this.SetUp(game.Window);
         }
 
         private void SetUp(GameWindow window) {
-            title = new Sprite { Color = PsGame.Color };
-            var x = window.ClientBounds.Width / 2 - 200;
-            title.Position = new Vector2(x, 0);
+            this.SetUpRules(window);
+            this.SetUpSettings(window);
 
-            rules = new Sprite() { Color = Color.White };
-            int rulesX = window.ClientBounds.Width / 2 - 450 / 2;
-            int rulesY = window.ClientBounds.Height / 2 - 588 / 2;
-            rules.Position = new Vector2(rulesX, rulesY);
-            int backX = (rulesX + 450) / 2 + Button.Width / 2;
-            int backY = (rulesY + 515);
-            back = new Button("back", backX, backY);
-
-            x = window.ClientBounds.Width / 2 - Button.Width / 2;
+            var x = window.ClientBounds.Width / 2 - Button.Width / 2;
             var y = window.ClientBounds.Height / 2 - numberOfButtons / 2 * Button.Height - (numberOfButtons % 2) * Button.Height / 2;
 
             buttons = new List<Button>();
@@ -50,10 +57,49 @@ namespace PirateSpadesGame.GameModes {
             buttons.Add(new Button("exit", x, y));
         }
 
+        public void SetUpRules(GameWindow window) {
+            rules = new Sprite() { Color = Color.White };
+            int rulesX = window.ClientBounds.Width / 2 - 450 / 2;
+            int rulesY = window.ClientBounds.Height / 2 - 588 / 2;
+            rules.Position = new Vector2(rulesX, rulesY);
+            int backX = (rulesX + 450) / 2 + Button.Width / 2;
+            int backY = (rulesY + 515);
+            back = new Button("back", backX, backY);
+        }
+
+        private void SetUpSettings(GameWindow window) {
+            settings = new Sprite() { Color = Color.White };
+            int settingsX = window.ClientBounds.Width / 2 - 600 / 2;
+            int settingsY = window.ClientBounds.Height / 2 - 468 / 2;
+            settings.Position = new Vector2(settingsX, settingsY);
+            int cancelX = settingsX + 425;
+            int cancelY = settingsY + 400;
+            cancel = new Button("cancel", cancelX, cancelY);
+            int applyX = settingsX + 40;
+            int applyY = settingsY + 400;
+            apply = new Button("apply", applyX, applyY);
+            var rect = new Rectangle(settingsX + (600-325), settingsY + 100, 250, 75);
+            playername = new Textbox(rect, "playername") { Text = this.game.PlayerName };
+            playername.MoveText(45);
+            playerNamePos = new Vector2(settingsX+100, settingsY + 125);
+            var volumeRect = new Rectangle(settingsX + (600 - 325) + 100, settingsY + 185, 100, 50);
+            var a = (int)Math.Round(game.MusicVolume);
+            volume = new Numberbox(volumeRect, "volumebox", 3) { Number = a * 100, Limit = 100 };
+            volume.Text = volume.Number.ToString();
+            volumePos = new Vector2(settingsX + 100, settingsY + 200);
+            scoreboardPos = new Vector2(settingsX + 100, settingsY + 250);
+            menuPos = new Vector2(settingsX + 100, settingsY + 325);
+        }
+
         public void LoadContent(ContentManager contentManager) {
-            title.LoadContent(contentManager, "pspades");
             rules.LoadContent(contentManager, "Gamerules");
+            settings.LoadContent(contentManager, "Gamesettings");
             back.LoadContent(contentManager);
+            font = contentManager.Load<SpriteFont>("font");
+            cancel.LoadContent(contentManager);
+            apply.LoadContent(contentManager);
+            playername.LoadContent(contentManager);
+            volume.LoadContent(contentManager);
             foreach(var b in buttons) {
                 b.LoadContent(contentManager);
             }
@@ -67,11 +113,17 @@ namespace PirateSpadesGame.GameModes {
             int my = mouseState.Y;
             prevmpressed = mpressed;
             mpressed = mouseState.LeftButton == ButtonState.Pressed;
-            foreach(var b in buttons) {
-                UpdateButton(b, mx, my);
-            }
-            if(rulesEnabled) {
+            if(settingsEnabled) {
+                this.UpdateButton(cancel, mx, my);
+                this.UpdateButton(apply, mx, my);
+                playername.Update(gameTime);
+                volume.Update(gameTime);
+            } else if(rulesEnabled) {
                 this.UpdateButton(back, mx, my);
+            } else {
+                foreach (var b in buttons) {
+                    UpdateButton(b, mx, my);
+                }
             }
         }
 
@@ -108,35 +160,65 @@ namespace PirateSpadesGame.GameModes {
             var str = b.Name;
             switch(str) {
                 case "joingame":
-                    PsGame.Color = Color.Aquamarine;
+                    game.State = GameState.JoinGame;
                     break;
                 case "creategame":
-                    PsGame.Color = Color.Beige;
+                    game.State = GameState.CreateGame;
                     break;
                 case "rules":
                     rulesEnabled = true;
                     break;
                 case "settings":
-                    PsGame.Color = Color.Yellow;
+                    playername.Text = this.game.PlayerName;
+                    settingsEnabled = true;
                     break;
                 case "back":
                     rulesEnabled = false;
                     break;
+                case "cancel":
+                    CancelChanges();
+                    settingsEnabled = false;
+                    break;
+                case "apply":
+                    this.ApplyChanges();
+                    settingsEnabled = false;
+                    break;
                 case "exit":
-                    PsGame.State = GameState.Exit;
+                    game.State = GameState.Exit;
                     break;
             }
         }
 
+        private void CancelChanges() {
+            playername.Text = game.PlayerName;
+            var a = (int)Math.Round(game.MusicVolume);
+            volume.Number = a * 100;
+            volume.Text = volume.Number.ToString();
+        }
+
+        private void ApplyChanges() {
+            game.PlayerName = playername.Text;
+            game.MusicVolume = volume.ParseInputToFloat();
+        }
+
         public void Draw(SpriteBatch spriteBatch) {
-            title.Color = PsGame.Color;
-            title.Draw(spriteBatch);
             foreach(var b in buttons) {
                 b.Draw(spriteBatch);
             }
             if(rulesEnabled) {
                 rules.Draw(spriteBatch);
                 back.Draw(spriteBatch);
+            }
+            if(settingsEnabled) {
+                settings.Draw(spriteBatch);
+                apply.Draw(spriteBatch);
+                cancel.Draw(spriteBatch);
+                playername.Draw(spriteBatch);
+                volume.Draw(spriteBatch);
+                spriteBatch.DrawString(font, playerName, playerNamePos, Color.Black);
+                spriteBatch.DrawString(font, volumeString, volumePos, Color.Black);
+                spriteBatch.DrawString(font, scoreboardKey, scoreboardPos, Color.Black);
+                spriteBatch.DrawString(font, menuKey, menuPos, Color.Black);
             }
         }
     }

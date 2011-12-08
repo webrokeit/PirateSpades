@@ -72,11 +72,12 @@ namespace PirateSpades.Misc {
         }
 
         public new void Remove(object key) {
-            Contract.Requires(key is TKey);
+            Contract.Requires(key != null && key is TKey);
             this.Remove((TKey) key);
         }
 
         public void Remove(TKey key) {
+            Contract.Requires(!ReferenceEquals(key, null));
             base.Remove(key);
         }
 

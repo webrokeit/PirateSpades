@@ -15,13 +15,11 @@ namespace PirateSpadesGame {
         private Texture2D mSpriteTexture;
         public Rectangle Size;
         public float Scale = 1.0f;
-        private Player player;
 
         public Sprite() {
             Color = Color.White;
         }
 
-        public Player Player { get { return player; } }
 
         public Color Color { get; set; }
 

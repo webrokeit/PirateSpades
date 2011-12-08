@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PirateSpades", "PirateSpades\PirateSpades.csproj", "{E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PirateSpadesServer", "PirateSpadesServer\PirateSpadesServer.csproj", "{0C7FB77C-E876-4975-A4DB-6AB31C657398}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PirateSpadesGame", "PirateSpadesGame\PirateSpadesGame\PirateSpadesGame.csproj", "{4C682B69-DC5A-4936-8EEF-363FBB8CE6EE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PirateSpadesGameContent", "PirateSpadesGame\PirateSpadesGameContent\PirateSpadesGameContent.contentproj", "{991BDF3E-5AD5-40B9-ADB1-7624234E8443}"
@@ -43,16 +41,6 @@ Global
 		{E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387}.Release|Mixed Platforms.Build.0 = Release|x86
 		{E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387}.Release|x86.ActiveCfg = Release|x86
 		{E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387}.Release|x86.Build.0 = Release|x86
-		{0C7FB77C-E876-4975-A4DB-6AB31C657398}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{0C7FB77C-E876-4975-A4DB-6AB31C657398}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{0C7FB77C-E876-4975-A4DB-6AB31C657398}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{0C7FB77C-E876-4975-A4DB-6AB31C657398}.Debug|x86.ActiveCfg = Debug|x86
-		{0C7FB77C-E876-4975-A4DB-6AB31C657398}.Debug|x86.Build.0 = Debug|x86
-		{0C7FB77C-E876-4975-A4DB-6AB31C657398}.Release|Any CPU.ActiveCfg = Release|x86
-		{0C7FB77C-E876-4975-A4DB-6AB31C657398}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{0C7FB77C-E876-4975-A4DB-6AB31C657398}.Release|Mixed Platforms.Build.0 = Release|x86
-		{0C7FB77C-E876-4975-A4DB-6AB31C657398}.Release|x86.ActiveCfg = Release|x86
-		{0C7FB77C-E876-4975-A4DB-6AB31C657398}.Release|x86.Build.0 = Release|x86
 		{4C682B69-DC5A-4936-8EEF-363FBB8CE6EE}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{4C682B69-DC5A-4936-8EEF-363FBB8CE6EE}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{4C682B69-DC5A-4936-8EEF-363FBB8CE6EE}.Debug|Mixed Platforms.Build.0 = Debug|x86
