@@ -18,5 +18,11 @@ namespace PirateSpades.Network {
             this.Client = client;
             this.Buffer = new byte[client.BufferSize];
         }
+
+        public PirateMessageObj(PirateClient client, PirateMessage msg) {
+            Contract.Requires(client != null && msg != null);
+            this.Client = client;
+            this.Buffer = msg.GetBytes();
+        }
     }
 }

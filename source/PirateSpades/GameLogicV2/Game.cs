@@ -9,6 +9,9 @@ namespace PirateSpades.GameLogicV2 {
     using PirateSpades.Misc;
 
     public class Game {
+        public static readonly int MinPlayersInGame = 2;
+        public static readonly int MaxPlayersInGame = 5;
+
         public IList<Player> Players { get; private set; }
         private OrderedDictionary<Player, int> GamePlayers { get; set; }
         private Dictionary<String, Player> PlayerNames { get; set; }
@@ -16,12 +19,14 @@ namespace PirateSpades.GameLogicV2 {
 
         public int CardsToDeal{
             get {
+                Contract.Requires(CurrentRound > 0 && Players.Count > 0);
                 return Card.CardsToDeal(CurrentRound, Players.Count);
             }
         }
 
         public int RoundsPossible {
             get {
+                Contract.Requires(Players.Count > 0);
                 return Round.RoundsPossible(Players.Count);
             }
         }
@@ -30,7 +35,7 @@ namespace PirateSpades.GameLogicV2 {
         public int CurrentRound { get; private set; }
         public Round Round {
             get {
-                Contract.Requires(Started && CurrentRound >= 1 && CurrentRound <= RoundsPossible && Players.Count >= 2);
+                Contract.Requires(Started && CurrentRound >= 1 && CurrentRound <= RoundsPossible && Players.Count >= MinPlayersInGame);
                 Contract.Ensures(Contract.Result<Round>() == Rounds[CurrentRound]);
                 return this.GetRound(CurrentRound);
             }
@@ -38,19 +43,19 @@ namespace PirateSpades.GameLogicV2 {
         public bool Started { get; private set; }
         public bool Active {
             get {
-                Contract.Requires(Players.Count >= 2);
+                Contract.Requires(Players.Count >= MinPlayersInGame);
                 return Started && CurrentRound >= 1 && CurrentRound <= RoundsPossible && !Finished;
             }
         }
         public bool Finished {
             get {
-                Contract.Requires(Players.Count >= 2);
+                Contract.Requires(Players.Count >= MinPlayersInGame);
                 return Started && CurrentRound == RoundsPossible && CurrentRound == Rounds.Count && Round.Finished;
             }
         }
         public Player Leader {
             get {
-                Contract.Requires(Started && CurrentRound >= 1 && Players.Count >= 2);
+                Contract.Requires(Started && CurrentRound >= 1 && Players.Count >= MinPlayersInGame);
                 Contract.Ensures(Contract.Result<Player>() != null);
                 var scores = this.GetTotalScores();
                 Player leader = null;
@@ -86,6 +91,7 @@ namespace PirateSpades.GameLogicV2 {
         }
 
         public Game(IEnumerable<Player> players) : this() {
+            Contract.Requires(players != null);
             this.AddPlayers(players);
         }
 
@@ -95,7 +101,7 @@ namespace PirateSpades.GameLogicV2 {
         }
 
         public void Start(bool isHost, int dealer) {
-            Contract.Requires(Players.Count >= 2 && dealer >= 0 && dealer < Players.Count);
+            Contract.Requires(Players.Count >= MinPlayersInGame  && dealer >= 0 && dealer < Players.Count);
             CurrentDealer = dealer;
             this.Started = true;
             this.IsHost = isHost;
@@ -163,7 +169,7 @@ namespace PirateSpades.GameLogicV2 {
         public void AddPlayers(IEnumerable<Player> players) {
             Contract.Requires(players != null && !Started);
             var playersBefore = GamePlayers.Count;
-            foreach (var player in players.Where(player => !this.GamePlayers.ContainsKey(player))) {
+            foreach (var player in players.Where(player => player != null && !this.GamePlayers.ContainsKey(player))) {
                 GamePlayers.Add(player, GamePlayers.Count);
             }
             if(GamePlayers.Count > playersBefore) this.UpdatePlayers();
@@ -219,12 +225,12 @@ namespace PirateSpades.GameLogicV2 {
         }
 
         public int PlayerIndex(string playerName) {
-            Contract.Requires(playerName != null);
+            Contract.Requires(playerName != null && PlayerNames.ContainsKey(playerName));
             return this.PlayerIndex(this.GetPlayer(playerName));
         }
 
         public Round GetRound(int round) {
-            Contract.Requires(round >= 1);
+            Contract.Requires(Started && round >= 1);
             Contract.Requires(round <= RoundsPossible);
             Contract.Requires(Rounds.ContainsKey(round));
             Contract.Ensures(Contract.Result<Round>() != null);
@@ -247,5 +253,10 @@ namespace PirateSpades.GameLogicV2 {
             Contract.Ensures(Contract.Result<Dictionary<Player, int>>() != null);
             return this.Players.ToDictionary(player => player, player => this.Rounds.Values.Sum(round => round.PlayerScore(player)));
         }
+
+        public Dictionary<int, Dictionary<Player, int>> GetScoreTable() {
+            Contract.Ensures(Contract.Result<Dictionary<int, Dictionary<Player, int>>>() != null);
+            return this.Rounds.Keys.ToDictionary(round => round, this.GetRoundScoreTotal);
+        } 
     }
 }

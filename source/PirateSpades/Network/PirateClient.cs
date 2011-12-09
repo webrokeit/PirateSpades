@@ -43,16 +43,25 @@ namespace PirateSpades.Network {
         }
 
         public PirateClient(string name, IPAddress ip, int port) : base(name) {
-            Contract.Requires(name != null && ip != null && port > 0 && port <= 65535);
-            this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            this.Socket.Connect(ip, port);
+            Contract.Requires(name != null && ip != null && port > 0 && port <= 65535 && PirateScanner.IsValidIp(ip));
             this.VirtualPlayer = false;
             this.Init();
-            this.SocketMessageReceive();
+            this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            try {
+                this.Socket.Connect(ip, port);
+                if(this.Socket.Connected) {
+                    this.SocketMessageReceive();
+                }else {
+                    IsDead = true;
+                }
+            } catch(SocketException ex) {
+                Console.WriteLine("Failed to connect: " + ex);
+                IsDead = true;
+            }
         }
 
         public PirateClient (string name, string ip, int port) : this(name, IPAddress.Parse(ip), port) {
-            Contract.Requires(name != null && ip != null && port > 0 && port <= 65535);
+            Contract.Requires(name != null && ip != null && port > 0 && port <= 65535 && PirateScanner.IsValidIp(ip));
         }
 
         private void Init() {
@@ -214,29 +223,7 @@ namespace PirateSpades.Network {
 
         public override string ToString() {
             Contract.Ensures(Contract.Result<string>() != null);
-            return NameToString(Name);
-        }
-
-        public static string NameToString(string name) {
-            Contract.Requires(name != null);
-            Contract.Ensures(Contract.Result<string>() != null);
-            return "player_name: " + name;
-        }
-
-        public static string NameFromString(string s) {
-            Contract.Requires(s != null && Regex.IsMatch(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline));
-            Contract.Ensures(Contract.Result<string>() != null);
-            return Regex.Match(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline).Groups[1].Value;
-        }
-
-        public static HashSet<string> NamesFromString(string s) {
-            Contract.Requires(s != null);
-            Contract.Ensures(Contract.Result<HashSet<string>>() != null);
-            var res = new HashSet<string>();
-            foreach(Match m in Regex.Matches(s, @"^player_name: (\w{3,20})$", RegexOptions.Multiline)) {
-                res.Add(m.Groups[1].Value);
-            }
-            return res;
+            return PirateMessage.ConstructPlayerName(Name);
         } 
     }
 }

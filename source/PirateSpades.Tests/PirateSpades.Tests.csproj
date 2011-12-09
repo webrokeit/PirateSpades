@@ -1,0 +1,531 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{20FC2364-A99F-45DA-B1CB-FBFF803A8677}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PirateSpades.Tests</RootNamespace>
+    <AssemblyName>PirateSpades.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Moles.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Microsoft.Pex.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Microsoft.Pex.Linq, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="PirateSpades.Moles, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
+      <Visible>False</Visible>
+    </CodeAnalysisDependentAssemblyPaths>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PirateSpades\PirateSpades.csproj">
+      <Project>{E1C545AB-B7E8-4B5A-9FCD-E1EB46B7A387}</Project>
+      <Name>PirateSpades</Name>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CardTest.CardsToDeal.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTest.CompareTo.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTest.Constructor.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTest.cs" />
+    <Compile Include="CardTest.EnumRegexString.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTest.Equals01.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTest.FromString.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTest.GetHashCode01.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTest.HigherThan.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTest.SameSuit.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTest.ToShortString.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardTest.ToString01.g.cs">
+      <DependentUpon>CardTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CollectionFncTest.cs" />
+    <Compile Include="CollectionFncTest.FisherYatesShuffle.g.cs">
+      <DependentUpon>CollectionFncTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CollectionFncTest.PickRandom01.g.cs">
+      <DependentUpon>CollectionFncTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CollectionFncTest.PickRandom02.g.cs">
+      <DependentUpon>CollectionFncTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CollectionFncTest.PickRandom03.g.cs">
+      <DependentUpon>CollectionFncTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DeckTest.cs" />
+    <Compile Include="DeckTest.GetShuffledDeck.g.cs">
+      <DependentUpon>DeckTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.ActiveGet.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.AddPlayers.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.CardsToDealGet.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.ClearPlayers.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.Constructor01.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.Contains01.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.cs" />
+    <Compile Include="GameTest.FinishedGet.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.GetPlayer.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.GetRoundScoreTotal.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.GetTotalScores.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.LeaderGet.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.NewRound.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.PlayerIndex01.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.RemovePlayer.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.RoundGet.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.RoundsPossibleGet.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTest.Start01.g.cs">
+      <DependentUpon>GameTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImmutableOrderedDictionaryTKeyTValueTest.Add01.g.cs">
+      <DependentUpon>ImmutableOrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImmutableOrderedDictionaryTKeyTValueTest.Constructor.g.cs">
+      <DependentUpon>ImmutableOrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImmutableOrderedDictionaryTKeyTValueTest.cs" />
+    <Compile Include="ImmutableOrderedDictionaryTKeyTValueTest.Insert01.g.cs">
+      <DependentUpon>ImmutableOrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImmutableOrderedDictionaryTKeyTValueTest.ItemGet01.g.cs">
+      <DependentUpon>ImmutableOrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImmutableOrderedDictionaryTKeyTValueTest.ItemGet02.g.cs">
+      <DependentUpon>ImmutableOrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImmutableOrderedDictionaryTKeyTValueTest.ItemSet01.g.cs">
+      <DependentUpon>ImmutableOrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImmutableOrderedDictionaryTKeyTValueTest.ItemSet02.g.cs">
+      <DependentUpon>ImmutableOrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImmutableOrderedDictionaryTKeyTValueTest.Remove01.g.cs">
+      <DependentUpon>ImmutableOrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImmutableOrderedDictionaryTKeyTValueTest.RemoveAt.g.cs">
+      <DependentUpon>ImmutableOrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.Add01.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.AsImmutable.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.Constructor.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.ContainsKey.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.ContainsValue.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.cs" />
+    <Compile Include="OrderedDictionaryTKeyTValueTest.Insert01.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.ItemGet01.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.ItemGet02.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.ItemSet01.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.ItemSet02.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.KeysGet.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.Remove01.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.RemoveAt.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrderedDictionaryTKeyTValueTest.ValuesGet.g.cs">
+      <DependentUpon>OrderedDictionaryTKeyTValueTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateBroadcasterTest.Constructor.g.cs">
+      <DependentUpon>PirateBroadcasterTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateBroadcasterTest.cs" />
+    <Compile Include="PirateBroadcasterTest.IntervalGet.g.cs">
+      <DependentUpon>PirateBroadcasterTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateBroadcasterTest.IntervalSet.g.cs">
+      <DependentUpon>PirateBroadcasterTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateBroadcasterTest.Start.g.cs">
+      <DependentUpon>PirateBroadcasterTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateBroadcasterTest.Stop.g.cs">
+      <DependentUpon>PirateBroadcasterTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.BeginRound.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.cs" />
+    <Compile Include="PirateClientCommandsTest.DealCard.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.ErrorMessage.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.FinishRound.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.GameFinished.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.GameStarted.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.GetCard.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.GetPlayedCard.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.GetPlayersInGame.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.InitConnection.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.KnockKnock.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.NewPile.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.NewRound.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.PlayCard.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.SendPlayerInfo.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.SetBet.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientCommandsTest.VerifyConnection.g.cs">
+      <DependentUpon>PirateClientCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientTest.Constructor01.g.cs">
+      <DependentUpon>PirateClientTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientTest.Constructor02.g.cs">
+      <DependentUpon>PirateClientTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientTest.cs" />
+    <Compile Include="PirateClientTest.NameFromString.g.cs">
+      <DependentUpon>PirateClientTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientTest.NamesFromString.g.cs">
+      <DependentUpon>PirateClientTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateClientTest.NameToString.g.cs">
+      <DependentUpon>PirateClientTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.BeginRound.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.cs" />
+    <Compile Include="PirateHostCommandsTest.DealCard.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.ErrorMessage.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.GameFinished.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.GetPlayerInfo.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.InitConnection.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.KnockKnock.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.NewPile.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.NewRound.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.PlayCard.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.ReceiveBet.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.RequestBets.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.RequestCard.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.RoundFinished.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.SendPlayerInfo.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.SetPlayerInfo.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.StartGame.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostCommandsTest.VerifyConnection.g.cs">
+      <DependentUpon>PirateHostCommandsTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostTest.Constructor.g.cs">
+      <DependentUpon>PirateHostTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateHostTest.cs" />
+    <Compile Include="PirateMessageObjTest.Constructor.g.cs">
+      <DependentUpon>PirateMessageObjTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageObjTest.cs" />
+    <Compile Include="PirateMessageTest.AppendBody.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.ConstructBody01.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.ConstructDealer.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.Constructor01.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.ConstructPlayerBet.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.ConstructPlayerScore.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.ConstructPlayerTricks.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.ConstructRoundNumber.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.ConstructStartingPlayer.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.ConstructWinner.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.ContstructPlayerScores.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.cs" />
+    <Compile Include="PirateMessageTest.GetBytes.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.GetDealer.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.GetError.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.GetMessages.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.GetPlayerBets.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.GetPlayerScores.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.GetPlayerTricks.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.GetRound.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.GetStartingPlayer.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateMessageTest.GetWinner.g.cs">
+      <DependentUpon>PirateMessageTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateScannerTest.CheckIp.g.cs">
+      <DependentUpon>PirateScannerTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateScannerTest.Constructor.g.cs">
+      <DependentUpon>PirateScannerTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateScannerTest.cs" />
+    <Compile Include="PirateScannerTest.GetLocalIpsV4.g.cs">
+      <DependentUpon>PirateScannerTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateScannerTest.GetLocalIpV4.g.cs">
+      <DependentUpon>PirateScannerTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateScannerTest.IsValidIp01.g.cs">
+      <DependentUpon>PirateScannerTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateScannerTest.PercentageDoneGet.g.cs">
+      <DependentUpon>PirateScannerTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PirateScannerTest.ScanForIps.g.cs">
+      <DependentUpon>PirateScannerTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerTest.Constructor.g.cs">
+      <DependentUpon>PlayerTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\PexAssemblyInfo.cs" />
+    <Compile Include="RoundTest.Constructor.g.cs">
+      <DependentUpon>RoundTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RoundTest.cs" />
+    <Compile Include="RoundTest.RoundsPossible.g.cs">
+      <DependentUpon>RoundTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TrickTest.Constructor.g.cs">
+      <DependentUpon>TrickTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TrickTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Moles Include="PirateSpades.moles" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

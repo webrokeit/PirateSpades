@@ -68,7 +68,7 @@ namespace PirateSpades.Network {
             Contract.Requires(pclient != null && data != null);
 
             pclient.Game.ClearPlayers();
-            var players = PirateClient.NamesFromString(data.Body);
+            var players = PirateMessage.GetPlayerNames(data);
             if(players.Count > 0) {
                 Console.WriteLine("Current players in game:");
                foreach(var player in players) {
@@ -113,7 +113,7 @@ namespace PirateSpades.Network {
         public static void GetPlayedCard(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Pcrd);
 
-            var playerName = PirateClient.NameFromString(data.Body);
+            var playerName = PirateMessage.GetPlayerName(data);
             if (playerName == null) return;
 
             var player = pclient.Game.GetPlayer(playerName);
@@ -129,7 +129,7 @@ namespace PirateSpades.Network {
 
         public static void DealCard(PirateClient pclient, Player receiver, Card card) {
             Contract.Requires(pclient != null && receiver != null && card != null);
-            var body = PirateMessage.ConstructBody(PirateClient.NameToString(receiver.Name), card.ToString());
+            var body = PirateMessage.ConstructBody(PirateMessage.ConstructPlayerName(receiver.Name), card.ToString());
             var msg = new PirateMessage(PirateMessageHead.Xcrd, body);
 
             if(pclient.DebugMode) Console.WriteLine(pclient.Name + ": Dealing " + card.ToShortString() + " to " + receiver.Name);

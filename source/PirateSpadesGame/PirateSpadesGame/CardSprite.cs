@@ -1,9 +1,9 @@
-﻿using PirateSpades.GameLogic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace PirateSpadesGame {
+    using PirateSpades.GameLogicV2;
 
     public class CardSprite : Sprite {
         private Card card;

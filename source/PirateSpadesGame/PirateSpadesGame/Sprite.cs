@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PirateSpades;
-using PirateSpades.GameLogic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PirateSpadesGame {
+    using PirateSpades.GameLogicV2;
 
     public class Sprite {
         public Vector2 Position = new Vector2(0,0);

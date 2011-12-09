@@ -1,7 +1,9 @@
 ﻿
 namespace PirateSpadesGame.GameModes {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
 
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
@@ -33,7 +35,13 @@ namespace PirateSpadesGame.GameModes {
         private PirateScanner scanner;
         private ContentManager content;
         private bool refreshed = false;
+<<<<<<< HEAD
         private List<Button> buttons; 
+=======
+        private bool refreshing = false;
+
+        private delegate IList<PirateScanner.GameInfo> ScanForGamesDelegate(int port, int timeout);
+>>>>>>> 90f4063dfdd0f23e41af479f5cd215a76137c7ed
 
         public JoinGame(PsGame game) {
             servers = new List<ServerSprite>();
@@ -128,12 +136,36 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void Refresh() {
-            if(!refreshed) {
-                refreshed = true;
+            if(refreshing) return;
+            refreshing = true;
+
+            const int Port = 4939;
+            const int Timeout = 15000; // Milliseconds
+
+            scanner.GameFound += GameFound;
+            var del = new ScanForGamesDelegate(scanner.ScanForGames);
+            del.BeginInvoke(Port, Timeout, RefreshDone, del);
+        }
+
+        private void RefreshDone(IAsyncResult ar) {
+            var del = (ScanForGamesDelegate)ar.AsyncState;
+            var res = del.EndInvoke(ar);
+
+            scanner.GameFound += GameFound;
+
+            // Dette burde være unødvendigt, så det skal lige testes om det skal med eller ej
+            lock(servers) {
+                servers.Clear();
+                servers.AddRange(res.Select(gameInfo => new ServerSprite(gameInfo.Ip, gameInfo.GameName, gameInfo.Players, gameInfo.MaxPlayers, serversRectangle)));
             }
-            var ips = scanner.ScanForIps(4939, 15000);
-            foreach(var ip in ips) {
-                servers.Add(new ServerSprite(ip, "hej", 1, 5, serversRectangle));
+
+            refreshing = false;
+            refreshed = true;
+        }
+
+        private void GameFound(PirateScanner.GameInfo gameInfo) {
+            lock(servers) {
+                servers.Add(new ServerSprite(gameInfo.Ip, gameInfo.GameName, gameInfo.Players, gameInfo.MaxPlayers, serversRectangle));
             }
         }
 
