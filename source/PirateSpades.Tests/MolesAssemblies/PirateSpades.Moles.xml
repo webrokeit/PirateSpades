@@ -382,6 +382,10 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.GameLogicV2.Game.GetRoundScoreTotal(System.Int32)"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.GameLogicV2.Moles.MGame.GetScoreTable">
+            <summary>Sets the mole of <see cref="M:PirateSpades.GameLogicV2.Game.GetScoreTable"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.GameLogicV2.Moles.MGame.GetTotalScores">
             <summary>Sets the mole of <see cref="M:PirateSpades.GameLogicV2.Game.GetTotalScores"/>
             </summary>
@@ -522,6 +526,10 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.GameLogicV2.Game.&lt;GetRoundScore&gt;b__1(PirateSpades.GameLogicV2.Player)"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.GameLogicV2.Moles.MGame._GetScoreTableb__15Int32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.GameLogicV2.Game.&lt;GetScoreTable&gt;b__15(System.Int32)"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.GameLogicV2.Moles.MGame._GetTotalScoresb__10Player">
             <summary>Sets the mole of <see cref="M:PirateSpades.GameLogicV2.Game.&lt;GetTotalScores&gt;b__10(PirateSpades.GameLogicV2.Player)"/>
             </summary>
@@ -615,6 +623,10 @@
         </member>
         <member name="P:PirateSpades.GameLogicV2.Moles.MGame.AllInstances.GetRoundScoreTotalInt32">
             <summary>Sets the mole of <see cref="M:PirateSpades.GameLogicV2.Game.GetRoundScoreTotal(System.Int32)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.GameLogicV2.Moles.MGame.AllInstances.GetScoreTable">
+            <summary>Sets the mole of <see cref="M:PirateSpades.GameLogicV2.Game.GetScoreTable"/>
             </summary>
         </member>
         <member name="P:PirateSpades.GameLogicV2.Moles.MGame.AllInstances.GetTotalScores">
@@ -1140,6 +1152,10 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateBroadcaster.#ctor(System.Byte[],System.Int32,System.Double)"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateBroadcaster.ConstructorInt32Double">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateBroadcaster.#ctor(System.Int32,System.Double)"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateBroadcaster.EndPointGet">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateBroadcaster.EndPoint"/>
             </summary>
@@ -1382,10 +1398,6 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateClient.MessageSent(System.IAsyncResult)"/>
             </summary>
         </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateClient.NameFromStringString">
-            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateClient.NameFromString(System.String)"/>
-            </summary>
-        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateClient.NameNotAvailable">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateClient.NameNotAvailable"/>
             </summary>
@@ -1396,14 +1408,6 @@
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateClient.NameRequestedRemovePirateClientPirateClientDelegate">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateClient.remove_NameRequested(PirateSpades.Network.PirateClient.PirateClientDelegate)"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateClient.NameToStringString">
-            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateClient.NameToString(System.String)"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateClient.NamesFromStringString">
-            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateClient.NamesFromString(System.String)"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateClient.OnBetSetInt32">
@@ -1726,14 +1730,6 @@
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Broadcaster"/>
             </summary>
         </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateHost.BufferSizeGet">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.BufferSize"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateHost.BufferSizeSetInt32">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.BufferSize"/>
-            </summary>
-        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.ClientsGet">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Clients"/>
             </summary>
@@ -1774,6 +1770,14 @@
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Game"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.GameNameGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.GameName"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.GameNameSetString">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.GameName"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.GameSetGame">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Game"/>
             </summary>
@@ -1786,12 +1790,32 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.HandleMessage(PirateSpades.Network.PirateClient,PirateSpades.Network.PirateMessage)"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.IpGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Ip"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.IpSetIPAddress">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Ip"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.IsValidGameNameString">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.IsValidGameName(System.String)"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.ListenerGet">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Listener"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.ListenerSetTcpListener">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Listener"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.MaxPlayersGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.MaxPlayers"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.MaxPlayersSetInt32">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.MaxPlayers"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.MessageSentIAsyncResult">
@@ -1894,6 +1918,18 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.StartGame"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.StartInt32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.Start(System.Int32)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.StartString">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.Start(System.String)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.StartStringInt32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.Start(System.String,System.Int32)"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.StartedGet">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Started"/>
             </summary>
@@ -1908,6 +1944,10 @@
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.StopAccepting">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.StopAccepting"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.UpdateBroadcastInfo">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.UpdateBroadcastInfo"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.WaitForSocket">
@@ -1935,14 +1975,6 @@
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.BroadcasterSetPirateBroadcaster">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Broadcaster"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.BufferSizeGet">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.BufferSize"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.BufferSizeSetInt32">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.BufferSize"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.ClientsGet">
@@ -1981,6 +2013,14 @@
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Game"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.GameNameGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.GameName"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.GameNameSetString">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.GameName"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.GameSetGame">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Game"/>
             </summary>
@@ -1993,12 +2033,28 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.HandleMessage(PirateSpades.Network.PirateClient,PirateSpades.Network.PirateMessage)"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.IpGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Ip"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.IpSetIPAddress">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Ip"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.ListenerGet">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Listener"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.ListenerSetTcpListener">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Listener"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.MaxPlayersGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.MaxPlayers"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.MaxPlayersSetInt32">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.MaxPlayers"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.MessageSentIAsyncResult">
@@ -2101,6 +2157,18 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.StartGame"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.StartInt32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.Start(System.Int32)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.StartString">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.Start(System.String)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.StartStringInt32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.Start(System.String,System.Int32)"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.StartedGet">
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateHost.Started"/>
             </summary>
@@ -2115,6 +2183,10 @@
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.StopAccepting">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.StopAccepting"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.UpdateBroadcastInfo">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateHost.UpdateBroadcastInfo"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateHost.AllInstances.WaitForSocket">
@@ -2266,8 +2338,32 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.ConstructDealer(System.String)"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructGameNamePirateHost">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.ConstructGameName(PirateSpades.Network.PirateHost)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructHostInfoPirateHost">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.ConstructHostInfo(PirateSpades.Network.PirateHost)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructHostIpPirateHost">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.ConstructHostIp(PirateSpades.Network.PirateHost)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructMaxPlayersInGameInt32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.ConstructMaxPlayersInGame(System.Int32)"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructPlayerBetPlayer">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.ConstructPlayerBet(PirateSpades.GameLogicV2.Player)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructPlayerNamePlayer">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.ConstructPlayerName(PirateSpades.GameLogicV2.Player)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructPlayerNameString">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.ConstructPlayerName(System.String)"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructPlayerScorePlayerInt32">
@@ -2280,6 +2376,10 @@
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructPlayerTricksRound">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.ConstructPlayerTricks(PirateSpades.GameLogicV2.Round)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructPlayersInGameInt32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.ConstructPlayersInGame(System.Int32)"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateMessage.ConstructRoundNumberInt32">
@@ -2318,8 +2418,20 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetError(System.String)"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetGameNamePirateMessage">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetGameName(PirateSpades.Network.PirateMessage)"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetHeadString">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetHead(System.String)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetHostIpPirateMessage">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetHostIp(PirateSpades.Network.PirateMessage)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetMaxPlayersInGamePirateMessage">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetMaxPlayersInGame(PirateSpades.Network.PirateMessage)"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetMessagesByteArrayInt32">
@@ -2330,12 +2442,24 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetPlayerBets(PirateSpades.Network.PirateMessage)"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetPlayerNamePirateMessage">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetPlayerName(PirateSpades.Network.PirateMessage)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetPlayerNamesPirateMessage">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetPlayerNames(PirateSpades.Network.PirateMessage)"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetPlayerScoresPirateMessage">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetPlayerScores(PirateSpades.Network.PirateMessage)"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetPlayerTricksPirateMessage">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetPlayerTricks(PirateSpades.Network.PirateMessage)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetPlayersInGamePirateMessage">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessage.GetPlayersInGame(PirateSpades.Network.PirateMessage)"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateMessage.GetRoundPirateMessage">
@@ -2424,6 +2548,10 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessageObj.#ctor(PirateSpades.Network.PirateClient)"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateMessageObj.ConstructorPirateClientPirateMessage">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateMessageObj.#ctor(PirateSpades.Network.PirateClient,PirateSpades.Network.PirateMessage)"/>
+            </summary>
+        </member>
         <member name="T:PirateSpades.Network.Moles.MPirateMessageObj.AllInstances">
             <summary>Define moles for all instances members</summary>
         </member>
@@ -2478,28 +2606,28 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.#ctor"/>
             </summary>
         </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.GameFoundAddPirateScannerGameFoundDelegate">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.add_GameFound(PirateSpades.Network.PirateScanner.GameFoundDelegate)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.GameFoundRemovePirateScannerGameFoundDelegate">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.remove_GameFound(PirateSpades.Network.PirateScanner.GameFoundDelegate)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.GetGameInfoPirateMessage">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.GetGameInfo(PirateSpades.Network.PirateMessage)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.GetIpString">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.GetIp(System.String)"/>
+            </summary>
+        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateScanner.GetLocalIpV4">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.GetLocalIpV4"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateScanner.GetLocalIpsV4">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.GetLocalIpsV4"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.IpCountGet">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.IpCount"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.IpCountSetInt32">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.IpCount"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.IpsCheckedGet">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.IpsChecked"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.IpsCheckedSetInt32">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.IpsChecked"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateScanner.IsValidIpIPAddress">
@@ -2510,32 +2638,20 @@
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.IsValidIp(System.String)"/>
             </summary>
         </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.PercentageDoneGet">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.PercentageDone"/>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.ScanForGamesInt32Int32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.ScanForGames(System.Int32,System.Int32)"/>
             </summary>
         </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.ScanForIpInt32">
-            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.ScanForIp(System.Int32)"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.ScanForIpsInt32Int32Int32">
-            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.ScanForIps(System.Int32,System.Int32,System.Int32)"/>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.ScanForGamesInt32Int32Int32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.ScanForGames(System.Int32,System.Int32,System.Int32)"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateScanner.WaitForBroadcastSocketEndPoint">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.WaitForBroadcast(System.Net.Sockets.Socket,System.Net.EndPoint)"/>
             </summary>
         </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner._ScanForIpb__4IPAddress">
-            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.&lt;ScanForIp&gt;b__4(System.Net.IPAddress)"/>
-            </summary>
-        </member>
         <member name="P:PirateSpades.Network.Moles.MPirateScanner._WaitForBroadcastb__0PirateMessage">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.&lt;WaitForBroadcast&gt;b__0(PirateSpades.Network.PirateMessage)"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner._WaitForBroadcastb__1PirateMessage">
-            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.&lt;WaitForBroadcast&gt;b__1(PirateSpades.Network.PirateMessage)"/>
             </summary>
         </member>
         <member name="T:PirateSpades.Network.Moles.MPirateScanner.AllInstances">
@@ -2549,36 +2665,134 @@
             <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.CheckRunning"/>
             </summary>
         </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.IpCountGet">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.IpCount"/>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.GameFoundAddPirateScannerGameFoundDelegate">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.add_GameFound(PirateSpades.Network.PirateScanner.GameFoundDelegate)"/>
             </summary>
         </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.IpCountSetInt32">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.IpCount"/>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.GameFoundRemovePirateScannerGameFoundDelegate">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.remove_GameFound(PirateSpades.Network.PirateScanner.GameFoundDelegate)"/>
             </summary>
         </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.IpsCheckedGet">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.IpsChecked"/>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.GetGameInfoPirateMessage">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.GetGameInfo(PirateSpades.Network.PirateMessage)"/>
             </summary>
         </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.IpsCheckedSetInt32">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.IpsChecked"/>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.ScanForGamesInt32Int32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.ScanForGames(System.Int32,System.Int32)"/>
             </summary>
         </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.PercentageDoneGet">
-            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.PercentageDone"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.ScanForIpInt32">
-            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.ScanForIp(System.Int32)"/>
-            </summary>
-        </member>
-        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.ScanForIpsInt32Int32Int32">
-            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.ScanForIps(System.Int32,System.Int32,System.Int32)"/>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.ScanForGamesInt32Int32Int32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.ScanForGames(System.Int32,System.Int32,System.Int32)"/>
             </summary>
         </member>
         <member name="P:PirateSpades.Network.Moles.MPirateScanner.AllInstances.WaitForBroadcastSocketEndPoint">
             <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.WaitForBroadcast(System.Net.Sockets.Socket,System.Net.EndPoint)"/>
+            </summary>
+        </member>
+        <member name="T:PirateSpades.Network.Moles.MPirateScanner.MGameInfo">
+            <summary>Mole type of <see cref="T:PirateSpades.Network.PirateScanner.GameInfo"/>
+            .</summary>
+        </member>
+        <member name="M:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.#ctor">
+            <summary>Initializes a new mole</summary>
+        </member>
+        <member name="M:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.#ctor(PirateSpades.Network.PirateScanner.GameInfo)">
+            <summary>Initializes a new mole for the given instance</summary>
+        </member>
+        <member name="M:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.BehaveAsCurrent">
+            <summary>Assigns the &apos;Current&apos; behavior for all methods of the moled type</summary>
+        </member>
+        <member name="M:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.BehaveAsNotImplemented">
+            <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the moled type</summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.Behavior">
+            <summary>Assigns the behavior for all methods of the moled type</summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.ConstructorIPAddressStringInt32Int32">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.GameInfo.#ctor(System.Net.IPAddress,System.String,System.Int32,System.Int32)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.EqualsObject">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.GameInfo.Equals(System.Object)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.GameNameGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.GameName"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.GameNameSetString">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.GameName"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.GetHashCode">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.GameInfo.GetHashCode"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.IpGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.Ip"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.IpSetIPAddress">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.Ip"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.MaxPlayersGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.MaxPlayers"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.MaxPlayersSetInt32">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.MaxPlayers"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.PlayersGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.Players"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.PlayersSetInt32">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.Players"/>
+            </summary>
+        </member>
+        <member name="T:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances">
+            <summary>Define moles for all instances members</summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances.EqualsObject">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.GameInfo.Equals(System.Object)"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances.GameNameGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.GameName"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances.GameNameSetString">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.GameName"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances.GetHashCode01">
+            <summary>Sets the mole of <see cref="M:PirateSpades.Network.PirateScanner.GameInfo.GetHashCode"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances.IpGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.Ip"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances.IpSetIPAddress">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.Ip"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances.MaxPlayersGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.MaxPlayers"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances.MaxPlayersSetInt32">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.MaxPlayers"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances.PlayersGet">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.Players"/>
+            </summary>
+        </member>
+        <member name="P:PirateSpades.Network.Moles.MPirateScanner.MGameInfo.AllInstances.PlayersSetInt32">
+            <summary>Sets the mole of <see cref="P:PirateSpades.Network.PirateScanner.GameInfo.Players"/>
             </summary>
         </member>
         <member name="T:PirateSpades.GameLogicV2.Moles.MPlayer">
@@ -3466,6 +3680,9 @@
             <summary>Stub type of <see cref="T:PirateSpades.Network.PirateBroadcaster"/>
             .</summary>
         </member>
+        <member name="M:PirateSpades.Network.Moles.SPirateBroadcaster.#ctor(System.Int32,System.Double)">
+            <summary>Initializes a new instance</summary>
+        </member>
         <member name="M:PirateSpades.Network.Moles.SPirateBroadcaster.#ctor(System.Byte[],System.Int32,System.Double)">
             <summary>Initializes a new instance</summary>
         </member>
@@ -3580,6 +3797,9 @@
             .</summary>
         </member>
         <member name="M:PirateSpades.Network.Moles.SPirateMessageObj.#ctor(PirateSpades.Network.PirateClient)">
+            <summary>Initializes a new instance</summary>
+        </member>
+        <member name="M:PirateSpades.Network.Moles.SPirateMessageObj.#ctor(PirateSpades.Network.PirateClient,PirateSpades.Network.PirateMessage)">
             <summary>Initializes a new instance</summary>
         </member>
         <member name="M:PirateSpades.Network.Moles.SPirateMessageObj.InitializeStub">

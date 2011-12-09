@@ -10,7 +10,10 @@ namespace PirateSpadesGame.GameModes {
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
 
+    using PirateSpades.GameLogicV2;
     using PirateSpades.Network;
+
+    using Game = PirateSpades.GameLogicV2.Game;
 
     public class JoinGame : IGameMode {
         private PsGame game;
@@ -35,13 +38,9 @@ namespace PirateSpadesGame.GameModes {
         private PirateScanner scanner;
         private ContentManager content;
         private bool refreshed = false;
-<<<<<<< HEAD
         private List<Button> buttons; 
-=======
         private bool refreshing = false;
-
         private delegate IList<PirateScanner.GameInfo> ScanForGamesDelegate(int port, int timeout);
->>>>>>> 90f4063dfdd0f23e41af479f5cd215a76137c7ed
 
         public JoinGame(PsGame game) {
             servers = new List<ServerSprite>();
@@ -103,9 +102,10 @@ namespace PirateSpadesGame.GameModes {
                     foreach(var s in servers) {
                         s.Update(gameTime);
                         if(s.DoubleClick) {
-                            inJoinedGame = new JoinedGame(false, s.IP);
-                            inJoinedGame.LoadContent(content);
-                            joinedGame = true;
+                            var client = new PirateClient(game.PlayerName, s.IP, 4939);
+                            var playingGame = new Game();
+                            game.Client = client;
+                            game.PlayingGame = playingGame;
                         }
                     }
                 }
@@ -140,7 +140,7 @@ namespace PirateSpadesGame.GameModes {
             refreshing = true;
 
             const int Port = 4939;
-            const int Timeout = 15000; // Milliseconds
+            const int Timeout = 15000;
 
             scanner.GameFound += GameFound;
             var del = new ScanForGamesDelegate(scanner.ScanForGames);
@@ -171,10 +171,10 @@ namespace PirateSpadesGame.GameModes {
 
         private void JoinSelectedGame() {
             foreach(var s in servers.Where(s => s.Selected)) {
-                inJoinedGame = new JoinedGame(false, s.IP);
-                inJoinedGame.LoadContent(content);
-                joinedGame = true;
-                return;
+                var client = new PirateClient(game.PlayerName, s.IP, 4939);
+                var playingGame = new Game();
+                game.Client = client;
+                game.PlayingGame = playingGame;
             }
         }
 

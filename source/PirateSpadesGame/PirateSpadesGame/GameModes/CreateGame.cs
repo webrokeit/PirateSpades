@@ -11,6 +11,11 @@ namespace PirateSpadesGame.GameModes {
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
 
+    using PirateSpades.GameLogicV2;
+    using PirateSpades.Network;
+
+    using Game = PirateSpades.GameLogicV2.Game;
+
     public class CreateGame : IGameMode {
         private PsGame game;
         private Sprite backGround;
@@ -93,9 +98,13 @@ namespace PirateSpadesGame.GameModes {
                     }
                     var players = numberOfPlayers.ParseInput();
                     var sName = serverName.Text;
-                    //inJoinedGame = new JoinedGame(true, IPAddress.Any);
-                    //inJoinedGame.LoadContent(content);
-                    //joinedGame = true;
+                    var host = new PirateHost(4939);
+                    host.Start(sName, players);
+                    var client = new PirateClient(game.PlayerName, host.Ip, 4939);
+                    var playingGame = new Game();
+                    game.Host = host;
+                    game.Client = client;
+                    game.PlayingGame = playingGame;
                     break;
                 case "cancelcg":
                     game.State = GameState.StartUp;
