@@ -2,6 +2,8 @@
 namespace PirateSpadesGame.GameModes {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
@@ -10,9 +12,6 @@ namespace PirateSpadesGame.GameModes {
     public class StartUp : IGameMode {
         private List<Button> buttons;
         private const int numberOfButtons = 5;
-        private bool mpressed = false;
-        private bool prevmpressed = false;
-        private double frametime;
         private bool settingsEnabled;
         private bool rulesEnabled = false;
         private Sprite rules;
@@ -32,6 +31,7 @@ namespace PirateSpadesGame.GameModes {
         private Vector2 scoreboardPos;
         private string menuKey = "Press ESC to show menu when ingame";
         private Vector2 menuPos;
+        private List<Button> settingsButton;
 
         public StartUp(PsGame game) {
             this.game = game;
@@ -68,6 +68,7 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void SetUpSettings(GameWindow window) {
+            settingsButton = new List<Button>();
             settings = new Sprite() { Color = Color.White };
             int settingsX = window.ClientBounds.Width / 2 - 600 / 2;
             int settingsY = window.ClientBounds.Height / 2 - 468 / 2;
@@ -75,9 +76,11 @@ namespace PirateSpadesGame.GameModes {
             int cancelX = settingsX + 425;
             int cancelY = settingsY + 400;
             cancel = new Button("cancel", cancelX, cancelY);
+            settingsButton.Add(cancel);
             int applyX = settingsX + 40;
             int applyY = settingsY + 400;
             apply = new Button("apply", applyX, applyY);
+            settingsButton.Add(apply);
             var rect = new Rectangle(settingsX + (600-325), settingsY + 100, 250, 75);
             playername = new Textbox(rect, "playername") { Text = this.game.PlayerName };
             playername.MoveText(45);
@@ -106,51 +109,21 @@ namespace PirateSpadesGame.GameModes {
         }
 
         public void Update(GameTime gameTime) {
-            frametime = gameTime.ElapsedGameTime.Milliseconds / 1000.0;
-
-            MouseState mouseState = Mouse.GetState();
-            int mx = mouseState.X;
-            int my = mouseState.Y;
-            prevmpressed = mpressed;
-            mpressed = mouseState.LeftButton == ButtonState.Pressed;
             if(settingsEnabled) {
-                this.UpdateButton(cancel, mx, my);
-                this.UpdateButton(apply, mx, my);
+                foreach (var b in this.settingsButton.Where(b => b.Update(gameTime))) {
+                    this.ButtonAction(b);
+                }
                 playername.Update(gameTime);
                 volume.Update(gameTime);
             } else if(rulesEnabled) {
-                this.UpdateButton(back, mx, my);
-            } else {
-                foreach (var b in buttons) {
-                    UpdateButton(b, mx, my);
-                }
-            }
-        }
-
-        private void UpdateButton(Button b, int mx, int my) {
-            if(b.HitAlpha(b.Rectangle, b.Tex, mx, my)) {
-                b.Timer = 0.0;
-                if(mpressed) {
-                    b.State = BState.Down;
-                    b.Color = Color.GhostWhite;
-                } else if(!mpressed && prevmpressed && b.State == BState.Down) {
-                    b.State = BState.JustReleased;
-                } else {
-                    b.State = BState.Hover;
-                    b.Color = Color.White;
+                if(back.Update(gameTime)) {
+                    this.ButtonAction(back);
                 }
             } else {
-                b.State = BState.Up;
-                if(b.Timer > 0) {
-                    b.Timer = b.Timer - frametime;
-                } else {
-                    b.Color = Color.CornflowerBlue;
+                foreach (var b in this.buttons.Where(b => b.Update(gameTime))) {
+                    this.ButtonAction(b);
                 }
             }
-            if(b.State == BState.JustReleased) {
-                ButtonAction(b);
-            }
-
         }
 
         private void ButtonAction(Button b) {

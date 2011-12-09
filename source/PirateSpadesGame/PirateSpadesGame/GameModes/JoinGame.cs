@@ -33,6 +33,7 @@ namespace PirateSpadesGame.GameModes {
         private PirateScanner scanner;
         private ContentManager content;
         private bool refreshed = false;
+        private List<Button> buttons; 
 
         public JoinGame(PsGame game) {
             servers = new List<ServerSprite>();
@@ -63,6 +64,7 @@ namespace PirateSpadesGame.GameModes {
             refreshButton = new Button("refresh", buttonx, buttony);
             buttonx -= Button.Width;
             joinGameButton = new Button("jointhisgame", buttonx, buttony);
+            buttons = new List<Button> { this.xButton, this.refreshButton, this.joinGameButton, this.back };
         }
 
         public void SetUpServers() {
@@ -86,17 +88,9 @@ namespace PirateSpadesGame.GameModes {
 
         public void Update(GameTime gameTime) {
             if(!joinedGame) {
-                frametime = gameTime.ElapsedGameTime.Milliseconds / 1000.0;
-
-                MouseState mouseState = Mouse.GetState();
-                int mx = mouseState.X;
-                int my = mouseState.Y;
-                prevmpressed = mpressed;
-                mpressed = mouseState.LeftButton == ButtonState.Pressed;
-                this.UpdateButton(xButton, mx, my);
-                this.UpdateButton(back, mx, my);
-                this.UpdateButton(refreshButton, mx, my);
-                this.UpdateButton(joinGameButton, mx, my);
+                foreach (var b in this.buttons.Where(b => b.Update(gameTime))) {
+                    this.ButtonAction(b);
+                }
                 if(servers.Count > 0) {
                     foreach(var s in servers) {
                         s.Update(gameTime);
@@ -110,32 +104,6 @@ namespace PirateSpadesGame.GameModes {
             } else {
                 inJoinedGame.Update(gameTime);
             }
-        }
-
-        private void UpdateButton(Button b, int mx, int my) {
-            if(b.HitAlpha(b.Rectangle, b.Tex, mx, my)) {
-                b.Timer = 0.0;
-                if(mpressed) {
-                    b.State = BState.Down;
-                    b.Color = Color.GhostWhite;
-                } else if(!mpressed && prevmpressed && b.State == BState.Down) {
-                    b.State = BState.JustReleased;
-                } else {
-                    b.State = BState.Hover;
-                    b.Color = Color.White;
-                }
-            } else {
-                b.State = BState.Up;
-                if(b.Timer > 0) {
-                    b.Timer = b.Timer - frametime;
-                } else {
-                    b.Color = Color.CornflowerBlue;
-                }
-            }
-            if(b.State == BState.JustReleased) {
-                ButtonAction(b);
-            }
-
         }
 
         private void ButtonAction(Button b) {
