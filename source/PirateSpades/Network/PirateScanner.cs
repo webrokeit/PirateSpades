@@ -98,7 +98,7 @@ namespace PirateSpades.Network {
         private IList<GameInfo> WaitForBroadcast(Socket sock, EndPoint ep) {
             var res = new List<GameInfo>();
             try {
-                var buffer = new byte[512];
+                var buffer = new byte[sock.ReceiveBufferSize];
                 var read = sock.ReceiveFrom(buffer, ref ep);
                 if(read > 4) {
                     res.AddRange(

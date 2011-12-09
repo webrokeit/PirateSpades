@@ -32,6 +32,7 @@ namespace PirateSpades.Network {
             this.Body = body;
         }
 
+        [Pure]
         public static List<PirateMessage> GetMessages(byte[] buffer, int readLen) {
             Contract.Requires(buffer != null && readLen <= buffer.Length && readLen > 4);
 
@@ -58,11 +59,13 @@ namespace PirateSpades.Network {
             return messages;
         }
 
+        [Pure]
         private static PirateMessageHead GetHead(string head) {
             PirateMessageHead pmh;
             return Enum.TryParse(head, true, out pmh) ? pmh : PirateMessageHead.Fail;
         }
 
+        [Pure]
         public byte[] GetBytes() {
             var tmp = Encoding.UTF8.GetBytes(Head.ToString().ToUpper() + Body);
             var size = Encoding.UTF8.GetBytes(String.Format("{0:d4}", tmp.Length));
@@ -72,23 +75,27 @@ namespace PirateSpades.Network {
             return msg;
         }
 
+        [Pure]
         public static PirateError GetError(string s) {
             PirateError err;
             return Enum.TryParse(s, true, out err) ? err : PirateError.Unknown;
         }
 
+        [Pure]
         public static string ConstructBody(params string[] inputs) {
             Contract.Requires(inputs != null);
             Contract.Ensures(Contract.Result<string>() != null);
             return string.Join("\n", inputs);
         }
 
+        [Pure]
         public static string ConstructBody(IEnumerable<string> inputs) {
             Contract.Requires(inputs != null);
             Contract.Ensures(Contract.Result<string>() != null);
             return ConstructBody(inputs.ToArray());
         }
 
+        [Pure]
         public static string AppendBody(string body, params string[] inputs) {
             Contract.Requires(body != null && inputs != null);
             Contract.Ensures(Contract.Result<string>() != null);
@@ -98,6 +105,7 @@ namespace PirateSpades.Network {
             return body + "\n" + ConstructBody(inputs);
         }
 
+        [Pure]
         public static string ConstructHostInfo(PirateHost host) {
             Contract.Requires(host != null);
             Contract.Ensures(Contract.Result<string>() != null);
@@ -108,12 +116,14 @@ namespace PirateSpades.Network {
                 ConstructMaxPlayersInGame(host.MaxPlayers));
         }
 
+        [Pure]
         public static string ConstructHostIp(PirateHost host) {
             Contract.Requires(host != null);
             Contract.Ensures(Contract.Result<string>() != null);
             return "host_ip: " + host.Ip;
         }
 
+        [Pure]
         public static IPAddress GetHostIp(PirateMessage msg) {
             Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^host_ip: [0-9.]+$", RegexOptions.Multiline));
             Contract.Requires(PirateScanner.IsValidIp(Regex.Match(msg.Body, @"^host_ip: ([0-9.]+)$", RegexOptions.Multiline).Groups[1].Value));
@@ -121,12 +131,14 @@ namespace PirateSpades.Network {
             return PirateScanner.GetIp(Regex.Match(msg.Body, @"^host_ip: ([0-9.]+)$", RegexOptions.Multiline).Groups[1].Value);
         }
 
+        [Pure]
         public static string ConstructGameName(PirateHost host) {
             Contract.Requires(host != null);
             Contract.Ensures(Contract.Result<string>() != null);
             return "game_name: " + host.GameName;
         }
 
+        [Pure]
         public static string GetGameName(PirateMessage msg) {
             Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^game_name: .+$", RegexOptions.Multiline));
             Contract.Requires(PirateHost.IsValidGameName(Regex.Match(msg.Body, @"^game_name: (.+)$", RegexOptions.Multiline).Groups[1].Value));
@@ -134,24 +146,28 @@ namespace PirateSpades.Network {
             return Regex.Match(msg.Body, @"^game_name: (.+)$", RegexOptions.Multiline).Groups[1].Value;
         }
 
+        [Pure]
         public static string ConstructPlayerName(Player player) {
             Contract.Requires(player != null && player.Name != null);
             Contract.Ensures(Contract.Result<string>() != null);
             return ConstructPlayerName(player.Name);
         }
 
+        [Pure]
         public static string ConstructPlayerName(string name) {
             Contract.Requires(name != null);
             Contract.Ensures(Contract.Result<string>() != null);
             return "player_name: " + name;
         }
 
+        [Pure]
         public static string GetPlayerName(PirateMessage msg) {
             Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^player_name: (\w{3,20})$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<string>() != null);
             return Regex.Match(msg.Body, @"^player_name: (\w{3,20})$", RegexOptions.Multiline).Groups[1].Value;
         }
 
+        [Pure]
         public static HashSet<string> GetPlayerNames(PirateMessage msg) {
             Contract.Requires(msg != null);
             Contract.Ensures(Contract.Result<HashSet<string>>() != null);
@@ -162,20 +178,23 @@ namespace PirateSpades.Network {
             return res;
         }
 
+        [Pure]
         public static string ConstructPlayersInGame(int players) {
             Contract.Requires(players >= 0);
             Contract.Ensures(Contract.Result<string>() != null);
             return "players_ingame: " + players;
         }
 
+        [Pure]
         public static int GetPlayersInGame(PirateMessage msg) {
             Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^players_ingame: [0-5]$", RegexOptions.Multiline));
-            Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= Game.MinPlayersInGame);
+            Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= Game.MaxPlayersInGame);
             return
                 int.Parse(
                     Regex.Match(msg.Body, @"^players_ingame: ([0-5])$", RegexOptions.Multiline).Groups[1].Value);
         }
 
+        [Pure]
         public static string ConstructMaxPlayersInGame(int players) {
             Contract.Requires(players >= 0);
             Contract.Ensures(Contract.Result<string>() != null);
@@ -184,17 +203,19 @@ namespace PirateSpades.Network {
 
         public static int GetMaxPlayersInGame(PirateMessage msg) {
             Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^players_ingamemax: [0-5]$", RegexOptions.Multiline));
-            Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= Game.MinPlayersInGame);
+            Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= Game.MaxPlayersInGame);
             return
                 int.Parse(
                     Regex.Match(msg.Body, @"^players_ingamemax: ([0-5])$", RegexOptions.Multiline).Groups[1].Value);
         }
 
+        [Pure]
         public static string ConstructPlayerBet(Player player) {
             Contract.Requires(player != null);
             return "player_bet: " + player.Name + ";" + player.Bet;
         }
 
+        [Pure]
         public static Dictionary<string, int> GetPlayerBets(PirateMessage msg) {
             Contract.Requires(msg != null);
             Contract.Ensures(Contract.Result<Dictionary<string, int>>() != null);
@@ -205,11 +226,13 @@ namespace PirateSpades.Network {
             return res;
         }
 
+        [Pure]
         public static string ConstructRoundNumber(int round) {
             Contract.Requires(round >= 1 && round <= 20);
             return "round: " + round;
         }
 
+        [Pure]
         public static int GetRound(PirateMessage msg) {
             Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^round: ([1-9]|1[0-9]|20)$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<int>() >= 1 && Contract.Result<int>() <= 20);
@@ -217,50 +240,59 @@ namespace PirateSpades.Network {
                 int.Parse(Regex.Match(msg.Body, @"^round: ([1-9]|1[0-9]|20)$", RegexOptions.Multiline).Groups[1].Value);
         }
 
+        [Pure]
         public static string ConstructDealer(string name) {
             Contract.Requires(name != null);
             return "dealer: " + name;
         }
 
+        [Pure]
         public static string GetDealer(PirateMessage msg) {
             Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^dealer: \w+$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<string>() != null);
             return Regex.Match(msg.Body, @"^dealer: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
         }
 
+        [Pure]
         public static string ConstructStartingPlayer(Player player) {
             Contract.Requires(player != null);
             return "starting_player: " + player.Name;
         }
 
+        [Pure]
         public static string GetStartingPlayer(PirateMessage msg) {
             Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^starting_player: \w+$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<string>() != null);
             return Regex.Match(msg.Body, @"^starting_player: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
         }
 
+        [Pure]
         public static string ConstructWinner(Player player) {
             Contract.Requires(player != null);
             return "winning_player: " + player.Name;
         }
 
+        [Pure]
         public static string GetWinner(PirateMessage msg) {
             Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^winning_player: \w+$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<string>() != null);
             return Regex.Match(msg.Body, @"^winning_player: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
         }
 
+        [Pure]
         public static string ConstructPlayerTrick(Round round, Player player) {
             Contract.Requires(round != null && player != null && round.PlayerTricks.ContainsKey(player));
             return "player_tricks: " + player.Name + ";" + round.PlayerTricks[player].Count;
         }
 
+        [Pure]
         public static IList<string> ConstructPlayerTricks(Round round) {
             Contract.Requires(round != null);
             Contract.Ensures(Contract.Result<IList<string>>() != null);
             return round.PlayerTricks.Select(kvp => ConstructPlayerTrick(round, kvp.Key)).ToList();
         }
 
+        [Pure]
         public static Dictionary<string, int> GetPlayerTricks(PirateMessage msg) {
             Contract.Requires(msg != null);
             Contract.Ensures(Contract.Result<Dictionary<string, int>>() != null);
@@ -271,17 +303,20 @@ namespace PirateSpades.Network {
             return res;
         }
 
+        [Pure]
         public static string ConstructPlayerScore(Player player, int score) {
             Contract.Requires(player != null);
             return "player_score: " + player.Name + ";" + score;
         }
 
+        [Pure]
         public static IList<string> ContstructPlayerScores(Dictionary<Player, int> scores) {
             Contract.Requires(scores != null);
             Contract.Ensures(Contract.Result<IList<string>>() != null);
             return scores.Select(kvp => ConstructPlayerScore(kvp.Key, kvp.Value)).ToList();
         }
 
+        [Pure]
         public static Dictionary<string, int> GetPlayerScores(PirateMessage msg) {
             Contract.Requires(msg != null);
             Contract.Ensures(Contract.Result<Dictionary<string, int>>() != null);

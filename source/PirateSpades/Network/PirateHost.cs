@@ -94,6 +94,7 @@ namespace PirateSpades.Network {
             this.Listener.Start();
             this.WaitForSocket();
 
+            this.UpdateBroadcastInfo();
             Broadcaster.BroadcastExecuted += this.OnBroadcastExecuted;
             Broadcaster.Start();
             
@@ -416,7 +417,7 @@ namespace PirateSpades.Network {
 
         public static bool IsValidGameName(string gameName) {
             Contract.Requires(!string.IsNullOrEmpty(gameName));
-            return Regex.IsMatch(gameName, @"^[a-zA-Z0-9 _-\[\{\(\)\}\]]{1,40}$");
+            return Regex.IsMatch(gameName, @"^[a-zA-Z0-9 _.\[\{\(\)\}\]-]{1,40}$");
         }
     }
 }
