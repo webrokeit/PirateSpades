@@ -9,6 +9,8 @@ using System.Collections.Generic;
 
 namespace PirateSpades.GameLogicV2
 {
+    using PirateSpades.GameLogic;
+
     [TestClass]
     [PexClass(typeof(Game))]
     [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]

@@ -8,8 +8,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PirateSpadesGame {
-    using PirateSpades.GameLogicV2;
-
     public class Sprite {
         public Vector2 Position = new Vector2(0,0);
         private Texture2D mSpriteTexture;

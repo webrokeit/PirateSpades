@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace PirateSpades.GameLogicV2 {
+﻿namespace PirateSpades.GameLogic {
     using System.Diagnostics.Contracts;
 
     using PirateSpades.Misc;

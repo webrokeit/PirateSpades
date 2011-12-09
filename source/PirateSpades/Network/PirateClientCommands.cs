@@ -11,7 +11,8 @@ namespace PirateSpades.Network {
     using System.Linq;
     using System.Net.Sockets;
     using System.Diagnostics.Contracts;
-    using PirateSpades.GameLogicV2;
+
+    using PirateSpades.GameLogic;
 
     public class PirateClientCommands {
         public static bool KnockKnock(Socket client) {

@@ -1,4 +1,4 @@
-﻿namespace PirateSpades.GameLogicV2 {
+﻿namespace PirateSpades.GameLogic {
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Linq;

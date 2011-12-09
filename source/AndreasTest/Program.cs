@@ -8,7 +8,7 @@ namespace AndreasTest {
     using System.Net;
     using System.Text.RegularExpressions;
 
-    using PirateSpades.GameLogicV2;
+    using PirateSpades.GameLogic;
     using PirateSpades.Misc;
 
     class Program {

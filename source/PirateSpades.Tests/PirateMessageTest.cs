@@ -10,6 +10,8 @@ using PirateSpades.GameLogicV2;
 
 namespace PirateSpades.Network
 {
+    using PirateSpades.GameLogic;
+
     [TestClass]
     [PexClass(typeof(PirateMessage))]
     [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]

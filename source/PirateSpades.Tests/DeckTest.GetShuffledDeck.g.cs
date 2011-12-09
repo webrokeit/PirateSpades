@@ -15,6 +15,8 @@ using Microsoft.Pex.Framework.Generated;
 
 namespace PirateSpades.GameLogicV2
 {
+    using PirateSpades.GameLogic;
+
     public partial class DeckTest {
 [TestMethod]
 [PexGeneratedBy(typeof(DeckTest))]

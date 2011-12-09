@@ -1,0 +1,62 @@
+﻿static diagram CLASS_INTERFACES
+component
+	cluster GAMELOGIC
+		component
+		class CARD
+			feature
+				Make : CARD
+					-> suit : SUIT
+					-> value : CARDVALUE
+					require
+						suit >= SUIT.DIAMONDS
+						suit <= SUIT.SPADES
+						value => 2
+						value <= 14
+					end
+				Value : CARDVALUE
+					-> value : CARDVALUE
+				Suit : SUIT
+					-> value : SUIT
+				CompareTo : INTEGER
+					-> obj : ANY
+					ensure
+						Result >= -1
+						Result <= 1
+					end
+				HigherThan : BOOL
+					-> card : CARD
+					require
+						card /= Void
+					end
+				SameSuit : BOOL
+					-> card : CARD
+					require
+						card /= Void
+					end
+				ToString : STRING
+					ensure
+						Result /= Void
+					end
+				FromString : CARD
+					-> s : STRING
+					require
+						s /= Void
+						-- Must match regex: ^card: (Diamonds|Clubs|Hearts|Spades);(Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Jack|Queen|King|Ace)$
+					ensure
+						Result /= Void
+					end
+				CardsToDeal : INTEGER
+					-> round : INTEGER
+					-> players : INTEGER
+					require
+						round > 0
+						players > 0
+					end
+				GetHashCode : INTEGER
+				Equals : BOOL
+					-> obj : ANY
+				EnumRegexString : STRING
+					-> enumType : ANY						
+		end
+
+end

@@ -1,4 +1,4 @@
-﻿namespace PirateSpades.GameLogicV2 {
+﻿namespace PirateSpades.GameLogic {
     using System.Diagnostics.Contracts;
     using System;
     using System.Text.RegularExpressions;
@@ -18,6 +18,7 @@
 
         [Pure]
         public int CompareTo(Object obj) {
+            Contract.Ensures(Contract.Result<int>() >= -1 && Contract.Result<int>() <= 1);
             if(obj == null || !(obj is Card)) return 0;
             var h = this.GetHashCode();
             var oh = obj.GetHashCode();
@@ -38,7 +39,6 @@
         [Pure]
         public bool SameSuit(Card card) {
             Contract.Requires(card != null);
-            Contract.Ensures(this.Suit != card.Suit || Contract.Result<bool>());
             return Suit == card.Suit;
         }
 

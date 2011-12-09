@@ -17,6 +17,8 @@ using Microsoft.Pex.Engine.Exceptions;
 
 namespace PirateSpades.Network
 {
+    using PirateSpades.GameLogic;
+
     public partial class PirateClientCommandsTest {
 [TestMethod]
 [PexGeneratedBy(typeof(PirateClientCommandsTest))]

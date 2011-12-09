@@ -8,6 +8,8 @@ using PirateSpades.GameLogicV2;
 
 namespace PirateSpades.GameLogicV2
 {
+    using PirateSpades.GameLogic;
+
     [TestClass]
     [PexClass(typeof(Player))]
     [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]
