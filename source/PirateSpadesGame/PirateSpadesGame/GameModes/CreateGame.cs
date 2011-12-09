@@ -18,15 +18,13 @@ namespace PirateSpadesGame.GameModes {
         private bool joinedGame = false;
         private Button cancel;
         private Button createGame;
-        private bool mpressed;
-        private bool prevmpressed;
-        private double frametime;
         private Numberbox numberOfPlayers;
         private Textbox serverName;
         private Vector2 namePos;
         private Vector2 playersPos;
         private SpriteFont font;
         private ContentManager content;
+        private List<Button> buttons; 
 
         public CreateGame(PsGame game) {
             this.game = game;
@@ -47,7 +45,7 @@ namespace PirateSpadesGame.GameModes {
             var cancelX = x + 285;
             var cancelY = y+ 325;
             cancel = new Button("cancelcg", cancelX, cancelY);
-
+            
             var rect = new Rectangle(x+250, y+200, 100, 50);
             numberOfPlayers = new Numberbox(rect, "volumebox", 1) { Limit = 5, Number = 5 };
             numberOfPlayers.Text = numberOfPlayers.Number.ToString();
@@ -58,6 +56,8 @@ namespace PirateSpadesGame.GameModes {
 
             namePos = new Vector2(x + 10, y + 125);
             playersPos = new Vector2(x+10, y+225);
+            
+            buttons = new List<Button> { this.cancel, this.createGame };
         }
 
         public void LoadContent(ContentManager contentManager) {
@@ -71,47 +71,14 @@ namespace PirateSpadesGame.GameModes {
 
         public void Update(GameTime gameTime) {
             if(!joinedGame) {
-                frametime = gameTime.ElapsedGameTime.Milliseconds / 1000.0;
-
-                MouseState mouseState = Mouse.GetState();
-                int mx = mouseState.X;
-                int my = mouseState.Y;
-                prevmpressed = mpressed;
-                mpressed = mouseState.LeftButton == ButtonState.Pressed;
-
-                this.UpdateButton(cancel, mx, my);
-                this.UpdateButton(createGame, mx, my);
+                foreach (var b in this.buttons.Where(b => b.Update(gameTime))) {
+                    this.ButtonAction(b);
+                }
                 numberOfPlayers.Update(gameTime);
                 serverName.Update(gameTime);
             } else {
                 inJoinedGame.Update(gameTime);
             }
-        }
-
-        private void UpdateButton(Button b, int mx, int my) {
-            if(b.HitAlpha(b.Rectangle, b.Tex, mx, my)) {
-                b.Timer = 0.0;
-                if(mpressed) {
-                    b.State = BState.Down;
-                    b.Color = Color.GhostWhite;
-                } else if(!mpressed && prevmpressed && b.State == BState.Down) {
-                    b.State = BState.JustReleased;
-                } else {
-                    b.State = BState.Hover;
-                    b.Color = Color.White;
-                }
-            } else {
-                b.State = BState.Up;
-                if(b.Timer > 0) {
-                    b.Timer = b.Timer - frametime;
-                } else {
-                    b.Color = Color.CornflowerBlue;
-                }
-            }
-            if(b.State == BState.JustReleased) {
-                ButtonAction(b);
-            }
-
         }
 
         private void ButtonAction(Button b) {

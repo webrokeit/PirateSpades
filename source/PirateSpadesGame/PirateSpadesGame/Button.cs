@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PirateSpadesGame {
+    using Microsoft.Xna.Framework.Input;
 
     /// <summary>
     /// the buttons in the menu is defined in this class
@@ -12,6 +13,9 @@ namespace PirateSpadesGame {
         private Texture2D buttonTexture;
         private const int height = 50;
         private const int width = 150;
+        private double frametime;
+        private bool mpressed = false;
+        private bool prevmpressed = false;
 
         public Button(string name, int x, int y) {
             this.name = name;
@@ -43,6 +47,43 @@ namespace PirateSpadesGame {
 
         public void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(buttonTexture, Rectangle, Color);
+        }
+
+        public bool Update(GameTime gameTime) {
+            frametime = gameTime.ElapsedGameTime.Milliseconds / 1000.0;
+            MouseState mouseState = Mouse.GetState();
+            int mx = mouseState.X;
+            int my = mouseState.Y;
+            prevmpressed = mpressed;
+            mpressed = mouseState.LeftButton == ButtonState.Pressed;
+
+            if(HitAlpha(Rectangle, Tex, mx, my)) {
+                Timer = 0.0;
+                if(mpressed) {
+                    State = BState.Down;
+                    Color = Color.GhostWhite;
+                    return false;
+                } else if(!mpressed && prevmpressed && State == BState.Down) {
+                    State = BState.JustReleased;
+                } else {
+                    State = BState.Hover;
+                    Color = Color.White;
+                    return false;
+                }
+            } else {
+                State = BState.Up;
+                if(Timer > 0) {
+                    Timer = Timer - frametime;
+                    return false;
+                } else {
+                    Color = Color.CornflowerBlue;
+                    return false;
+                }
+            }
+            if(State == BState.JustReleased) {
+                return true;
+            }
+            return false;
         }
 
         public bool HitAlpha(Rectangle rect, Texture2D tex, int x, int y) {
