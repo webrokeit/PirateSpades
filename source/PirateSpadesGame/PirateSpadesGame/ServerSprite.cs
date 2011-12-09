@@ -61,7 +61,7 @@ namespace PirateSpadesGame {
         }
 
         public void Update(GameTime gameTime) {
-            MouseState state = Mouse.GetState();
+            var state = Mouse.GetState();
             this.UpdateMovement(state);
         }
 
