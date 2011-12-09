@@ -16,7 +16,7 @@ namespace PirateSpades.Network {
     using System.Net.Sockets;
     using System.Text.RegularExpressions;
 
-    using PirateSpades.GameLogicV2;
+    using PirateSpades.GameLogic;
 
     public class PirateClient : Player {
         public readonly Socket Socket;

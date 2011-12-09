@@ -16,6 +16,8 @@ using Microsoft.Pex.Engine.Exceptions;
 
 namespace PirateSpades.GameLogicV2
 {
+    using PirateSpades.GameLogic;
+
     public partial class CardTest {
 [TestMethod]
 [PexGeneratedBy(typeof(CardTest))]

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace PirateSpadesGame {
-    using PirateSpades.GameLogicV2;
+    using PirateSpades.GameLogic;
 
     public class CardSprite : Sprite {
         private Card card;

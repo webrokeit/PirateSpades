@@ -10,6 +10,8 @@ using System.Net.Sockets;
 
 namespace PirateSpades.Network
 {
+    using PirateSpades.GameLogic;
+
     [TestClass]
     [PexClass(typeof(PirateClientCommands))]
     [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]

@@ -15,7 +15,7 @@ namespace PirateSpades.Network {
     using System.Text;
     using System.Text.RegularExpressions;
 
-    using PirateSpades.GameLogicV2;
+    using PirateSpades.GameLogic;
 
     public class PirateMessage {
         public static int BufferSize = 4096;

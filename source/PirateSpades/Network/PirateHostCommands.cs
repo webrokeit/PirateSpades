@@ -12,7 +12,8 @@ namespace PirateSpades.Network {
     using System.Linq;
     using System.Text;
     using System.Diagnostics.Contracts;
-    using PirateSpades.GameLogicV2;
+
+    using PirateSpades.GameLogic;
     using PirateSpades.Misc;
 
     public class PirateHostCommands {

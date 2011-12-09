@@ -78,7 +78,7 @@ namespace PirateSpades.Network {
                         break;
                     ar.AsyncWaitHandle.WaitOne(maxWait);
                     if(ar.IsCompleted) {
-                        foreach(var gameInfo in del.EndInvoke(ar)) {
+                        foreach (var gameInfo in del.EndInvoke(ar).Where(gameInfo => !games.Contains(gameInfo))) {
                             if (this.GameFound != null) this.GameFound(gameInfo);
                             games.Add(gameInfo);
                         }
