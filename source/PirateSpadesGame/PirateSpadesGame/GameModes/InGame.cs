@@ -19,6 +19,7 @@ namespace PirateSpadesGame.GameModes {
         private Dictionary<string, Dictionary<string, int>> score;
         private bool playing = false;
         private bool showMenu = false;
+        private bool showScoreboard = false;
         private PirateClient client;
         private PirateHost host;
         private Game playingGame;
@@ -33,6 +34,7 @@ namespace PirateSpadesGame.GameModes {
         private PsGame game;
 
         public InGame(PsGame game) {
+            this.game = game;
             this.SetUp();
         }
 
@@ -75,9 +77,8 @@ namespace PirateSpadesGame.GameModes {
                 }
             }
             KeyboardState state = Keyboard.GetState();
-
             if (state.IsKeyDown(Keys.Tab)) {
-                //TODO: do this;
+                showScoreboard = true;
             }
 
         }

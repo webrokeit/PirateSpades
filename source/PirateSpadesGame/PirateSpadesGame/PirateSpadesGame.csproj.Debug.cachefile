@@ -7,6 +7,7 @@ Content\pspades.xnb
 Content\Gamerules.xnb
 Content\back.xnb
 Content\solidred.xnb
+Content\font.xnb
 Content\playername.xnb
 Content\apply.xnb
 Content\cancel.xnb
@@ -27,7 +28,4 @@ Content\exitgame.xnb
 Content\leavegame.xnb
 Content\resumegame.xnb
 Content\startgame.xnb
-<<<<<<< HEAD
-=======
-Content\font.xnb
->>>>>>> 90f4063dfdd0f23e41af479f5cd215a76137c7ed
+Content\servertex.xnb

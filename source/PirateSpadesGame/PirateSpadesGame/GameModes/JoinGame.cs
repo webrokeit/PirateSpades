@@ -38,7 +38,8 @@ namespace PirateSpadesGame.GameModes {
         private PirateScanner scanner;
         private ContentManager content;
         private bool refreshed = false;
-        private List<Button> buttons; 
+        private List<Button> buttons;
+        private int numberOfServers;
         private bool refreshing = false;
         private delegate IList<PirateScanner.GameInfo> ScanForGamesDelegate(int port, int timeout);
 
@@ -59,7 +60,7 @@ namespace PirateSpadesGame.GameModes {
             var serversX = x + 75;
             var serversY = y + 75;
 
-            serversRectangle = new Rectangle(serversX, serversY, 650, 350);
+            serversRectangle = new Rectangle(serversX, serversY, 650, 30);
             this.SetUpServers();
 
 
@@ -102,10 +103,8 @@ namespace PirateSpadesGame.GameModes {
                     foreach(var s in servers) {
                         s.Update(gameTime);
                         if(s.DoubleClick) {
-                            var client = new PirateClient(game.PlayerName, s.IP, 4939);
-                            var playingGame = new Game();
-                            game.Client = client;
-                            game.PlayingGame = playingGame;
+                            this.JoinThisGame(s);
+                            break;
                         }
                     }
                 }
@@ -138,6 +137,7 @@ namespace PirateSpadesGame.GameModes {
         private void Refresh() {
             if(refreshing) return;
             refreshing = true;
+            numberOfServers = 0;
 
             const int Port = 4939;
             const int Timeout = 15000;
@@ -155,8 +155,8 @@ namespace PirateSpadesGame.GameModes {
 
             // Dette burde være unødvendigt, så det skal lige testes om det skal med eller ej
             lock(servers) {
-                servers.Clear();
-                servers.AddRange(res.Select(gameInfo => new ServerSprite(gameInfo.Ip, gameInfo.GameName, gameInfo.Players, gameInfo.MaxPlayers, serversRectangle)));
+                //servers.Clear();
+                //servers.AddRange(res.Select(gameInfo => new ServerSprite(gameInfo.Ip, gameInfo.GameName, gameInfo.Players, gameInfo.MaxPlayers, serversRectangle)));
             }
 
             refreshing = false;
@@ -165,17 +165,26 @@ namespace PirateSpadesGame.GameModes {
 
         private void GameFound(PirateScanner.GameInfo gameInfo) {
             lock(servers) {
-                servers.Add(new ServerSprite(gameInfo.Ip, gameInfo.GameName, gameInfo.Players, gameInfo.MaxPlayers, serversRectangle));
+                numberOfServers++;
+                var serverSprite = new ServerSprite(gameInfo.Ip, gameInfo.GameName, gameInfo.Players, gameInfo.MaxPlayers, serversRectangle, numberOfServers);
+                serverSprite.LoadContent(content);
+                servers.Add(serverSprite);
             }
         }
 
         private void JoinSelectedGame() {
             foreach(var s in servers.Where(s => s.Selected)) {
-                var client = new PirateClient(game.PlayerName, s.IP, 4939);
-                var playingGame = new Game();
-                game.Client = client;
-                game.PlayingGame = playingGame;
+                this.JoinThisGame(s);
+                return;
             }
+        }
+
+        private void JoinThisGame(ServerSprite s) {
+            var client = new PirateClient(game.PlayerName, s.IP, 4939);
+            var playingGame = new Game();
+            game.Client = client;
+            game.PlayingGame = playingGame;
+            game.State = GameState.InGame;
         }
 
         public void Draw(SpriteBatch spriteBatch) {
