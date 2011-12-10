@@ -1,7 +1,5 @@
 -- System description for PirateSpades
--- Helena Charlotte Lyn Krüger (hclk@itu.dk)
 -- Andreas Hallberg Kjeldsen (ahal@itu.dk)
--- Morten Chabert Eskesen (mche@itu.dk)
 -- 14 December 2011
 
 system_chart PIRATE_SPADES
@@ -12,7 +10,9 @@ system_chart PIRATE_SPADES
 		created: "14 December 2011"
 	explanation
 		"Our project for the course BDSA"
-	cluster GAMELOGIC description "PirateSpades' gamelogic."
+	cluster GAMELOGIC description "PirateSpades gamelogic."
+	cluster MISC description "Randomization and extension of existing datastructures."
+	cluster NETWORK description "Network for the PirateSpades game."
 end
 
 static_diagram PIRATE_SPADES
@@ -1213,7 +1213,7 @@ component
 					host /= Void;
 					pclient /= Void;
 					data /= Void;
-					data.Head == PIRATE_MESSAGE_HEAD.Init
+					data.Head = PIRATE_MESSAGE_HEAD.Init
 				end
 			VerifyConnection
 				-> host : PIRATE_HOST
@@ -1223,7 +1223,7 @@ component
 					host /= Void;
 					pclient /= Void;
 					data /= Void;
-					data.Head == PIRATE_MESSAGE_HEAD.Verf
+					data.Head = PIRATE_MESSAGE_HEAD.Verf
 				end
 			ErrorMessage
 				-> host : PIRATE_HOST
@@ -1249,7 +1249,7 @@ component
 					host /= Void;
 					pclient /= Void;
 					data /= Void;
-					data.Head == PIRATE_MESSAGE_HEAD.Pnfo
+					data.Head = PIRATE_MESSAGE_HEAD.Pnfo
 				end
 			SendPlayerInfo
 				-> host : PIRATE_HOST
@@ -1303,7 +1303,7 @@ component
 					host /= Void;
 					player /= Void;
 					data /= Void;
-					data.Head == PIRATE_MESSAGE_HEAD.Pbet;
+					data.Head = PIRATE_MESSAGE_HEAD.Pbet;
 					host.Game.Round.AwaitingBets
 				end
 			NewRound
@@ -1358,8 +1358,6 @@ component
 					readLen <= buffer.length;
 					readLen > 4
 				end
-			GetHead : PIRATE_MESSAGE_HEAD
-				-> head : STRING
 			GetBytes : BYTE_ARRAY
 			GetError : PIRATE_ERROR
 				-> s : STRING
@@ -1432,7 +1430,7 @@ component
 				ensure
 					Result /= Void
 				end
-			ConstructPlayerName : STRING
+			ConstructPlayerName2 : STRING
 				-> name : STRING
 				require
 					name /= Void
@@ -1460,7 +1458,8 @@ component
 					msg /= Void
 					-- msg.Body must match regex (multilined): ^players_ingame: ([0-5])$
 				ensure
-					Result >= 0 && Result <= GAME.MaxPlayersInGame
+					Result >= 0;
+					Result <= GAME.MaxPlayersInGame
 				end
 			ConstructMaxPlayersInGame : STRING
 				-> players : INTEGER
@@ -1475,7 +1474,8 @@ component
 					msg /= Void
 					-- msg.Body must match regex (multilined): ^players_ingamemax: ([0-5])$
 				ensure
-					Result >= 0 && Result <= GAME.MaxPlayersInGame
+					Result >= 0;
+					Result <= GAME.MaxPlayersInGame
 				end
 			ConstructPlayerBet : STRING
 				-> player : PLAYER
@@ -1638,6 +1638,95 @@ component
 			NameAlreadyTaken : PIRATE_ERROR
 			InvalidBet : PIRATE_ERROR
 			CardNotPlayable : PIRATE_ERROR
+		end
+		class PIRATE_MESSAGE_OBJ
+			feature
+			Buffer : BYTE_ARRAY
+			Client : PIRATE_CLIENT
+			Make : PIRATE_MESSAGE_OBJ
+				-> pclient : PIRATE_CLIENT
+				require
+					pclient /= Void;
+					pclient.BufferSize > 0
+				end
+			Make2 : PIRATE_MESSAGE_OBJ
+				-> pclient : PIRATE_CLIENT
+				-> msg : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					msg /= Void
+				end
+		end
+		class PIRATE_SCANNER
+			feature {NONE}
+			WaitForBroadcastDelegate : DELEGATE
+			WaitForBroadcast : SEQUENCE[GAME_INFO]
+				-> sock : SOCKET
+				-> ep : END_POINT
+			GetGameInfo : GAME_INFO
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+				ensure
+					Result /= Void
+				end
+			feature
+			CheckRunning : BOOLEAN
+			GameFoundDelegate : DELEGATE
+			Make : PIRATE_SCANNER
+			ScanForGames : SEQUENCE[GAME_INFO]
+				-> port : INTEGER
+				-> timeout : INTEGER
+				require
+					not CheckRunning;
+					port >= 0;
+					port <= 65535;
+					timeout >= 0
+				ensure
+					not CheckRunning
+				end
+			ScanForGames2 : SEQUENCE[GAME_INFO]
+				-> port : INTEGER
+				-> timeout : INTEGER
+				-> amount : INTEGER
+				require
+					not CheckRunning;
+					port >= 0;
+					port <= 65535;
+					timeout >= 0
+				ensure
+					not CheckRunning
+				end
+			CheckIp : BOOLEAN
+				-> ip : IP_ADDRESS
+				-> port : INTEGER
+				-> timeout : INTEGER
+				require
+					ip /= Void;
+					port >= 0;
+					port <= 65535;
+					timeout >= 0
+				end
+			GetLocalIpV4 : IP_ADDRESS
+			GetLocalIpsV4 : ENUMERABLE[IP_ADDRESS]
+			IsValidIp : BOOLEAN
+				-> ip : STRING
+				require
+					ip /= Void
+				end
+			IsValidIp2 : BOOLEAN
+				-> ip : IP_ADDRESS
+				require
+					ip /= Void
+				end
+			GetIp : IP_ADDRESS
+				-> ip : STRING
+				require
+					ip /= Void;
+					IsValidIp(ip)
+				ensure
+					Result /= Void
+				end
 		end
 	end
 end
