@@ -3,6 +3,7 @@ namespace PirateSpadesGame.GameModes {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
 
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
@@ -153,8 +154,9 @@ namespace PirateSpadesGame.GameModes {
                     settingsEnabled = false;
                     break;
                 case "apply":
-                    this.ApplyChanges();
-                    settingsEnabled = false;
+                    if(this.ApplyChanges()) {
+                        settingsEnabled = false;
+                    }
                     break;
                 case "exit":
                     game.State = GameState.Exit;
@@ -169,9 +171,13 @@ namespace PirateSpadesGame.GameModes {
             volume.Text = volume.Number.ToString();
         }
 
-        private void ApplyChanges() {
-            game.PlayerName = playername.Text;
-            game.MusicVolume = volume.ParseInputToFloat();
+        private bool ApplyChanges() {
+            if(Regex.IsMatch(playername.Text, @"^\w{3,20}$")) {
+                game.PlayerName = playername.Text;
+                game.MusicVolume = volume.ParseInputToFloat();
+                return true;
+            }
+            return false;
         }
 
         public void Draw(SpriteBatch spriteBatch) {

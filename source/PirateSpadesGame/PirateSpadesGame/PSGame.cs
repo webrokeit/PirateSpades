@@ -4,10 +4,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace PirateSpadesGame {
+    using System.Text.RegularExpressions;
+
     using Microsoft.Xna.Framework.Audio;
 
+    using PirateSpades.GameLogic;
     using PirateSpades.Network;
-    using PirateSpades.GameLogicV2;
+
 
     using PirateSpadesGame.GameModes;
 
@@ -49,7 +52,11 @@ namespace PirateSpadesGame {
 
         public PirateClient Client { get; set; }
 
-        public PirateSpades.GameLogicV2.Game PlayingGame { get; set; }
+        public Game PlayingGame { get; set; }
+
+        public string GameName { get; set; }
+
+        public int MaxPlayers { get; set; }
 
         public string PlayerName { get; set; }
 
@@ -151,9 +158,10 @@ namespace PirateSpadesGame {
                         gameMode = inGame;
                         gameMode.LoadContent(this.Content);
                     }
+                    gameMode.Update(gameTime);
                     break;
                 case GameState.JoinGame:
-                    if(PlayerName == "") {
+                    if(PlayerName == "" || !Regex.IsMatch(PlayerName, @"^\w{3,20}$")) {
                         this.SetName();
                         break;
                     }
@@ -165,7 +173,7 @@ namespace PirateSpadesGame {
                     gameMode.Update(gameTime);
                     break;
                 case GameState.CreateGame:
-                    if(PlayerName == "") {
+                    if(PlayerName == "" || !Regex.IsMatch(PlayerName, @"^\w{3,20}$")) {
                         this.SetName();
                         break;
                     }
@@ -189,7 +197,7 @@ namespace PirateSpadesGame {
             var str = b.Name;
             switch(str) {
                 case "ok":
-                    if(textbox.Text != "") {
+                    if(Regex.IsMatch(textbox.Text, @"^\w{3,20}$")) {
                         settingname = false;
                         this.PlayerName = textbox.Text;
                     } else {

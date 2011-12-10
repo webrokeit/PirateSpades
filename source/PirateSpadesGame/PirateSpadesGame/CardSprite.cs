@@ -3,41 +3,121 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace PirateSpadesGame {
+    using Microsoft.Xna.Framework.Graphics;
+
     using PirateSpades.GameLogic;
 
-    public class CardSprite : Sprite {
-        private Card card;
-        private Vector2 table;
-        private double ClickTimer;
-        private double TimerDelay = 500;
+    using PirateSpadesGame.GameModes;
 
-        public CardSprite(Card card, Vector2 position) {
-            this.card = card;
-            this.Position = position;
-            table = new Vector2(0,0);
+    public class CardSprite {
+        private Texture2D cardSprite;
+        private double timer;
+        private bool mousepressed = false;
+        private bool prevmousepressed = false;
+        private double frametime;
+
+        public CardSprite(Card card, Rectangle rect) {
+            this.Card = card;
+            this.Rect = rect;
+            Scale = 1.0f;
         }
 
         public string Name {
-            get { return card.Suit + "_" + card.Value; }
+            get { return this.Card.Suit + "_" + this.Card.Value; }
         }
 
+        public Vector2 Position { get; set; }
+
+        public BState State { get; private set; }
+
+        public bool Selected { get; set; }
+
+        public Color Color { get; set; }
+
+        public bool DoubleClick { get; set; }
+
+        public Card Card { get; private set; }
+
+        public Rectangle Rect { get; private set; }
+
+        public float Scale { get; set; }
+
         public void LoadContent(ContentManager theContentManager) {
-            base.LoadContent(theContentManager, Name);
+            cardSprite = theContentManager.Load<Texture2D>(Name);
         }
 
         public void Update(GameTime theGameTime) {
-            MouseState currentMouseState = Mouse.GetState();
-            this.UpdateMovement(theGameTime, currentMouseState);
+            var currentMouseState = Mouse.GetState();
+            frametime = theGameTime.ElapsedGameTime.Milliseconds / 1000.0;
+            this.UpdateMovement(currentMouseState);
         }
 
-        private void UpdateMovement(GameTime theGameTime, MouseState state) {
-            if(state.LeftButton == ButtonState.Pressed) {
-                //if(Player.Playable(card) && Player.HaveCard(card)) {
-                //    Player.PlayCard(card);
-                //    Position = table;
-                //}
-                Position = table;
+        private void UpdateMovement(MouseState state) {
+            int mx = state.X;
+            int my = state.Y;
+            prevmousepressed = mousepressed;
+            mousepressed = state.LeftButton == ButtonState.Pressed;
+
+            if(HitAlpha(Rect, cardSprite, mx, my)) {
+                timer = 0.0;
+                if(mousepressed) {
+                    State = BState.Down;
+                } else if(!mousepressed && prevmousepressed && State == BState.Down) {
+                    State = BState.JustReleased;
+                } else {
+                    State = BState.Hover;
+                    Color = Color.LightBlue;
+                }
+            } else {
+                State = BState.Up;
+                if(timer > 0) {
+                    timer = timer - frametime;
+                    Color = Color.DarkBlue;
+                } else {
+                    Color = Color.Transparent;
+                }
             }
+            if(State == BState.JustReleased) {
+                var wasSelected = Selected;
+                lock(InGame.Cardsprites) {
+                    foreach(var c in InGame.Cardsprites) {
+                        c.Selected = false;
+                    }
+                }
+                if(wasSelected) {
+                    DoubleClick = true;
+                } else {
+                    Color = Color.Green;
+                    Selected = true;
+                }
+            }
+        }
+
+        public bool HitAlpha(Rectangle rectangle, Texture2D texture, int x, int y) {
+            return HitAlpha(0, 0, texture, texture.Width * (x - rectangle.X) /
+                rectangle.Width, texture.Height * (y - rectangle.Y) / rectangle.Height);
+        }
+
+        private bool HitAlpha(float tx, float ty, Texture2D texture, int x, int y) {
+            if(this.Hit(tx, ty, texture, x, y)) {
+                var data = new uint[texture.Width * texture.Height];
+                texture.GetData<uint>(data);
+                if((x - (int)tx) + (y - (int)ty) * texture.Width < texture.Width * texture.Height) {
+                    return ((data[(x - (int)tx) + (y - (int)ty) * texture.Width] & 0xFF000000) >> 24) > 20;
+                }
+            }
+            return false;
+        }
+
+        private bool Hit(float tx, float ty, Texture2D texture, int x, int y) {
+            return (x >= tx &&
+                x <= tx + texture.Width &&
+                y >= ty &&
+                y <= ty + texture.Height);
+        }
+
+        public void Draw(SpriteBatch spriteBatch) {
+            spriteBatch.Draw(this.cardSprite, this.Rect, this.Selected ? Color.Turquoise : this.Color);
         }
     }
 }
