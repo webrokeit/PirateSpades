@@ -1,62 +1,1673 @@
-ï»¿static diagram CLASS_INTERFACES
+-- System description for PirateSpades
+-- Helena Charlotte Lyn Krüger (hclk@itu.dk)
+-- Andreas Hallberg Kjeldsen (ahal@itu.dk)
+-- Morten Chabert Eskesen (mche@itu.dk)
+-- 14 December 2011
+
+system_chart PIRATE_SPADES
+	indexing
+		authors: "Helena Krüger, Andreas Kjeldsen, Morten Eskesen";
+		course: "BDSA";
+		university: "IT University of Copenhagen";
+		created: "14 December 2011"
+	explanation
+		"Our project for the course BDSA"
+	cluster GAMELOGIC description "PirateSpades' gamelogic."
+end
+
+static_diagram PIRATE_SPADES
 component
 	cluster GAMELOGIC
-		component
+	component
 		class CARD
 			feature
-				Make : CARD
-					-> suit : SUIT
-					-> value : CARDVALUE
-					require
-						suit >= SUIT.DIAMONDS
-						suit <= SUIT.SPADES
-						value => 2
-						value <= 14
-					end
-				Value : CARDVALUE
-					-> value : CARDVALUE
-				Suit : SUIT
-					-> value : SUIT
-				CompareTo : INTEGER
-					-> obj : ANY
-					ensure
-						Result >= -1
-						Result <= 1
-					end
-				HigherThan : BOOL
-					-> card : CARD
-					require
-						card /= Void
-					end
-				SameSuit : BOOL
-					-> card : CARD
-					require
-						card /= Void
-					end
-				ToString : STRING
-					ensure
-						Result /= Void
-					end
-				FromString : CARD
-					-> s : STRING
-					require
-						s /= Void
-						-- Must match regex: ^card: (Diamonds|Clubs|Hearts|Spades);(Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Jack|Queen|King|Ace)$
-					ensure
-						Result /= Void
-					end
-				CardsToDeal : INTEGER
-					-> round : INTEGER
-					-> players : INTEGER
-					require
-						round > 0
-						players > 0
-					end
-				GetHashCode : INTEGER
-				Equals : BOOL
-					-> obj : ANY
-				EnumRegexString : STRING
-					-> enumType : ANY						
+			Make : CARD
+				-> suit : SUIT
+				-> value : CARDVALUE
+				require
+					suit >= SUIT.DIAMONDS;
+					suit <= SUIT.SPADES;
+					value >= 2;
+					value <= 14
+				end
+			Value : CARDVALUE
+				-> value : CARDVALUE
+			Suit : SUIT
+				-> value : SUIT
+			CompareTo : INTEGER
+				-> obj : ANY
+				ensure
+					Result >= -1;
+					Result <= 1
+				end
+			HigherThan : BOOL
+				-> card : CARD
+				require
+					card /= Void
+				end
+			SameSuit : BOOL
+				-> card : CARD
+				require
+					card /= Void
+				end
+			ToString : STRING
+				ensure
+					Result /= Void
+				end
+			FromString : CARD
+				-> s : STRING
+				require
+					s /= Void;
+					-- Must match regex: ^card: (Diamonds|Clubs|Hearts|Spades);(Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Jack|Queen|King|Ace)$
+				ensure
+					Result /= Void
+				end
+			CardsToDeal : INTEGER
+				-> round : INTEGER
+				-> players : INTEGER
+				require
+					round > 0;
+					players > 0
+				end
+			GetHashCode : INTEGER
+			Equals : BOOL
+				-> obj : ANY
+			EnumRegexString : STRING
+				-> enumType : ANY
+				require
+					enumType /= Void;
+					-- Enum.GetNames method must return more than 0 strings
+				end
 		end
+		class SUIT
+			feature
+			value : SUIT
+				ensure
+					Result = Diamonds or Result = Clubs or Result = Hearts or Result = Spades
+				end
+			Diamonds : SUIT
+			Clubs : SUIT
+			Hearts : SUIT
+			Spades : SUIT
+		end
+		class CARDVALUE
+			feature
+			value : CARDVALUE
+				ensure
+					Result = Two or Result = Three or Result = Four or Result = Five or Result = Six or Result = Seven or Result = Eight or Result = Nine or Result = Ten or Result = Jack or Result = Queen or Result = King or Result = Ace
+				end
+			Two : CARDVALUE
+			Three : CARDVALUE
+			Four : CARDVALUE
+			Five : CARDVALUE
+			Six : CARDVALUE
+			Seven : CARDVALUE
+			Eight : CARDVALUE
+			Nine : CARDVALUE
+			Ten : CARDVALUE
+			Jack : CARDVALUE
+			Queen : CARDVALUE
+			King : CARDVALUE
+			Ace : CARDVALUE
+		end
+		class DECK
+			inherit ENUMERABLE[ANY]
+			feature {NONE}
+				Make : DECK
+				CreateDeck
+				ShuffleDeck : DECK
+				TheDeck : SEQUENCE[CARD]
+			feature
+				GetShuffledDeck : DECK
+				Pop : CARD
+					require
+						TheDeck /= Void;
+						TheDeck.length > 0
+					end
+				GetEnumerator : ENUMERABLE[CARD]
+		end
+		class GAME
+			feature {NONE}
+			GamePlayers : TABLE[PLAYER, INTEGER]
+			PlayerNames : TABLE[STRING, PLAYER]
+			Rounds : TABLE[INTEGER, ROUND]
+			IsHost : BOOLEAN
+				-> value : BOOLEAN
+			Finish
+			OnRoundBegun
+				-> round : ROUND
+				require
+					round /= Void;
+					Active
+				end
+			OnRoundFinished
+				-> round : ROUND
+				require
+					round /= Void;
+					Active or Finished
+				end
+			OnRoundNewPile
+				-> round : ROUND
+			UpdatePlayers
+				require
+					not Started
+				end
+			feature
+			MinPlayersInGame : INTEGER
+				ensure
+					Result = 2
+				end
+			MaxPlayersInGame : INTEGER
+				ensure
+					Result = 5
+				end
+			Players : SEQUENCE[PLAYER]
+			CurrentDealer : INTEGER
+			CardsToDeal : INTEGER
+				require
+					CurrentRound > 0;
+					Players.length > 0
+				end
+			RoundsPossible : INTEGER
+				require
+					Players.length > 0
+				end
+			CurrentRound : INTEGER
+				-> value : INTEGER
+			Round : ROUND
+				require
+					Started;
+					CurrentRound >= 1;
+					CurrentRound <= RoundsPossible;
+					Players.length >= MinPlayersInGame
+				ensure
+					Result = Rounds.get(CurrentRound)
+				end
+			Started : BOOLEAN
+			Active : BOOLEAN
+				require
+					Players.length >= MinPlayersInGame
+				end
+			Finished : BOOLEAN
+				require
+					Players.length >= MinPlayersInGame
+				end
+			Leader : PLAYER
+				require
+					Started;
+					CurrentRound >= 1;
+					Players.length >= MinPlayersInGame
+				ensure
+					Result /= Void
+				end
+			GameEventDelegate : DELEGATE
+			RoundStarted : EVENT
+			RoundBegun : EVENT
+			RoundFinished : EVENT
+			RoundNewPile : EVENT
+			GameFinished : EVENT
+			Make : GAME
+			Make2 : GAME
+				-> players : ENUMERABLE[PLAYER]
+				require
+					players /= Void
+				end
+			Start
+				-> dealer : INTEGER
+				require
+					Players.length >= MinPlayersInGame;
+					dealer >= 0;
+					dealer < Players.length
+				end
+			Start2
+				-> isHost : BOOLEAN
+				-> dealer : INTEGER
+				require
+					Players.length >= MinPlayersInGame;
+					dealer >= 0;
+					dealer < Players.length
+				end
+			NewRound
+				require
+					Started
+				end
+			AddPlayer
+				-> player : PLAYER
+				require
+					player /= Void;
+					player not member_of GamePlayers.Keys;
+					not Started
+				end
+			AddPlayers
+				-> players : ENUMERABLE[PLAYER]
+				require
+					players /= Void;
+					not Started
+				end
+			RemovePlayer
+				-> player : PLAYER
+				require
+					player /= Void;
+					player member_of GamePlayers.Keys;
+					not Started
+				end
+			ClearPlayers
+				require
+					not Started
+				end
+			GetPlayer : PLAYER
+				-> playerName : STRING
+				require
+					playerName /= Void;
+					playerName member_of PlayerNames.Keys
+				end
+			Contains : BOOLEAN
+				-> player : PLAYER
+				require
+					player /= Void
+				end
+			Contains2 : BOOLEAN
+				-> playerName : STRING
+				require
+					playerName /= Void
+				end
+			PlayerIndex : INTEGER
+				-> player : PLAYER
+				require
+					player /= Void;
+					player member_of GamePlayers.Keys
+				ensure
+					Result >= 0
+				end
+			PlayerIndex2 : INTEGER
+				-> playerName : STRING
+				require
+					player /= Void;
+					player member_of PlayerNames.Keys
+				ensure
+					Result >= 0
+				end
+			GetRound : ROUND
+				-> round : INTEGER
+				require
+					Started;
+					round >= 1;
+					round <= RoundsPossible;
+					round member_of Rounds.Keys
+				ensure
+					Result /= Void
+				end
+			GetRoundScore : TABLE[PLAYER, INTEGER]
+				-> round : INTEGER
+				require
+					round member_of Rounds.Keys
+				ensure
+					Result /= Void
+				end
+			GetRoundScoreTotal : TABLE[PLAYER, INTEGER]
+				-> round : INTEGER
+				require
+					round member_of Rounds.Keys
+				ensure
+					Result /= Void
+				end
+			GetTotalScores : TABLE[PLAYER, INTEGER]
+				ensure
+					Result /= Void
+				end
+			GetScoreTable : TABLE[INTEGER, TABLE[PLAYER, INTEGER]]
+				ensure
+					Result /= Void
+				end
+		end
+		class PLAYER
+			feature {NONE}
+			Cards : SET[CARD]
+				-> value : SET[CARD]
+			CardPlayedDelegate : DELEGATE
+			CardDealtDelegate : DELEGATE
+			BetSetDelegate : DELEGATE
+			CardPlayed : EVENT
+			CarDealt : EVENT
+			BetSet : EVENT
+			feature
+			Game : GAME
+			Name : STRING
+			Bet : INTEGER
+			IsDealer : BOOLEAN
+				-> value : BOOLEAN
+			CardToPlay : CARD
+			Hand : SEQUENCE[CARD]
+			CardsOnHand : INTEGER
+			Tricks : INTEGER
+			Make : PLAYER
+				-> name : STRING
+			GetCard
+				-> card : CARD
+			RemoveCard
+				-> card : CARD
+			ClearHand
+			PlayerCard
+				-> card : CARD
+				require
+					card /= Void;
+					HasCard(card);
+					CardPlayable(card, Game.Round.BoardCards.FirstCard)
+				ensure
+					not HasCard(card);
+					CardsOnHand = old CardsOnHand - 1
+				end
+			DealCards
+				require
+					IsDealer;
+					Game /= Void
+				end
+			CardPlayable : BOOLEAN
+				-> toPlay : CARD
+				require
+					toPlay /= Void;
+					HasCard(toPlay);
+					Game.Started;
+					Game.Round /= Void
+				end
+			CardPlayable2 : BOOLEAN
+				-> toPlay : CARD
+				-> mustMatch : CARD
+				require
+					toPlay /= Void;
+					HasCard(ToPlay)
+				end
+			HasCardOf : BOOLEAN
+				-> suit : SUIT
+			HasCard : BOOLEAN
+				-> card : CARD
+			SetBet
+				-> bet : INTEGER
+				require
+					Game /= Void;
+					bet >= 0
+				end
+			SetGame
+				-> game : GAME
+				require
+					game /= Void;
+				end
+			GetPlayableCard : CARD
+				require
+					Game /= Void;
+					Game.Active;
+					not Game.Round.BoardCards.HasPlayed(Current)
+				end
+			ToString : STRING
+			invariant
+				CardsOnHand >= 10;
+				CardsOnHand <= 10;
+				Tricks >= 0;
+		end
+		class ROUND
+			feature {NONE}
+			TricksDone : INTEGER
+				-> value : INTEGER
+			NextPlayer
+			NextPile
+			feature
+			Game : GAME
+			Cards : INTEGER
+			TotalCards : INTEGER
+			CardsDealt : INTEGER
+			AwaitingBets : BOOLEAN
+			BetsDone : BOOLEAN
+			Finished : BOOLEAN
+			PileDone : BOOLEAN
+			Dealer : INTEGER
+			CurrentPlayer : INTEGER
+			BoardCards : TRICK
+			LastTrick : TRICK
+			PLayerTricks : TABLE[PLAYER, SEQUENCE[TRICK]]
+			PlayerBets : TABLE[PLAYER, INTEGER]
+			RoundEventDelegate : DELEGATE
+			NewPile : EVENT
+			RoundStarted : EVENT
+			RoundBegun : EVENT
+			RoundFinished : EVENT
+			Make : ROUND
+				-> game : GAME
+				-> dealer : INTEGER
+				require
+					game /= Void;
+					dealer >= 0;
+					dealer <= game.Players.length
+				end
+			Start
+				require
+					not Finished;
+					not AwaitingBets;
+					Game.Players.length >= Game.MinPlayersInGame
+				ensure
+					AwaitingBets
+				end
+			Begin
+				require
+					not Finished;
+					BetsDone;
+					AwaitingBets
+				ensure
+					not AwaitingBets
+				end
+			Finish
+				require
+					Finished
+				end
+			PlayerBet
+				-> player : PLAYER
+				-> bet : INTEGER
+				require
+					player /= Void;
+					bet >= 0;
+					bet <= Cards;
+					AwaitingBets;
+					player member_of PlayerBets.Keys
+				end
+			PlayerBet2
+				-> playerName : STRING
+				-> bet : INTEGER
+				require
+					playerName /= Void
+				end
+			PlayCard
+				-> player : PLAYER
+				-> card : CARD
+				require
+					player /= Void;
+					card /= Void;
+					player.HasCard(card)
+				end
+			PlayerScore : INTEGER
+				-> player : PLAYER
+				require
+					player /= Void;
+					player member_of PlayerBets.Keys;
+					player member_of PlayerTricks.Keys
+				end
+			PlayerScores : TABLE[PLAYER, INTEGER]
+			RoundsPossible : INTEGER
+				-> players : INTEGER
+		end
+		class TRICK
+			feature {NONE}
+			CardsPlayed : ORDERED_DICTIONARY[PLAYER, CARD]
+				-> value : ORDERED_DICTIONARY[PLAYER, CARD]
+			UpdatePile
+			feature
+			Pile : IMMUTABLE_ORDERED_DICTIONARY[PLAYER, CARD]
+			FirstCard : CARD
+			Winner : PLAYER
+				require
+					CardsPlayed.length > 0;
+					FirstCard /= Void
+				end
+			Make : TRICK
+			PlaceCard
+				-> player : PLAYER
+				-> card : CARD
+				require
+					player /= Void;
+					card /= Void;
+					player not member_of Pile.Keys
+				end
+			HasPlayed : BOOLEAN
+				-> player : PLAYER
+				require
+					player /= Void
+				end
+		end
+	end
+	cluster MISC
+	component
+		class COLLECTION_FNC
+			feature {NONE}
+			R : RANDOM
+			feature
+			FisherYatesShuffle
+				-> list : SEQUENCE[ANY]
+				require
+					list /= Void;
+					list.length > 0
+				ensure
+					list.length = old list.length
+				end
+			PickRandom : ANY
+				collection -> SEQUENCE[ANY]
+				require
+					collection /= Void;
+					collection.length > 0
+				end
+			PickRandom2 : INTEGER
+				-> min : INTEGER
+				-> max : INTEGER
+		end
+		class ORDERED_DICTIONARY[T, U]
+			inherit TABLE
+			feature
+			Keys : SEQUENCE[T]
+			Values : SEQUENCE[U]
+				require
+					Count > 0
+				end
+			Indexer : U
+				-> key : T
+				-> value : U
+				require
+					key /= Void;
+					key member_of Keys;
+					value /= Void
+				end
+			Indexer2 : U
+				-> key : INTEGER
+				-> value : U
+				require
+					key >= 0;
+					key < Count;
+					value /= Void
+				end
+			Indexer3 : U
+				-> key : ANY
+				-> value : ANY
+				require
+					key /= Void;
+					key <-> T;
+					key member_of Keys;
+					value /= Void;
+					value <-> U
+				end
+			Count : INTEGER
+			Add
+				-> key : ANY
+				-> value : ANY
+				require
+					key /= Void;
+					key <-> T;
+					value /= Void;
+					value <-> U;
+					key not member_of Keys
+				end
+			Add2
+				-> key : T
+				-> value : U
+				require
+					key /= Void;
+					value /= Void;
+					key not member_of Keys
+				end
+			Remove
+				-> key : ANY
+				require
+					key /= Void;
+					key <-> T
+				end
+			Remove2
+				-> key : T
+				require
+					key /= Void
+				end
+			RemoveAt
+				-> index : INTEGER
+				require
+					index >= 0;
+					index < Count
+				end
+			Insert
+				-> index : INTEGER
+				-> key : ANY
+				-> value : ANY
+				require
+					index >= 0;
+					index < Count;
+					key /= Void;
+					key <-> T;
+					key not member_of Keys;
+					value /= Void;
+					value <-> U
+				end
+			Insert2
+				-> index : INTEGER
+				-> key : T
+				-> value : Y
+				require
+					index >= 0;
+					index < Count;
+					key /= Void;
+					key not member_of Keys;
+					value /= Void;
+				end
+			Contains : BOOLEAN
+				-> obj : ANY
+				require
+					obj /= Void;
+					obj <-> T
+				end
+			ContainsKey : BOOLEAN
+				-> key : T
+				require
+					key /= Void
+				  end
+			ContainsValue
+				-> value : U
+				require
+					value /= Void
+				end
+			AsImmutable : IMMUTABLE_ORDERED_DICTIONARY[T, U]
+		end
+		class IMMUTABLE_ORDERED_DICTIONARY[T, U]
+			inherit ORDERED_DICTIONARY[T, U]
+			feature
+			Indexer : U
+				-> key : T
+				require
+					key /= Void;
+					key member_of Keys;
+				end
+			Indexer2 : U
+				-> key : INTEGER
+				require
+					key >= 0;
+					key < Count;
+				end
+			Indexer3 : U
+				-> key : ANY
+				require
+					key /= Void;
+					key <-> T;
+					key member_of Keys;
+				end
+			Count : INTEGER
+			Add
+				-> key : ANY
+				-> value : ANY
+				require
+					key /= Void
+					-- Never to be called
+				end
+			Add2
+				-> key : T
+				-> value : U
+				require
+					key /= Void
+					-- Never to be called
+				end
+			Remove
+				-> key : ANY
+				require
+					key /= Void
+					-- Never to be called
+				end
+			Remove2
+				-> key : T
+				require
+					key /= Void
+					-- Never to be called
+				end
+			RemoveAt
+				-> index : INTEGER
+				require
+					index >= 0
+					-- Never to be called
+				end
+			Insert
+				-> index : INTEGER
+				-> key : ANY
+				-> value : ANY
+				require
+					key /= Void
+					-- Never to be called
+				end
+			Insert2
+				-> index : INTEGER
+				-> key : T
+				-> value : Y
+				require
+					key /= Void
+					-- Never to be called
+				end
+		end
+	end
+	cluster NETWORK
+	component
+		class PIRATE_BROADCASTER
+			feature {NONE}
+			Socket : SOCKET
+				-> value : SOCKET
+			EndPoint : IP_END_POINT
+				-> value : IP_END_POINT
+			Timer : TIMER
+				-> value : TIMER
+			Broadcast
+			Trigger
+				-> sender : ANY
+				-> e : ELAPSED_EVENT_ARGS
+			feature
+			Message : BYTE_ARRAY
+				-> value : BYTE_ARRAY
+			Port : INTEGER
+				-> value : INTEGER
+			Interval : REAL
+				-> value : REAL
+				require
+					value > 0.00;
+					value < INTEGER.MaxValue;
+				ensure
+					Result > 0.00
+				end
+			BroadcastEventDelegate : DELEGATE
+			BroadcastInitiated : EVENT
+			BroadcastExecuted : EVENT
+			Make : PIRATE_BROADCASTER
+				-> port : INTEGER
+				-> interval : REAL
+				require
+					port >= 0;
+					port <= 65535;
+					interval > 0.00;
+					interval < INTEGER.MaxValue
+				end
+			Make2 : PIRATE_BROADCASTER
+				-> message : BYTE_ARRAY
+				-> port : INTEGER
+				-> interval : REAL
+				require
+					message /= Void;
+					port >= 0;
+					port <= 65535;
+					interval > 0.00;
+					interval < INTEGER.MaxValue
+				end
+			Start
+				require
+					not Timer.Enabled
+				end
+			Stop
+				require
+					Timer.Enabled
+				end
+		end
+		class PIRATE_CLIENT
+			inherit PLAYER
+			feature  {NONE}
+			IgnoreSocketErrors : SET[SOCKET_ERROR]
+			Init
+			Disconnect
+			OnCardPlayed
+				-> card : CARD
+			OnCardDealt
+				-> player : PLAYER
+				-> card : CARD
+			OnBetSet
+				-> bet : INTEGER
+			SocketMessageReceive
+			SocketMessageReceived
+				-> ar : IASYNC_RESULT
+				require
+					ar /= Void;
+					ar.AsyncState <-> PIRATE_MESSAGE_OBJ
+				end
+			
+			MessageSent
+				-> ar : IASYNC_RESULT
+				require
+					ar /= Void;
+					ar <-> PIRATE_MESSAGE
+				end
+			HandleMessage
+				-> msg : PIRATE_MESSAGE
+			feature
+			Socket : SOCKET
+			BufferSize : INTEGER
+			DebugMode : BOOLEAN
+				-> value : BOOLEAN
+			VirtualPlayer : BOOLEAN
+			IsDead : BOOLEAN
+			PirateClientDelegate : DELEGATE
+			Disconnected : EVENT
+			NameRequested : EVENT
+			BetRequested : EVENT
+			CardRequested : EVENT
+			Make : PIRATE_CLIENT
+				-> socket : SOCKET
+				require
+					socket /= Void
+				end
+			Make2 : PIRATE_CLIENT
+				-> name : STRING
+				-> ip : IP_ADDRESS
+				-> port : INTEGER
+				require
+					name /= Void;
+					ip /= Void;
+					port > 0;
+					port <= 65535;
+					PIRATE_SCANNER.IsValidIp(ip)
+				end
+			Make3 : PIRATE_CLIENT
+				-> name : STRING
+				-> ip : STRING
+				-> port : INTEGER
+				require
+					name /= Void;
+					ip /= Void;
+					port > 0;
+					port <= 65535;
+					PIRATE_SCANNER.IsValidIp(ip)
+				end
+			InitConnection
+			SetName
+				-> name : STRING
+				require
+					name /= Void
+				end
+			SendMessage
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void;
+				end
+			RequestBet
+			RequestCard
+			NameNotAvailable
+			ToString : STRING
+		end
+		class PIRATE_CLASS_COMMANDS
+			feature
+			KnockKnock : BOOLEAN
+				-> socket : SOCKET
+				require
+					socket /= Void
+				end
+			ErrorMessage
+				-> pclient : PIRATE_CLIENT
+				-> msg : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					msg /= Void;
+					msg.Head = PIRATE_MESSAGE_HEAD.Erro
+				end
+			InitConnection
+				-> pclient : PIRATE_CLIENT
+				require
+					pclient /= Void;
+				end
+			VerifyConnection
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Init
+				end
+			SendPlayerInfo
+				-> pclient : PIRATE_CLIENT
+				require
+					pclient /= Void;
+				end
+			GetPlayersInGame
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Pigm
+				end
+			GameStarted
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Gstr
+				end
+			GameFinished
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Gfin
+				end
+			PlayCard
+				-> pclient : PIRATE_CLIENT
+				-> card : CARD
+				require
+					pclient /= Void;
+					card /= Void;
+				end
+			GetPlayedCard
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Pcrd
+				end
+			DealCard
+				-> pclient : PIRATE_CLIENT
+				-> receiver : PLAYER
+				-> card : CARD
+				require
+					pclient /= Void;
+					receiver /= Void;
+					card /= Void
+				end
+			GetCard
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Xcdr
+				end
+			SetBet
+				-> pclient : PIRATE_CLIENT
+				-> bet : INTEGER
+				require
+					pclient /= Void;
+					bet >= 0
+				end
+			NewRound
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Nrnd
+				end
+			BeginRound
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Bgrn
+				end
+			NewPile
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Trdn
+				end
+			FinishRound
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Frnd
+				end
+		end
+		class PIRATE_HOST
+			feature {NONE}
+			Listener : TCP_LISTENER
+				-> value : TCP_LISTENER
+			IgnoreSocketErrors : SET[SOCKET_ERROR]
+			Clients : ORDERED_DICTIONARY[SOCKET, PIRATE_CLIENT]
+				-> value : ORDERED_DICTIONARY[SOCKET, PIRATE_CLIENT]
+			Players : TABLE[STRING, SOCKET]
+				-> value : TABLE[STRING, SOCKET]
+			WaitForSocket
+			SocketConnected
+				-> ar : IASYNC_RESULT
+				require
+					ar /= Void;
+					ar.AsyncState <-> PIRATE_HOST
+				end
+			SocketDisconnect
+				-> pclient : PIRATE_CLIENT
+				require
+					pclient /= Void
+				end
+			SocketMessageReceive
+				-> pclient : PIRATE_CLIENT
+			SocketMessageReceived
+				-> ar : IASYNC_RESULT
+				require
+					ar /= Void;
+					ar.AsyncState <-> PIRATE_MESSAGE_OBJ
+				end
+			MessageSent
+				-> ar : IASYNC_RESULT
+				require
+					ar /= Void;
+					ar.AsyncState <-> PIRATE_MESSAGE_OBJ
+				end
+			HandleMessage
+				-> pclient : PIRATE_CLIENT
+				-> msg : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					msg /= Void
+				end
+			NewGame
+			UpdateBroadcastInfo
+			RoundStarted
+				-> game : GAME
+			RoundBegun
+				-> game : GAME
+			RoundNewPile
+				-> game : GAME
+			RoundFinished
+				-> game : GAME
+			GameFinished
+				-> game : GAME
+			feature
+			Ip : IP_ADDRESS
+			Started : BOOLEAN
+			AcceptNewConnections : BOOLEAN
+			DebugMode : BOOLEAN
+				-> value : BOOLEAN
+			Game : GAME
+			GameName : STRING
+			MaxPlayers : INTEGER
+			Broadcaster : PIRATE_BROAD_CASTER
+			PlayerCount : INTEGER
+			PlayersReady : BOOLEAN
+			Make : PIRATE_HOST
+				-> port : INTEGER
+				require
+					port > 0;
+					port <= 65535
+				end
+			Start
+				require
+					not Started
+				ensure
+					Started
+				end
+			Start2
+				-> gameName : STRING
+				require
+					not Started;
+					gameName /= Void;
+					gameName.length > 0
+				ensure
+					Started
+				end
+			Start3
+				-> maxPlayers : INTEGER
+				require
+					not Started;
+					maxPlayers >= GAME.MinPlayersInGame;
+					maxPlayers <= GAME.MaxPlayersInGame
+				ensure
+					Started
+				end
+			Start4
+				-> gameName : STRING
+				-> maxPlayers : INTEGER
+				require
+					not Started;
+					gameName /= Void;
+					gameName.length > 0;
+					maxPlayers >= GAME.MinPlayersInGame;
+					maxPlayers <= GAME.MaxPlayersInGame
+				ensure
+					Started
+				end
+			StopAccepting
+			Stop
+				require
+					Started
+				ensure
+					not Started
+				end
+			SendMessage
+				-> pclient : PIRATE_CLIENT
+				-> msg : PIRATE_MESSAGE
+				require
+					pclient /= Void;
+					msg /= Void
+				end
+			OnBroadcastExecuted
+				-> broadcaster : PIRATE_BROADCASTER
+			RemoveClient
+				-> pclient : PIRATE_CLIENT
+				require
+					pclient /= Void
+				end
+			PlayerFromSocket : PIRATE_CLIENT
+				-> socket : SOCKET
+				require
+					socket /= Void;
+					socket member_of Clients.Keys
+				ensure
+					Result /= Void
+				end
+			PlayerFromString : PIRATE_CLIENT
+				-> s : STRING
+				require
+					s /= Void;
+					s member_of Players.Keys
+				ensure
+					Result /= Void
+				end
+			PlayerFromIndex : PIRATE_CLIENT
+				-> i : INTEGER
+				require
+					i >= 0;
+					i <= Clients.length
+				ensure
+					Result /= Void
+				end
+			ContainsPlayer : BOOLEAN
+				-> pclient : PIRATE_CLIENT
+				require
+					pclient /= Void
+				end
+			ContainsPlayer2 : BOOLEAN
+				-> socket : SOCKET
+				require
+					socket /= Void
+				end
+			ContainsPlayer3 : BOOLEAN
+				-> playerName : STRING
+				require
+					playerName /= Void
+				end
+			SetPlayerName
+				-> pclient : PIRATE_CLIENT
+				-> name : STRING
+				require
+					pclient /= Void;
+					name /= Void;
+					pclient.Socket member_of Clients.Keys
+				end
+			GetPlayers : ENUMERABLE[PIRATE_CLIENT]
+			StartGame
+				require
+					Game /= Void;
+					not Game.Started
+				end
+			IsValidGameName : BOOLEAN
+				-> gameName : STRING
+				require
+					gameName /= Void;
+					gameName.length > 0
+				end
+		end
+		class PIRATE_HOST_COMMANDS
+			feature {NONE}
+			WelcomePhrase : STRING
+				ensure
+					Result = "YARRR!!"
+				end
+			KnockKnock
+				-> host : PIRATE_HOST
+				-> pclient : PIRATE_CLIENT
+				require
+					host /= Void;
+					pclient /= Void
+				end
+			InitConnection
+				-> host : PIRATE_HOST
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					host /= Void;
+					pclient /= Void;
+					data /= Void;
+					data.Head == PIRATE_MESSAGE_HEAD.Init
+				end
+			VerifyConnection
+				-> host : PIRATE_HOST
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					host /= Void;
+					pclient /= Void;
+					data /= Void;
+					data.Head == PIRATE_MESSAGE_HEAD.Verf
+				end
+			ErrorMessage
+				-> host : PIRATE_HOST
+				-> pclient : PIRATE_CLIENT
+				-> error : PIRATE_ERROR
+				require
+					host /= Void;
+					pclient /= Void;
+					error /= PIRATE_ERROR.Unknown
+				end
+			GetPlayerInfo
+				-> host : PIRATE_HOST
+				-> pclient : PIRATE_CLIENT
+				require
+					host /= Void;
+					pclient /= Void
+				end
+			SetPlayerInfo
+				-> host : PIRATE_HOST
+				-> pclient : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					host /= Void;
+					pclient /= Void;
+					data /= Void;
+					data.Head == PIRATE_MESSAGE_HEAD.Pnfo
+				end
+			SendPlayerInfo
+				-> host : PIRATE_HOST
+				require
+					host /= Void
+				end
+			StartGame
+				-> host : PIRATE_HOST
+				require
+					host /= Void;
+					host.PlayerCount >= 2
+				end
+			GameFinished
+				-> host : PIRATE_HOST
+				require
+					host /= Void
+				end
+			DealCard
+				-> host : PIRATE_HOST
+				-> data : PIRATE_MESSAGE
+				require
+					host /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Xcrd
+				end
+			RequestCard
+				-> host : PIRATE_HOST
+				-> pclient : PIRATE_CLIENT
+				require
+					host /= Void;
+					pclient /= Void
+				end
+			PlayCard
+				-> host : PIRATE_HOST
+				-> data : PIRATE_MESSAGE
+				require
+					host /= Void;
+					data /= Void;
+					data.Head = PIRATE_MESSAGE_HEAD.Pcrd
+				end
+			RequestBets
+				-> host : PIRATE_HOST
+				require
+					host /= Void
+				end
+			ReceiveBet
+				-> host : PIRATE_HOST
+				-> player : PIRATE_CLIENT
+				-> data : PIRATE_MESSAGE
+				require
+					host /= Void;
+					player /= Void;
+					data /= Void;
+					data.Head == PIRATE_MESSAGE_HEAD.Pbet;
+					host.Game.Round.AwaitingBets
+				end
+			NewRound
+				-> host : PIRATE_HOST
+				require
+					host /= Void
+				end
+			BeginRound
+				-> host : PIRATE_HOST
+				require
+					host /= Void
+				end
+			NewPile
+				-> host : PIRATE_HOST
+				require
+					host /= Void
+				end
+			RoundFinished
+				-> host : PIRATE_HOST
+				require
+					host /= Void
+				end
+		end
+		class PIRATE_MESSAGE
+			feature {NONE}
+			GetHead : PIRATE_MESSAGE_HEAD
+				-> head : STRING
+			feature
+			BufferSize : INTEGER
+			Head : PIRATE_MESSAGE_HEAD
+				-> value : PIRATE_MESSAGE_HEAD
+			Body : STRING
+				-> value : STRING
+			Make : PIRATE_MESSAGE
+				-> head : STRING
+				-> body : STRING
+				require
+					head /= Void;
+					body /= Void
+				end
+			Make2 : PIRATE_MESSAGE
+				-> head : PIRATE_MESSAGE_HEAD
+				-> body : STRING
+				require
+					body /= Void
+				end
+			GetMessages : SEQUENCE[PIRATE_MESSAGE]
+				-> buffer : BYTE_ARRAY
+				-> readLen : INTEGER
+				require
+					buffer /= Void;
+					readLen <= buffer.length;
+					readLen > 4
+				end
+			GetHead : PIRATE_MESSAGE_HEAD
+				-> head : STRING
+			GetBytes : BYTE_ARRAY
+			GetError : PIRATE_ERROR
+				-> s : STRING
+			ConstructBody : STRING
+				-> inputs : STRING_ARRAY
+				require
+					inputs /= Void
+				ensure
+					Result /= Void
+				end
+			ConstructBody2 : STRING
+				-> inputs : ENUMERABLE[STRING]
+				require
+					inputs /= Void
+				ensure
+					Result /= Void
+				end
+			AppendBody : STRING
+				-> body : STRING
+				-> inputs : STRING_ARRAY
+				require
+					inputs /= Void
+				ensure
+					Result /= Void
+				end
+			ConstructHostInfo : STRING
+				-> host : PIRATE_HOST
+				require
+					host /= Void
+				ensure
+					Result /= Void
+				end
+			ConstructHostIp : STRING
+				-> host : PIRATE_HOST
+				require
+					host /= Void
+				ensure
+					Result /= Void
+				end
+			GetHostIp : IP_ADDRESS
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void;
+					-- msg.Body must match regex (multilined): ^host_ip: ([0-9.]+)$
+					PIRATE_SCANNER.IsValidIp(match_from_above)
+				ensure
+					Result /= Void
+				end
+			ConstructGameName : STRING
+				-> host : PIRATE_HOST
+				require
+					host /= Void
+				ensure
+					Result /= Void
+				end
+			GetGameName : STRING
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void;
+					-- msg.Body must match regex (multilined): ^game_name: (.+)$
+					PIRATE_HOST.IsValidGameName(match_from_above)
+				ensure
+					Result /= Void
+				end
+			ConstructPlayerName : STRING
+				-> player : PLAYER
+				require
+					player /= Void;
+					player.Name /= Void
+				ensure
+					Result /= Void
+				end
+			ConstructPlayerName : STRING
+				-> name : STRING
+				require
+					name /= Void
+				ensure
+					Result /= Void
+				end
+			GetPlayerName : STRING
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+					-- msg.Body must match regex (multilined): ^player_name: (\w{3,20})$
+				ensure
+					Result /= Void
+				end
+			ConstructPlayersInGame : STRING
+				-> players : INTEGER
+				require
+					players >= 0
+				ensure
+					Result /= Void
+				end
+			GetPlayersInGame : INTEGER
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+					-- msg.Body must match regex (multilined): ^players_ingame: ([0-5])$
+				ensure
+					Result >= 0 && Result <= GAME.MaxPlayersInGame
+				end
+			ConstructMaxPlayersInGame : STRING
+				-> players : INTEGER
+				require
+					players >= 0
+				ensure
+					Result /= Void
+				end
+			GetMaxPlayersInGame : INTEGER
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+					-- msg.Body must match regex (multilined): ^players_ingamemax: ([0-5])$
+				ensure
+					Result >= 0 && Result <= GAME.MaxPlayersInGame
+				end
+			ConstructPlayerBet : STRING
+				-> player : PLAYER
+				require
+					player /= Void
+				end
+			GetPlayerBets : TABLE[STRING, INTEGER]
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+				ensure
+					Result /= Void
+				end
+			ConstructRoundNumber : STRING
+				-> round : INTEGER
+				require
+					round >= 1;
+					round <= 20
+				ensure
+					Result /= Void
+				end
+			GetRound : INTEGER
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+					-- msg.Body must match regex (multilined): ^round: ([1-9]|1[0-9]|20)$
+				ensure
+					Result >= 1;
+					Result <= 20
+				end
+			ConstructDealer : STRING
+				-> name : STRING
+				require
+					name /= Void
+				ensure
+					Result /= Void
+				end
+			GetDealer : STRING
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+					-- msg.Body must match regex (multilined): ^dealer: (\w+)$
+				ensure
+					Result /= Void
+				end
+			ConstructStartingPlayer : STRING
+				-> player : PLAYER
+				require
+					player /= Void
+				ensure
+					Result /= Void
+				end
+			GetStartingPlayer : STRING
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+					-- msg.Body must match regex (multilined): ^starting_player: (\w+)$
+				ensure
+					Result /= Void
+				end
+			ConstructWinner : STRING
+				-> player : PLAYER
+				require
+					player /= Void
+				ensure
+					Result /= Void
+				end
+			GetWinner : STRING
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+					-- msg.Body must match regex (multilined): ^winning_player: (\w+)$
+				ensure
+					result /= Void
+				end
+			ConstructPlayerTrick : STRING
+				-> round : ROUND
+				-> player : PLAYER
+				require
+					round /= Void;
+					player /= Void;
+					player member_of round.PlayerTricks.Keys
+				ensure
+					Result /= Void
+				end
+			ConstructPlayerTricks : SEQUENCE[STRING]
+				-> round : ROUND
+				require
+					round /= Void
+				ensure
+					Result /= Void
+				end
+			GetPlayerTricks : TABLE[STRING, INTEGER]
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+				ensure
+					Result /= Void
+				end
+			ConstructPlayerScore : STRING
+				-> player : PLAYER
+				-> score : INTEGER
+				require
+					player /= Void
+				ensure
+					Result /= Void
+				end
+			ConstructPlayerScores : SEQUENCE[STRING]
+				-> scores : TABLE[PLAYER, INTEGER]
+				require
+					scores /= Void
+				ensure
+					Result /= Void
+				end
+			GetPlayerScores : TABLE[STRING, INTEGER]
+				-> msg : PIRATE_MESSAGE
+				require
+					msg /= Void
+				ensure
+					Result /= Void
+				end
+		end
+		class PIRATE_MESSAGE_HEAD
+			feature
+			value : PIRATE_MESSAGE_HEAD
+				ensure
+					Result = Fail or Result = Erro or Result = Knck or Result = Bcst or Result = Init or Result = Verf or Result = Pnfo or Result = Pigm or Result = Pacp or Result = Gstr or Result = Gfin or Result = Xcrd or Result = Pcrd or Result = Trdn or Result = Pbet or Result = Nrnd or Result = Bgrn or Result = Frnd or Result = Ddlc or Result = Breq or Result = Creq
+				end
+			Fail : PIRATE_MESSAGE_HEAD
+			Erro : PIRATE_MESSAGE_HEAD
+			Knck : PIRATE_MESSAGE_HEAD
+			Bcst : PIRATE_MESSAGE_HEAD
+			Init : PIRATE_MESSAGE_HEAD
+			Verf : PIRATE_MESSAGE_HEAD
+			Pnfo : PIRATE_MESSAGE_HEAD
+			Pigm : PIRATE_MESSAGE_HEAD
+			Pacp : PIRATE_MESSAGE_HEAD
+			Gstr : PIRATE_MESSAGE_HEAD
+			Gfin : PIRATE_MESSAGE_HEAD
+			Xcrd : PIRATE_MESSAGE_HEAD
+			Pcrd : PIRATE_MESSAGE_HEAD
+			Trdn : PIRATE_MESSAGE_HEAD
+			Pbet : PIRATE_MESSAGE_HEAD
+			Nrdn : PIRATE_MESSAGE_HEAD
+			Bgrn : PIRATE_MESSAGE_HEAD
+			Frnd : PIRATE_MESSAGE_HEAD
+			Ddlc : PIRATE_MESSAGE_HEAD
+			Breq : PIRATE_MESSAGE_HEAD
+			Creq : PIRATE_MESSAGE_HEAD
+		end
+		class PIRATE_ERROR
+			feature
+			value : PIRATE_ERROR
+				ensure
+					Result = Unknown or Result = AlreadyConnected or Result = NoNewConnections or Result = NameAlreadyTaken or Result = InvalidBet or Result = CardNotPlayable
+				end
+			Unknown : PIRATE_ERROR
+			AlreadyConnected : PIRATE_ERROR
+			NoNewConnection : PIRATE_ERROR
+			NameAlreadyTaken : PIRATE_ERROR
+			InvalidBet : PIRATE_ERROR
+			CardNotPlayable : PIRATE_ERROR
+		end
+	end
+end
 
+static_diagram MISC_TYPES
+component
+	cluster USEFUL_TYPES
+	component
+		class ENUMERABLE[T]
+			feature
+			GetEnumerator: ENUMERABLE[T]
+		end
+		deferred class FUNCTION[C,D] reused
+			feature
+			eval: D -> input: C
+		end
+		deferred class DELEGATE[C, D]
+			inherit FUNCTION[C, D]
+			feature
+			make: DELEGATE[C, D] -> f: FUNCTION[C, D]
+			add: DELEGATE[C, D] -> d: DELEGATE[C, D]
+			remove: DELEGATE[C, D] -> d: DELEGATE[C, D]
+		end
+		deferred class HANDLER[C, D]
+			inherit DELEGATE[C, D]
+		end
+		deferred class EVENT[H]
+			feature
+			subscribe: H -> h: H
+			unsubscribe: H -> h: H
+		end
+	end
 end

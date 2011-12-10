@@ -17,14 +17,6 @@ namespace PirateSpades.Network {
     using PirateSpades.Misc;
 
     public class PirateHostCommands {
-        /*private static Table pTable = null;
-
-        private static Table Table {
-            get {
-                return pTable ?? (pTable = Table.GetTable());
-            }
-        }*/
-
         private const string WelcomePhrase = "YARRR!!";
 
         public static void KnockKnock(PirateHost host, PirateClient pclient) {

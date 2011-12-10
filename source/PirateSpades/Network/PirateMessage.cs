@@ -212,6 +212,7 @@ namespace PirateSpades.Network {
         [Pure]
         public static string ConstructPlayerBet(Player player) {
             Contract.Requires(player != null);
+            Contract.Ensures(Contract.Result<string>() != null);
             return "player_bet: " + player.Name + ";" + player.Bet;
         }
 
@@ -229,6 +230,7 @@ namespace PirateSpades.Network {
         [Pure]
         public static string ConstructRoundNumber(int round) {
             Contract.Requires(round >= 1 && round <= 20);
+            Contract.Ensures(Contract.Result<string>() != null);
             return "round: " + round;
         }
 
@@ -243,6 +245,7 @@ namespace PirateSpades.Network {
         [Pure]
         public static string ConstructDealer(string name) {
             Contract.Requires(name != null);
+            Contract.Ensures(Contract.Result<string>() != null);
             return "dealer: " + name;
         }
 
@@ -256,6 +259,7 @@ namespace PirateSpades.Network {
         [Pure]
         public static string ConstructStartingPlayer(Player player) {
             Contract.Requires(player != null);
+            Contract.Ensures(Contract.Result<string>() != null);
             return "starting_player: " + player.Name;
         }
 
@@ -269,6 +273,7 @@ namespace PirateSpades.Network {
         [Pure]
         public static string ConstructWinner(Player player) {
             Contract.Requires(player != null);
+            Contract.Ensures(Contract.Result<string>() != null);
             return "winning_player: " + player.Name;
         }
 
@@ -282,6 +287,7 @@ namespace PirateSpades.Network {
         [Pure]
         public static string ConstructPlayerTrick(Round round, Player player) {
             Contract.Requires(round != null && player != null && round.PlayerTricks.ContainsKey(player));
+            Contract.Ensures(Contract.Result<string>() != null);
             return "player_tricks: " + player.Name + ";" + round.PlayerTricks[player].Count;
         }
 
@@ -306,6 +312,7 @@ namespace PirateSpades.Network {
         [Pure]
         public static string ConstructPlayerScore(Player player, int score) {
             Contract.Requires(player != null);
+            Contract.Ensures(Contract.Result<string>() != null);
             return "player_score: " + player.Name + ";" + score;
         }
 

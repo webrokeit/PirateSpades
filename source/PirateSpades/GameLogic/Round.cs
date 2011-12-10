@@ -64,7 +64,7 @@
         }
 
         public void Start() {
-            Contract.Requires(!Finished && !AwaitingBets && Game.Players.Count >= 2);
+            Contract.Requires(!Finished && !AwaitingBets && Game.Players.Count >= Game.MinPlayersInGame);
             Contract.Ensures(AwaitingBets);
             foreach(var player in Game.Players) {
                 player.IsDealer = false;

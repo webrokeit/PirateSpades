@@ -71,7 +71,7 @@
 
         public void PlayCard(Card card) {
             Contract.Requires(card != null && this.HasCard(card) && this.CardPlayable(card, Game.Round.BoardCards.FirstCard));
-            Contract.Ensures(!this.Cards.Contains(card) && CardsOnHand == Contract.OldValue(CardsOnHand) - 1);
+            Contract.Ensures(!this.HasCard(card) && CardsOnHand == Contract.OldValue(CardsOnHand) - 1);
             CardToPlay = card;
             Game.Round.PlayCard(this, card);
             this.RemoveCard(card);
