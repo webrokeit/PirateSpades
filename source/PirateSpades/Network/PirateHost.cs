@@ -324,6 +324,7 @@ namespace PirateSpades.Network {
 
         public PirateClient PlayerFromIndex(int i) {
             Contract.Requires(i >= 0 && i < Clients.Count);
+            Contract.Ensures(Contract.Result<PirateClient>() != null);
             lock(Clients) {
                 return Clients[i];
             }

@@ -82,7 +82,7 @@
             Contract.Requires(IsDealer && Game != null);
             var deck = Deck.GetShuffledDeck();
             var dealTo = (Game.Round.Dealer + 1) % Game.Players.Count;
-            for(var i = 0; i < Game.CardsToDeal; i++) {
+            for(var i = 0; i < Game.CardsToDeal * Game.Players.Count; i++) {
                 var card = deck.Pop();
                 Game.Players[dealTo].GetCard(card);
                 if (CardDealt != null) CardDealt(Game.Players[dealTo], card);
