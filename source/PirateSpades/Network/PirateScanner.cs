@@ -9,6 +9,8 @@
 namespace PirateSpades.Network {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Data;
     using System.Linq;
     using System.Diagnostics.Contracts;
     using System.Net;
@@ -31,18 +33,11 @@ namespace PirateSpades.Network {
             public int MaxPlayers { get; private set; }
 
             public GameInfo(IPAddress ip, string gameName, int players, int maxPlayers) {
+                Contract.Requires(ip != null && gameName != null && players >= 0 && maxPlayers >= players);
                 this.Ip = ip;
                 this.GameName = gameName;
                 this.Players = players;
                 this.MaxPlayers = maxPlayers;
-            }
-
-            public override int GetHashCode() {
-                return Ip.GetHashCode();
-            }
-
-            public override bool Equals(object obj) {
-                return Ip.Equals(obj);
             }
         }
 
@@ -60,7 +55,7 @@ namespace PirateSpades.Network {
             Contract.Requires(!CheckRunning && port >= 0 && port <= 65535 && timeout >= 0);
             Contract.Ensures(!CheckRunning);
             CheckRunning = true;
-            var games = new HashSet<GameInfo>();
+            var games = new Dictionary<string, GameInfo>();
             var sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             var iep = new IPEndPoint(IPAddress.Any, port);
             var start = DateTime.Now;
@@ -78,9 +73,9 @@ namespace PirateSpades.Network {
                         break;
                     ar.AsyncWaitHandle.WaitOne(maxWait);
                     if(ar.IsCompleted) {
-                        foreach (var gameInfo in del.EndInvoke(ar).Where(gameInfo => !games.Contains(gameInfo))) {
+                        foreach (var gameInfo in del.EndInvoke(ar).Where(gameInfo => !games.ContainsKey(gameInfo.Ip.ToString()))) {
                             if (this.GameFound != null) this.GameFound(gameInfo);
-                            games.Add(gameInfo);
+                            games.Add(gameInfo.Ip.ToString(), gameInfo);
                         }
                         if(amount > 0 && games.Count >= amount) break;
                     }
@@ -92,7 +87,7 @@ namespace PirateSpades.Network {
             }
 
             CheckRunning = false;
-            return games.ToList();
+            return games.Values.ToList();
         }
 
         private IList<GameInfo> WaitForBroadcast(Socket sock, EndPoint ep) {

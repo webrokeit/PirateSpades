@@ -7,6 +7,7 @@ using PirateSpades.Network;
 namespace AndreasTest {
     using System.Net;
     using System.Text.RegularExpressions;
+    using System.Threading;
 
     using PirateSpades.GameLogic;
     using PirateSpades.Misc;
@@ -98,7 +99,7 @@ namespace AndreasTest {
                 }
                 Console.WriteLine("IP Found: " + ip);*/
 
-                var games = new PirateScanner().ScanForGames(4939, 30000, 1);
+                var games = new PirateScanner().ScanForGames(4939, 10000);
                 if(games.Count > 0) {
                     for(var i = 0; i < games.Count; i++) {
                         Console.WriteLine("\t[" + i + "] " + games[i].Ip + " \"" + games[i].GameName + "\" (" + games[i].Players + "/" + games[i].MaxPlayers + ")");
@@ -136,7 +137,9 @@ namespace AndreasTest {
             Console.WriteLine("Initiating...");
             pc.InitConnection();
 
-            while(pc.Socket.Connected) {}
+            while(pc.Socket.Connected) {
+                Thread.Sleep(10);
+            }
             return;
         }
 

@@ -15,12 +15,12 @@ namespace PirateSpades.Network {
     using PirateSpades.GameLogic;
 
     public class PirateClientCommands {
-        public static bool KnockKnock(Socket client) {
-            Contract.Requires(client != null);
+        public static bool KnockKnock(Socket socket) {
+            Contract.Requires(socket != null);
             var knock = new PirateMessage(PirateMessageHead.Knck, "");
-            client.Send(knock.GetBytes());
+            socket.Send(knock.GetBytes());
             var buffer = new byte[PirateMessage.BufferSize];
-            var read = client.Receive(buffer);
+            var read = socket.Receive(buffer);
             return read > 4 && PirateMessage.GetMessages(buffer, read).Any(msg => msg.Head == PirateMessageHead.Knck);
         }
 
@@ -66,7 +66,7 @@ namespace PirateSpades.Network {
         }
 
         public static void GetPlayersInGame(PirateClient pclient, PirateMessage data) {
-            Contract.Requires(pclient != null && data != null);
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Pigm);
 
             pclient.Game.ClearPlayers();
             var players = PirateMessage.GetPlayerNames(data);
@@ -138,7 +138,7 @@ namespace PirateSpades.Network {
         }
 
         public static void GetCard(PirateClient pclient, PirateMessage data) {
-            Contract.Requires(pclient != null && data != null);
+            Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Xcrd);
             var card = Card.FromString(data.Body);
             if(card == null) return;
 

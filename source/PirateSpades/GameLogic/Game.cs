@@ -94,12 +94,12 @@
         }
 
         public void Start(int dealer) {
-            Contract.Requires(dealer >= 0 && dealer < Players.Count);
+            Contract.Requires(Players.Count >= MinPlayersInGame && dealer >= 0 && dealer < Players.Count);
             this.Start(false, dealer);
         }
 
         public void Start(bool isHost, int dealer) {
-            Contract.Requires(Players.Count >= MinPlayersInGame  && dealer >= 0 && dealer < Players.Count);
+            Contract.Requires(Players.Count >= MinPlayersInGame && dealer >= 0 && dealer < Players.Count);
             CurrentDealer = dealer;
             this.Started = true;
             this.IsHost = isHost;
@@ -224,6 +224,7 @@
 
         public int PlayerIndex(string playerName) {
             Contract.Requires(playerName != null && PlayerNames.ContainsKey(playerName));
+            Contract.Ensures(Contract.Result<int>() >= 0);
             return this.PlayerIndex(this.GetPlayer(playerName));
         }
 

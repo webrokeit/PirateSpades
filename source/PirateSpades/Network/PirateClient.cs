@@ -9,17 +9,14 @@
 namespace PirateSpades.Network {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
-    using System.Text;
     using System.Diagnostics.Contracts;
     using System.Net.Sockets;
-    using System.Text.RegularExpressions;
 
     using PirateSpades.GameLogic;
 
     public class PirateClient : Player {
-        public readonly Socket Socket;
+        public Socket Socket { get; private set; }
         public int BufferSize { get; private set; }
 
         public bool DebugMode { get; set; }
@@ -101,6 +98,7 @@ namespace PirateSpades.Network {
         }
 
         public void SetName(string name) {
+            Contract.Requires(name != null);
             this.Name = name;
             if(!VirtualPlayer) {
                 PirateClientCommands.SendPlayerInfo(this);
