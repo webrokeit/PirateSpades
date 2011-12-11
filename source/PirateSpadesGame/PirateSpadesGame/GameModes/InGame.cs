@@ -50,6 +50,7 @@ namespace PirateSpadesGame.GameModes {
         private Rectangle cardSize;
         private Numberbox betBox;
         private bool hasBet = false;
+        private Texture2D cardback;
 
         public InGame(PsGame game) {
             this.game = game;
@@ -110,8 +111,8 @@ namespace PirateSpadesGame.GameModes {
             betBox = new Numberbox(rect, "volumebox", 2) { Limit = 10, Number = 0 };
             betBox.Text = betBox.Number.ToString();
 
-            int betX = 950;
-            int betY = 675;
+            var betX = 950;
+            var betY = 675;
             bet = new Button("bet", betX, betY);
 
             cardSize = new Rectangle(5, 710, 75, 120);
@@ -129,6 +130,7 @@ namespace PirateSpadesGame.GameModes {
             leaveGame.LoadContent(contentManager);
             font = contentManager.Load<SpriteFont>("font");
             bet.LoadContent(contentManager);
+            cardback = contentManager.Load<Texture2D>("cardback");
         }
 
         public void Update(GameTime gameTime) {

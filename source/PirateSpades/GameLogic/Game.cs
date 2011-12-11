@@ -33,7 +33,11 @@
         public int CurrentRound { get; private set; }
         public Round Round {
             get {
-                Contract.Requires(Started && CurrentRound >= 1 && CurrentRound <= RoundsPossible && Players.Count >= MinPlayersInGame);
+                //Contract.Requires(Started && CurrentRound >= 1 && CurrentRound <= RoundsPossible && Players.Count >= MinPlayersInGame);
+                Contract.Requires(Started);
+                Contract.Requires(CurrentRound >= 1);
+                Contract.Requires(CurrentRound <= RoundsPossible);
+                Contract.Requires(Players.Count >= MinPlayersInGame);
                 Contract.Ensures(Contract.Result<Round>() == Rounds[CurrentRound]);
                 return this.GetRound(CurrentRound);
             }
