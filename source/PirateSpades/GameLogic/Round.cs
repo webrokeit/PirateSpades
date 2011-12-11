@@ -100,6 +100,11 @@
             this.PlayerBet(Game.GetPlayer(playerName), bet);
         }
 
+        public bool HasPet(Player player) {
+            Contract.Requires(player != null && PlayerBets.ContainsKey(player));
+            return PlayerBets[player] > -1;
+        }
+
         public void PlayCard(Player player, Card card) {
             Contract.Requires(player != null && card != null && player.HasCard(card));
             BoardCards.PlaceCard(player, card);
