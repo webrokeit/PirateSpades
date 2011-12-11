@@ -53,8 +53,8 @@ namespace PirateSpadesGame {
         }
 
         private void UpdateMovement(MouseState state) {
-            int mx = state.X;
-            int my = state.Y;
+            var mx = state.X;
+            var my = state.Y;
             prevmousepressed = mousepressed;
             mousepressed = state.LeftButton == ButtonState.Pressed;
 
@@ -117,7 +117,7 @@ namespace PirateSpadesGame {
         }
 
         public void Draw(SpriteBatch spriteBatch) {
-                spriteBatch.Draw(this.cardSprite, this.Rect, this.Selected ? Color.Turquoise : this.Color);
+            spriteBatch.Draw(this.cardSprite, this.Rect, this.Selected ? Color.Turquoise : this.Color);
         }
     }
 }

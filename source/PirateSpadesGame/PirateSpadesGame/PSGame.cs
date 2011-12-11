@@ -233,8 +233,10 @@ namespace PirateSpadesGame {
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            background.Draw(spriteBatch);
-            title.Draw(spriteBatch);
+            if(!(gameMode is InGame)) {
+                background.Draw(spriteBatch);
+                title.Draw(spriteBatch);
+            }
             gameMode.Draw(this.spriteBatch);
             if(settingname) {
                 namePopUp.Draw(this.spriteBatch);

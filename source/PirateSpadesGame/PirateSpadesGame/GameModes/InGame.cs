@@ -72,6 +72,7 @@ namespace PirateSpadesGame.GameModes {
             client.Disconnected += OnDisconnected;
             client.BetRequested += OnBetRequest;
             client.CardRequested += OnCardRequest;
+            client.Game.RoundStarted += OnGameStarted;
 
             cards = new List<CardSprite>();
 
@@ -98,12 +99,12 @@ namespace PirateSpadesGame.GameModes {
             var menuX = game.Window.ClientBounds.Width / 2 - 300 / 2;
             var menuY = game.Window.ClientBounds.Height / 2 - 420 / 2;
             menu.Position = new Vector2(menuX, menuY);
-            menuX += 50;
+            menuX += 75;
             menuY += 100;
             resumeGame = new Button("resumegame", menuX, menuY);
-            menuY += Button.Width;
+            menuY += Button.Height;
             menuleaveGame = new Button("leavegame", menuX, menuY);
-            menuY += Button.Width;
+            menuY += Button.Height;
             exitGame = new Button("exitgame", menuX, menuY);
             menuButtons = new List<Button>() { this.menuleaveGame, this.resumeGame, this.exitGame };
 
@@ -111,11 +112,11 @@ namespace PirateSpadesGame.GameModes {
             betBox = new Numberbox(rect, "volumebox", 2) { Limit = 10, Number = 0 };
             betBox.Text = betBox.Number.ToString();
 
-            var betX = 950;
+            var betX = 925;
             var betY = 675;
             bet = new Button("bet", betX, betY);
 
-            cardSize = new Rectangle(5, 710, 75, 120);
+            cardSize = new Rectangle(5, 650, 75, 120);
         }
 
         public void LoadContent(ContentManager contentManager) {
@@ -146,7 +147,6 @@ namespace PirateSpadesGame.GameModes {
                     this.ButtonAction(leaveGame);
                 }
 
-                client.Game.RoundStarted += OnGameStarted;
             } else {
                 currentKeyboardState = Keyboard.GetState();
                 if(this.CheckEscape()) {
@@ -159,7 +159,7 @@ namespace PirateSpadesGame.GameModes {
                     }
                 }
                 if(currentKeyboardState.IsKeyDown(Keys.Tab)) {
-                    showScoreboard = true;
+                    this.showScoreboard = !this.showScoreboard;
                 }
                 if(bet.Update(gameTime)) {
                     this.ButtonAction(bet);
@@ -242,6 +242,9 @@ namespace PirateSpadesGame.GameModes {
                     foreach (var c in cards) {
                         c.Draw(spriteBatch);
                     }
+                }
+                if(showScoreboard) {
+                    spriteBatch.DrawString(font, "HEJ SCOREBOARD", new Vector2(game.Window.ClientBounds.Width - 500, game.Window.ClientBounds.Height - 300), Color.White);
                 }
                 bet.Draw(spriteBatch);
                 if (showMenu) {
