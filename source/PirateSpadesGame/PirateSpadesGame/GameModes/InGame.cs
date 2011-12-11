@@ -206,7 +206,7 @@ namespace PirateSpadesGame.GameModes {
                     showMenu = false;
                     break;
                 case "leavegame":
-
+                    client.Disconnect();
                     game.Client = null;
                     if(hosting) {
                         host.Stop();
@@ -215,7 +215,7 @@ namespace PirateSpadesGame.GameModes {
                     game.State = GameState.StartUp;
                     break;
                 case "exitgame":
-
+                    client.Disconnect();
                     game.Client = null;
                     if(hosting) {
                         host.Stop();
