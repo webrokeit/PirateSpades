@@ -7,6 +7,7 @@ Content\pspades.xnb
 Content\Gamerules.xnb
 Content\back.xnb
 Content\solidred.xnb
+Content\font.xnb
 Content\playername.xnb
 Content\apply.xnb
 Content\cancel.xnb
@@ -27,7 +28,6 @@ Content\exitgame.xnb
 Content\leavegame.xnb
 Content\resumegame.xnb
 Content\startgame.xnb
-Content\font.xnb
 Content\servertex.xnb
 Content\ingamewindow.xnb
 Content\menubackground.xnb
@@ -85,3 +85,4 @@ Content\Spades_Six.xnb
 Content\Spades_Ten.xnb
 Content\Spades_Three.xnb
 Content\Spades_Two.xnb
+Content\bettingbox.xnb

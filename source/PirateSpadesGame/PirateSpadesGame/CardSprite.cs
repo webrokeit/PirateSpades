@@ -20,6 +20,7 @@ namespace PirateSpadesGame {
             this.Card = card;
             this.Rect = rect;
             Scale = 1.0f;
+            Color = Color.White;
         }
 
         public string Name {

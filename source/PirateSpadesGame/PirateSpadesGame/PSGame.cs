@@ -19,21 +19,14 @@ namespace PirateSpadesGame {
     /// </summary>
     public class PsGame : Microsoft.Xna.Framework.Game {
         private GraphicsDeviceManager graphics;
-
         private SpriteBatch spriteBatch;
-
         private IGameMode gameMode;
-
         private StartUp startUp;
         private JoinGame joinGame;
         private CreateGame createGame;
         private InGame inGame;
         private Sprite title;
         private Sprite background;
-        private AudioEngine engine;
-        private SoundBank soundBank;
-        private WaveBank waveBank;
-        private AudioCategory musicCategory;
         private Sprite namePopUp;
         private Button ok;
         private Textbox textbox;
@@ -73,16 +66,8 @@ namespace PirateSpadesGame {
         /// and initialize them as well.
         /// </summary>
         protected override void Initialize() {
-            // TODO: Add your initialization logic here
             this.IsMouseVisible = true;
 
-            //engine = new AudioEngine("Content\\Audio\\ChangeSoundVolume.xgs");
-            //soundBank = new SoundBank(engine, "Content\\Audio\\Sound Bank.xsb");
-            //waveBank = new WaveBank(engine, "Content\\Audio\\Wave Bank.xwb");
-
-            //musicCategory = engine.GetCategory("Music");
-
-            //soundBank.PlayCue("music");
             title = new Sprite();
             background = new Sprite();
             var x = this.Window.ClientBounds.Width / 2 - 200;
@@ -101,7 +86,6 @@ namespace PirateSpadesGame {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
             background.LoadContent(this.Content, "PIRATESHIP");
             title.LoadContent(this.Content, "pspades");
             gameMode.LoadContent(this.Content);
@@ -126,8 +110,6 @@ namespace PirateSpadesGame {
             if(GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
-
             if(settingname && (State == GameState.JoinGame || State == GameState.CreateGame)) {
                 if(ok.Update(gameTime)) {
                     this.ButtonAction(ok);
@@ -136,9 +118,6 @@ namespace PirateSpadesGame {
             } else {
                 this.GameMode(gameTime);
             }
-
-            //musicCategory.SetVolume(musicVolume);
-            //engine.Update();
 
             base.Update(gameTime);
         }
@@ -191,7 +170,7 @@ namespace PirateSpadesGame {
         }
 
         private void ButtonAction(Button b) {
-            if (b == null) {
+            if(b == null) {
                 return;
             }
             var str = b.Name;
@@ -213,7 +192,7 @@ namespace PirateSpadesGame {
             namePopUp.LoadContent(this.Content, "PopUp");
             int x = this.Window.ClientBounds.Width / 2 - namePopUp.Tex.Width / 2;
             int y = this.Window.ClientBounds.Height / 2 - namePopUp.Tex.Height / 2;
-            namePopUp.Position = new Vector2(x,y);
+            namePopUp.Position = new Vector2(x, y);
             var rect = new Rectangle(x + (namePopUp.Tex.Width - 250), y + 50, 250, 75);
             textbox = new Textbox(rect, "playername") { Text = this.PlayerName, Typable = true };
             textbox.MoveText(45);
@@ -231,12 +210,9 @@ namespace PirateSpadesGame {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color);
 
-            // TODO: Add your drawing code here
             spriteBatch.Begin();
-            if(!(gameMode is InGame)) {
-                background.Draw(spriteBatch);
-                title.Draw(spriteBatch);
-            }
+            background.Draw(spriteBatch);
+            title.Draw(spriteBatch);
             gameMode.Draw(this.spriteBatch);
             if(settingname) {
                 namePopUp.Draw(this.spriteBatch);

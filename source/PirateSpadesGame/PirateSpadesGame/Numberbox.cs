@@ -65,6 +65,9 @@ namespace PirateSpadesGame {
         }
 
         public float ParseInputToFloat() {
+            if(Text.Length == 0) {
+                return 0;
+            }
             if(Number > Limit) {
                 Number = Limit;
                 Text = Number.ToString();
@@ -74,6 +77,9 @@ namespace PirateSpadesGame {
         }
 
         public int ParseInput() {
+            if(Text.Length == 0) {
+                return 0;
+            }
             if(Number > Limit) {
                 Number = Limit;
                 Text = Number.ToString();
@@ -132,7 +138,9 @@ namespace PirateSpadesGame {
                     return;
             }
             Text += newChar;
-            Number = Convert.ToInt32(Text);
+            if(Text.Length > 0) {
+                Number = Convert.ToInt32(Text);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch) {
