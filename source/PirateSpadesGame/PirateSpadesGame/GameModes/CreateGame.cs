@@ -20,8 +20,6 @@ namespace PirateSpadesGame.GameModes {
     public class CreateGame : IGameMode {
         private PsGame game;
         private Sprite backGround;
-        private JoinedGame inJoinedGame;
-        private bool joinedGame = false;
         private Button cancel;
         private Button createGame;
         private Numberbox numberOfPlayers;

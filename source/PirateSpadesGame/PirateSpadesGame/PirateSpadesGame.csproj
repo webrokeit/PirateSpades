@@ -112,7 +112,6 @@
     <Compile Include="GameMode.cs" />
     <Compile Include="GameModes\CreateGame.cs" />
     <Compile Include="GameModes\InGame.cs" />
-    <Compile Include="GameModes\JoinedGame.cs" />
     <Compile Include="GameModes\JoinGame.cs" />
     <Compile Include="GameModes\StartUp.cs" />
     <Compile Include="Numberbox.cs" />

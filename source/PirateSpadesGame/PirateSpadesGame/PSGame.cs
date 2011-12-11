@@ -215,7 +215,7 @@ namespace PirateSpadesGame {
             int y = this.Window.ClientBounds.Height / 2 - namePopUp.Tex.Height / 2;
             namePopUp.Position = new Vector2(x,y);
             var rect = new Rectangle(x + (namePopUp.Tex.Width - 250), y + 50, 250, 75);
-            textbox = new Textbox(rect, "playername") { Text = this.PlayerName };
+            textbox = new Textbox(rect, "playername") { Text = this.PlayerName, Typable = true };
             textbox.MoveText(45);
             textbox.LoadContent(this.Content);
             int okX = x + namePopUp.Tex.Width / 2 - 75;

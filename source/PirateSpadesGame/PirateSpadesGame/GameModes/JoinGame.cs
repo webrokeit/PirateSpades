@@ -19,27 +19,19 @@ namespace PirateSpadesGame.GameModes {
 
     public class JoinGame : IGameMode {
         private PsGame game;
-        private bool joinedGame = false;
-        private JoinedGame inJoinedGame;
-        private Texture2D testTex;
         private Button xButton;
         private Button refreshButton;
         private Button joinGameButton;
         private Button back;
         private Sprite backGround;
-        private double frametime;
-        private bool mpressed = false;
-        private bool prevmpressed = false;
         private Rectangle nameSize;
         private Rectangle ipSize;
         private Rectangle playersSize;
         private SpriteFont font;
         private Rectangle serversRectangle;
-        private List<Rectangle> rects;
         private List<ServerSprite> servers;
         private PirateScanner scanner;
         private ContentManager content;
-        private bool refreshed = false;
         public static IList<ServerSprite> Serversprites = new List<ServerSprite>().AsReadOnly();
         private List<Button> buttons;
         private int numberOfServers;
@@ -52,6 +44,7 @@ namespace PirateSpadesGame.GameModes {
             this.SetUp(game.Window);
             content = game.Content;
             scanner = new PirateScanner();
+            this.Refresh();
         }
 
         private void SetUp(GameWindow window) {
@@ -159,7 +152,6 @@ namespace PirateSpadesGame.GameModes {
             }
 
             refreshing = false;
-            refreshed = true;
         }
 
         private void GameFound(PirateScanner.GameInfo gameInfo) {
@@ -202,10 +194,10 @@ namespace PirateSpadesGame.GameModes {
             spriteBatch.DrawString(font, "Server Name", new Vector2(nameSize.X, nameSize.Y), Color.White);
             spriteBatch.DrawString(font, "Players / Max", new Vector2(playersSize.X, playersSize.Y), Color.White);
             spriteBatch.DrawString(font, "Ip Address", new Vector2(ipSize.X, ipSize.Y), Color.White);
-            if(!refreshed) {
+            if(refreshing) {
                 spriteBatch.DrawString(
                     font,
-                    "Press refresh to find servers",
+                    "Refreshing....",
                     new Vector2(serversRectangle.X, serversRectangle.Y + 30),
                     Color.White);
             } else if(servers.Count > 0) {

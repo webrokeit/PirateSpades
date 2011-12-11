@@ -11,7 +11,6 @@ namespace PirateSpadesGame {
 
     public class Textbox {
         private Rectangle box;
-        private bool typable = false;
         private readonly Keys[] keysToCheck = new Keys[] {
 		Keys.A, Keys.B, Keys.C, Keys.D, Keys.E,
 		Keys.F, Keys.G, Keys.H, Keys.I, Keys.J,
@@ -31,7 +30,10 @@ namespace PirateSpadesGame {
             box = rect;
             this.name = name;
             textmove = 0;
+            Typable = false;
         }
+
+        public bool Typable { get; set; }
 
         public string Text { get; set; }
 
@@ -47,13 +49,13 @@ namespace PirateSpadesGame {
         public void Update(GameTime gameTime) {
             MouseState state = Mouse.GetState();
             if(state.LeftButton == ButtonState.Pressed) {
-                typable = true;
+                Typable = true;
             }
             if(state.LeftButton == ButtonState.Pressed && (state.X < box.X || state.X > (box.X + box.Width) || state.Y < box.Y || state.Y > (box.Y + box.Height))) {
-                typable = false;
+                Typable = false;
             }
             
-            if(typable) {
+            if(Typable) {
                 currentKeyboardState = Keyboard.GetState();
                 foreach(var k in this.keysToCheck.Where(this.CheckKey)) {
                     this.AddLetter(k);
@@ -157,7 +159,7 @@ namespace PirateSpadesGame {
                     newChar += " ";
                     break;
                 case Keys.Enter:
-                    typable = false;
+                    Typable = false;
                     break;
                 case Keys.Back:
                     if(Text.Length != 0)
