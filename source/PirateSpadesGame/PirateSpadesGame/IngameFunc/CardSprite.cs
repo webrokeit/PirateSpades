@@ -73,9 +73,8 @@ namespace PirateSpadesGame {
                 State = BState.Up;
                 if(timer > 0) {
                     timer = timer - frametime;
-                    Color = Color.DarkBlue;
                 } else {
-                    Color = Color.Transparent;
+                    Color = Color.White;
                 }
             }
             if(State == BState.JustReleased) {
@@ -118,7 +117,7 @@ namespace PirateSpadesGame {
         }
 
         public void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(this.cardSprite, this.Rect, this.Selected ? Color.Turquoise : this.Color);
+            spriteBatch.Draw(this.cardSprite, this.Rect, Color.White);
         }
     }
 }
