@@ -48,7 +48,7 @@ namespace PirateSpadesGame {
 
         public void Update(GameTime theGameTime) {
             var currentMouseState = Mouse.GetState();
-            frametime = theGameTime.ElapsedGameTime.Milliseconds / 1000.0;
+            this.frametime = theGameTime.ElapsedGameTime.Milliseconds / 1000.0;
             this.UpdateMovement(currentMouseState);
         }
 
@@ -117,7 +117,7 @@ namespace PirateSpadesGame {
         }
 
         public void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(this.cardSprite, this.Rect, this.Selected ? Color.Turquoise : this.Color);
+                spriteBatch.Draw(this.cardSprite, this.Rect, this.Selected ? Color.Turquoise : this.Color);
         }
     }
 }

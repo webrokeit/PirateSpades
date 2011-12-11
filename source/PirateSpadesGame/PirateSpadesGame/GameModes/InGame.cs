@@ -50,6 +50,7 @@ namespace PirateSpadesGame.GameModes {
         private Rectangle cardSize;
         private Numberbox betBox;
         private bool hasBet = false;
+        private Texture2D cardback;
 
         public InGame(PsGame game) {
             this.game = game;
@@ -107,11 +108,11 @@ namespace PirateSpadesGame.GameModes {
             menuButtons = new List<Button>() { this.menuleaveGame, this.resumeGame, this.exitGame };
 
             var rect = new Rectangle(x + 250, y + 200, 100, 50);
-            betBox = new Numberbox(rect, "volumebox", 1) { Limit = 10, Number = 0 };
+            betBox = new Numberbox(rect, "volumebox", 2) { Limit = 10, Number = 0 };
             betBox.Text = betBox.Number.ToString();
 
-            int betX = 950;
-            int betY = 675;
+            var betX = 950;
+            var betY = 675;
             bet = new Button("bet", betX, betY);
 
             cardSize = new Rectangle(5, 710, 75, 120);
@@ -129,6 +130,7 @@ namespace PirateSpadesGame.GameModes {
             leaveGame.LoadContent(contentManager);
             font = contentManager.Load<SpriteFont>("font");
             bet.LoadContent(contentManager);
+            cardback = contentManager.Load<Texture2D>("cardback");
         }
 
         public void Update(GameTime gameTime) {
@@ -159,6 +161,9 @@ namespace PirateSpadesGame.GameModes {
                 if(currentKeyboardState.IsKeyDown(Keys.Tab)) {
                     showScoreboard = true;
                 }
+                if(bet.Update(gameTime)) {
+                    this.ButtonAction(bet);
+                }
                 if(cards.Count > 0) {
                     foreach (var c in this.cards.Where(c => c.DoubleClick)) {
                         this.cardToPlay = c;
@@ -167,7 +172,9 @@ namespace PirateSpadesGame.GameModes {
                     betBox.Limit = client.Hand.Count;
                     var tempX = cardSize.X;
                     foreach(var c in client.Hand) {
-                        cards.Add(new CardSprite(c, new Rectangle(tempX, cardSize.Y, cardSize.Width, cardSize.Width)));
+                        var cs = new CardSprite(c, new Rectangle(tempX, cardSize.Y, cardSize.Width, cardSize.Width));
+                        cs.LoadContent(game.Content);
+                        cards.Add(cs);
                         tempX += cardSize.Width;
                     }
                 }
