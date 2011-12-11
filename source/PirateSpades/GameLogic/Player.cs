@@ -21,7 +21,7 @@
 
         public int Tricks {
             get {
-                return Game != null && Game.Started && Game.Round.PlayerTricks.ContainsKey(this)
+                return Game != null && Game.Started && Game.CurrentRound >= 1 && Game.Round.PlayerTricks.ContainsKey(this)
                            ? Game.Round.PlayerTricks[this].Count
                            : 0;
             }
