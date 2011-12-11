@@ -75,7 +75,7 @@ namespace PirateSpades.Network {
             PirateClientCommands.InitConnection(this);
         }
 
-        private void Disconnect() {
+        public void Disconnect() {
             if(this.Socket.Connected) {
                 this.Socket.Close();
                 IsDead = true;
