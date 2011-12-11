@@ -128,6 +128,7 @@ namespace PirateSpadesGame.GameModes {
 
         private void Refresh() {
             if(refreshing) return;
+            servers.Clear();
             refreshing = true;
             numberOfServers = 0;
 

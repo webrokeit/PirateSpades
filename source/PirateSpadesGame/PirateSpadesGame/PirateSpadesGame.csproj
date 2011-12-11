@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IngameFunc\TableSprite.cs" />
     <Compile Include="Misc\Button.cs" />
     <Compile Include="IngameFunc\CardSprite.cs" />
     <Compile Include="GameModes\GameMode.cs" />
