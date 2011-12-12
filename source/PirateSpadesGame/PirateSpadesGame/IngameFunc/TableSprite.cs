@@ -35,7 +35,7 @@ namespace PirateSpadesGame.IngameFunc {
         }
 
         public void LoadContent(ContentManager contentManager) {
-            contentManager.Load<Texture2D>(playingGame.Players.Count + "_player");
+            playingGround = contentManager.Load<Texture2D>(playingGame.Players.Count + "_player");
         }
 
         public void Update(GameTime gameTime) {
@@ -43,6 +43,7 @@ namespace PirateSpadesGame.IngameFunc {
             foreach(var c in playingGame.Round.BoardCards.Pile.Values) {
                 var cs = new CardSprite(c, new Rectangle(tempX,300,50,60));
                 cs.LoadContent(game.Content);
+                cardsOnTable.Add(cs);
                 tempX += 50;
             }
         }

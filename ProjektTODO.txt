@@ -3,8 +3,6 @@ A general TODO
 
 InGame related
 	- Graphics:
-		- Create the table graphics
-		- Create the players graphics
 		- Draw the table in the game
 		- Draw the players in the game
 		- Scoreboard

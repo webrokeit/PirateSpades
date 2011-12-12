@@ -555,6 +555,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="bottom.png">
+      <Name>bottom</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="5_player.png">
+      <Name>5_player</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="4_player.png">
       <Name>4_player</Name>
       <Importer>TextureImporter</Importer>

@@ -58,6 +58,8 @@ namespace PirateSpadesGame.GameModes {
         private Texture2D scoreOverlay;
         private Rectangle scoreOverlayRect;
         private TableSprite playingGround;
+        private Rectangle ingameBottom;
+        private Texture2D bottom;
 
         public InGame(PsGame game) {
             this.game = game;
@@ -129,6 +131,8 @@ namespace PirateSpadesGame.GameModes {
             scoreRectangle = new Rectangle(1024-175, 0, 75, 20);
 
             scoreOverlayRect = new Rectangle(1024-177, 0, 177, 520);
+
+            ingameBottom = new Rectangle(0,615, 1024, 120);
         }
 
         public void LoadContent(ContentManager contentManager) {
@@ -147,6 +151,7 @@ namespace PirateSpadesGame.GameModes {
             cardback = contentManager.Load<Texture2D>("cardback");
             betBox.LoadContent(contentManager);
             scoreOverlay = contentManager.Load<Texture2D>("scoreoverlay");
+            bottom = contentManager.Load<Texture2D>("bottom");
         }
 
         public void Update(GameTime gameTime) {
@@ -268,6 +273,7 @@ namespace PirateSpadesGame.GameModes {
                     y += namesRectangle.Height;
                 }
             } else {
+                spriteBatch.Draw(bottom, ingameBottom, Color.White);
                 playingGround.Draw(spriteBatch);
                 this.DrawRoundScore(spriteBatch);
                 if(cards.Count > 0) {
