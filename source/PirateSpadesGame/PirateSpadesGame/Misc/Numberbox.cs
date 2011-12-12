@@ -67,12 +67,12 @@ namespace PirateSpadesGame {
 
         public float ParseInputToFloat() {
             if(Text.Length == 0) {
-                return 0;
+                return 0f;
             }
             if(Number > Limit) {
                 Number = Limit;
                 Text = Number.ToString();
-                return (float) Number;
+                return Limit / (float)Limit;
             }
             return Number /(float)Limit;
         }

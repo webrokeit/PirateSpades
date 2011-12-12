@@ -1,5 +1,6 @@
 ﻿
 namespace PirateSpadesGame.IngameFunc {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -20,7 +21,30 @@ namespace PirateSpadesGame.IngameFunc {
         private Texture2D playingGround;
         private List<CardSprite> cardsOnTable;
         private Rectangle rect;
- 
+        private Player winner;
+        private DateTime roundOver;
+        private SpriteFont font;
+        private int ourIndex;
+
+        private static readonly Dictionary<int, List<Vector2>> CardPlacements = new Dictionary<int, List<Vector2>>() {
+            { 2, new List<Vector2> { new Vector2(425, 400), new Vector2(425, 305) } },
+            { 3, new List<Vector2> { new Vector2(425, 400), new Vector2(295, 330), new Vector2(545, 340) } },
+            {
+                4,
+                new List<Vector2>
+                { new Vector2(425, 400), new Vector2(145, 385), new Vector2(425, 305), new Vector2(685, 400) }
+                },
+            {
+                5,
+                new List<Vector2> {
+                    new Vector2(425, 400),
+                    new Vector2(145, 385),
+                    new Vector2(295, 330),
+                    new Vector2(545, 340),
+                    new Vector2(685, 400)
+                }
+                }
+        };
 
         public TableSprite(PsGame game, Game playingGame, Rectangle rect) {
             this.game = game;
@@ -33,21 +57,27 @@ namespace PirateSpadesGame.IngameFunc {
             cardsOnTable = new List<CardSprite>();
             playingGame.RoundFinished += OnRoundFinished;
             playingGame.RoundNewPile += OnRoundFinished;
+            ourIndex = playingGame.PlayerIndex(game.Client);
         }
 
         public void LoadContent(ContentManager contentManager) {
             playingGround = contentManager.Load<Texture2D>(playingGame.Players.Count + "_player");
+            font = contentManager.Load<SpriteFont>("font2");
         }
 
         public void Update(GameTime gameTime) {
             if(playingGame.Started && playingGame.Round.BoardCards.Pile.Count > 0) {
-                var tempX = 400;
+                var cards = CardPlacements[playingGame.Players.Count];
                 cardsOnTable.Clear();
-                foreach(var c in playingGame.Round.BoardCards.Pile.Values) {
-                    var cs = new CardSprite(c, new Rectangle(tempX, 300, 50, 60));
+                foreach(var p in playingGame.Round.BoardCards.Pile.Keys) {
+                    var curIndex = playingGame.PlayerIndex(p);
+                    var tmpIndex = curIndex - ourIndex;
+                    var realIndex = (playingGame.Players.Count + tmpIndex) % playingGame.Players.Count;
+
+                    var c = playingGame.Round.BoardCards.Pile[p];
+                    var cs = new CardSprite(c, new Rectangle((int)cards[realIndex].X, (int)cards[realIndex].Y, 50, 60));
                     cs.LoadContent(game.Content);
                     cardsOnTable.Add(cs);
-                    tempX += 50;
                 }
             }
         }
@@ -59,10 +89,23 @@ namespace PirateSpadesGame.IngameFunc {
                     cs.Draw(spriteBatch);
                 }
             }
+            if(winner != null && (DateTime.Now - roundOver).TotalSeconds <= 4.0) {
+                var str = winner.Name + " won the trick";
+                var t = font.MeasureString(str);
+                var x = game.Window.ClientBounds.Width / 2f - t.X;
+                var y = game.Window.ClientBounds.Height / 2f - t.Y + 20;
+                spriteBatch.DrawString(font,
+                    str,
+                    new Vector2(x, y),
+                    Color.Blue);
+            }
+            
         }
 
         private void OnRoundFinished(Game g) {
             cardsOnTable.Clear();
+            winner = g.Round.LastTrick.Winner;
+            roundOver = DateTime.Now;
         }
     }
 }

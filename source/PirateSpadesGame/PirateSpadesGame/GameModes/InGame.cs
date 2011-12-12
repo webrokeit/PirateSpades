@@ -61,7 +61,7 @@ namespace PirateSpadesGame.GameModes {
         private Rectangle ingameBottom;
         private Texture2D bottom;
         private bool cardRequested;
-        private bool betRequested;
+        private bool finished = false;
 
         public InGame(PsGame game) {
             this.game = game;
@@ -157,6 +157,13 @@ namespace PirateSpadesGame.GameModes {
         }
 
         public void Update(GameTime gameTime) {
+            if(finished) {
+                leaveGame = new Button("leavegame", game.Window.ClientBounds.Width / 2 - Button.Width / 2, game.Window.ClientBounds.Height - 50);
+                leaveGame.LoadContent(game.Content);
+                if(leaveGame.Update(gameTime)) {
+                    this.ButtonAction(leaveGame);
+                }
+            }
             if(!playing) {
                 if(hosting) {
                     if(startGame.Update(gameTime)) {
@@ -200,7 +207,7 @@ namespace PirateSpadesGame.GameModes {
                             break;
                         }
                     }
-                    if(cardToPlay != null && cardRequested) {
+                    if(cardToPlay != null && cardRequested && client.CardPlayable(cardToPlay.Card, client.Game.Round.BoardCards.FirstCard)) {
                         client.PlayCard(cardToPlay.Card);
                         cards.Remove(cardToPlay);
                         cardToPlay = null;
@@ -268,6 +275,11 @@ namespace PirateSpadesGame.GameModes {
         }
 
         public void Draw(SpriteBatch spriteBatch) {
+            if(this.finished) {
+                this.DrawScoreboard(spriteBatch);
+                leaveGame.Draw(spriteBatch);
+                return;
+            }
             if(!playing) {
                 inJoinbackGround.Draw(spriteBatch);
                 leaveGame.Draw(spriteBatch);
@@ -286,7 +298,9 @@ namespace PirateSpadesGame.GameModes {
                 }
             } else {
                 spriteBatch.Draw(bottom, ingameBottom, Color.White);
-                playingGround.Draw(spriteBatch);
+                if(playingGround != null) {
+                    playingGround.Draw(spriteBatch);
+                }
                 this.DrawRoundScore(spriteBatch);
                 if(cards.Count > 0) {
                     foreach(var c in cards) {
@@ -320,11 +334,11 @@ namespace PirateSpadesGame.GameModes {
             foreach(var p in client.Game.Players) {
                 var betted = client.Game.Round.PlayerBets[p];
                 var tricks = client.Game.Round.PlayerTricks[p].Count;
-                spriteBatch.DrawString(font2, p.Name, new Vector2(nameRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Black);
+                spriteBatch.DrawString(font2, p.Name, new Vector2(nameRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Red);
                 y += scoreRectangle.Height;
-                spriteBatch.DrawString(font2, "Bet: " + (betted == -1 ? "?" : betted.ToString()), new Vector2(betRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Black);
+                spriteBatch.DrawString(font2, "Bet: " + (betted == -1 ? "?" : betted.ToString()), new Vector2(betRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Red);
                 y += scoreRectangle.Height;
-                spriteBatch.DrawString(font2, "Tricks: " + tricks, new Vector2(tricksRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Black);
+                spriteBatch.DrawString(font2, "Tricks: " + tricks, new Vector2(tricksRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Red);
                 y += 40;
             }
         }
@@ -332,6 +346,7 @@ namespace PirateSpadesGame.GameModes {
         private void OnGameFinished(Game g) {
             if(g.Finished) {
                 showScoreboard = true;
+                finished = true;
             }
         }
 
