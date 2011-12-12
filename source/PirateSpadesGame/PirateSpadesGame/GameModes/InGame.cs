@@ -16,17 +16,6 @@ namespace PirateSpadesGame.GameModes {
 
     public class InGame : IGameMode {
         private Vector2 screenCenter;
-<<<<<<< HEAD
-        private Dictionary<string, int> score;
-
-        public InGame() {
-
-            Dictionary <int, Dictionary<string, int>>;
-        }
-
-        protected void LoadContent()
-        {
-=======
         private Dictionary<string, Dictionary<string, int>> score;
         private bool playing = false;
         private bool showMenu = false;
@@ -128,7 +117,6 @@ namespace PirateSpadesGame.GameModes {
             bet = new Button("bet", betX, betY);
 
             cardSize = new Rectangle(5, 615, 100, 120);
->>>>>>> 5c2af7d504527d6b0f9642da10cb3f65d2eb0e27
         }
 
         public void LoadContent(ContentManager contentManager) {
@@ -155,10 +143,6 @@ namespace PirateSpadesGame.GameModes {
                     }
                 }
 
-<<<<<<< HEAD
-            if (state.IsKeyDown(Keys.Tab)) {
-                score.Add();
-=======
                 players = client.Game.Players.Count;
                 if(leaveGame.Update(gameTime)) {
                     this.ButtonAction(leaveGame);
@@ -201,7 +185,6 @@ namespace PirateSpadesGame.GameModes {
                         tempX += cardSize.Width;
                     }
                 }
->>>>>>> 5c2af7d504527d6b0f9642da10cb3f65d2eb0e27
             }
         }
 
