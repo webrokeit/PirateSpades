@@ -19,7 +19,7 @@ namespace PirateSpadesGame {
         public CardSprite(Card card, Rectangle rect) {
             this.Card = card;
             this.Rect = rect;
-            Scale = 1.0f;
+            Scale = 1;
             Color = Color.White;
         }
 
@@ -41,7 +41,7 @@ namespace PirateSpadesGame {
 
         public Rectangle Rect { get; private set; }
 
-        public float Scale { get; set; }
+        public int Scale { get; set; }
 
         public void LoadContent(ContentManager theContentManager) {
             cardSprite = theContentManager.Load<Texture2D>(Name);
@@ -117,7 +117,7 @@ namespace PirateSpadesGame {
         }
 
         public void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(this.cardSprite, this.Rect, Color.White);
+            spriteBatch.Draw(this.cardSprite, new Rectangle(Rect.X, Rect.Y, Rect.Width * Scale, Rect.Height * Scale), Color.White);
         }
     }
 }

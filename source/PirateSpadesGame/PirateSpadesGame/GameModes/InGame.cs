@@ -12,6 +12,8 @@ namespace PirateSpadesGame.GameModes {
     using PirateSpades.GameLogic;
     using PirateSpades.Network;
 
+    using PirateSpadesGame.IngameFunc;
+
     using Game = PirateSpades.GameLogic.Game;
 
     public class InGame : IGameMode {
@@ -51,6 +53,13 @@ namespace PirateSpadesGame.GameModes {
         private Numberbox betBox;
         private bool hasBet = false;
         private Texture2D cardback;
+        private Rectangle scoreRectangle;
+        private SpriteFont font2;
+        private Texture2D scoreOverlay;
+        private Rectangle scoreOverlayRect;
+        private TableSprite playingGround;
+        private Rectangle ingameBottom;
+        private Texture2D bottom;
 
         public InGame(PsGame game) {
             this.game = game;
@@ -73,6 +82,7 @@ namespace PirateSpadesGame.GameModes {
             client.BetRequested += OnBetRequest;
             client.CardRequested += OnCardRequest;
             client.Game.RoundStarted += OnGameStarted;
+            client.Game.GameFinished += OnGameFinished;
 
             cards = new List<CardSprite>();
 
@@ -108,7 +118,7 @@ namespace PirateSpadesGame.GameModes {
             exitGame = new Button("exitgame", menuX, menuY);
             menuButtons = new List<Button>() { this.menuleaveGame, this.resumeGame, this.exitGame };
 
-            var rect = new Rectangle(900, 500, 100, 50);
+            var rect = new Rectangle(900, 520, 100, 50);
             betBox = new Numberbox(rect, "bettingbox", 2) { Limit = 10, Number = 0 };
             betBox.Text = betBox.Number.ToString();
 
@@ -117,6 +127,12 @@ namespace PirateSpadesGame.GameModes {
             bet = new Button("bet", betX, betY);
 
             cardSize = new Rectangle(5, 615, 100, 120);
+
+            scoreRectangle = new Rectangle(1024-175, 0, 75, 20);
+
+            scoreOverlayRect = new Rectangle(1024-177, 0, 177, 520);
+
+            ingameBottom = new Rectangle(0,615, 1024, 120);
         }
 
         public void LoadContent(ContentManager contentManager) {
@@ -130,9 +146,12 @@ namespace PirateSpadesGame.GameModes {
             menuleaveGame.LoadContent(contentManager);
             leaveGame.LoadContent(contentManager);
             font = contentManager.Load<SpriteFont>("font");
+            font2 = contentManager.Load<SpriteFont>("font2");
             bet.LoadContent(contentManager);
             cardback = contentManager.Load<Texture2D>("cardback");
             betBox.LoadContent(contentManager);
+            scoreOverlay = contentManager.Load<Texture2D>("scoreoverlay");
+            bottom = contentManager.Load<Texture2D>("bottom");
         }
 
         public void Update(GameTime gameTime) {
@@ -142,13 +161,16 @@ namespace PirateSpadesGame.GameModes {
                         this.ButtonAction(startGame);
                     }
                 }
-
                 players = client.Game.Players.Count;
                 if(leaveGame.Update(gameTime)) {
                     this.ButtonAction(leaveGame);
                 }
 
             } else {
+                if(playingGround == null) {
+                    playingGround = new TableSprite(game, playingGame, new Rectangle(0,0,1024,615));
+                    playingGround.LoadContent(game.Content);
+                }
                 currentKeyboardState = Keyboard.GetState();
                 if(this.CheckEscape()) {
                     this.showMenu = !this.showMenu;
@@ -251,6 +273,9 @@ namespace PirateSpadesGame.GameModes {
                     y += namesRectangle.Height;
                 }
             } else {
+                spriteBatch.Draw(bottom, ingameBottom, Color.White);
+                playingGround.Draw(spriteBatch);
+                this.DrawRoundScore(spriteBatch);
                 if(cards.Count > 0) {
                     foreach(var c in cards) {
                         c.Draw(spriteBatch);
@@ -259,7 +284,7 @@ namespace PirateSpadesGame.GameModes {
                 betBox.Draw(spriteBatch);
                 bet.Draw(spriteBatch);
                 if(showScoreboard) {
-                    spriteBatch.DrawString(font, "HEJ SCOREBOARD", new Vector2(game.Window.ClientBounds.Width - 500, game.Window.ClientBounds.Height - 300), Color.White);
+                    spriteBatch.DrawString(font, "HEJ SCOREBOARD", new Vector2(game.Window.ClientBounds.Width - 500, game.Window.ClientBounds.Height - 300), Color.Black);
                 }
                 if(showMenu) {
                     menu.Draw(spriteBatch);
@@ -267,6 +292,34 @@ namespace PirateSpadesGame.GameModes {
                     menuleaveGame.Draw(spriteBatch);
                     resumeGame.Draw(spriteBatch);
                 }
+            }
+        }
+
+        private void DrawScoreboard(SpriteBatch spriteBatch) {
+            
+        }
+
+        private void DrawRoundScore(SpriteBatch spriteBatch) {
+            spriteBatch.Draw(scoreOverlay, scoreOverlayRect, Color.White);
+            var nameRect = new Rectangle(scoreRectangle.X,  scoreRectangle.Y, scoreRectangle.Width, scoreRectangle.Height);
+            var betRect = new Rectangle(scoreRectangle.X, scoreRectangle.Y, 50, scoreRectangle.Height);
+            var tricksRect = new Rectangle(scoreRectangle.X, scoreRectangle.Y, 50, scoreRectangle.Height);
+            var y = scoreRectangle.Y + scoreRectangle.Height;
+            foreach(var p in client.Game.Players) {
+                var betted = client.Game.Round.PlayerBets[p];
+                var tricks = client.Game.Round.PlayerTricks[p].Count;
+                spriteBatch.DrawString(font2, p.Name, new Vector2(nameRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Black);
+                y += scoreRectangle.Height;
+                spriteBatch.DrawString(font2, "Bet: " + (betted == -1 ? "?" : betted.ToString()), new Vector2(betRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Black);
+                y += scoreRectangle.Height;
+                spriteBatch.DrawString(font2, "Tricks: " + tricks, new Vector2(tricksRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Black);
+                y += 40;
+            }
+        }
+
+        private void OnGameFinished(Game g) {
+            if(g.Finished) {
+                showScoreboard = true;
             }
         }
 

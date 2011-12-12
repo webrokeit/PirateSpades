@@ -1,14 +1,12 @@
-﻿
+﻿//Helena
 namespace PirateSpadesGame.GameModes {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
-    using Microsoft.Xna.Framework.Input;
 
     public class StartUp : IGameMode {
         private List<Button> buttons;
@@ -59,7 +57,7 @@ namespace PirateSpadesGame.GameModes {
         }
 
         public void SetUpRules(GameWindow window) {
-            rules = new Sprite() { Color = Color.White };
+            rules = new Sprite { Color = Color.White };
             int rulesX = window.ClientBounds.Width / 2 - 450 / 2;
             int rulesY = window.ClientBounds.Height / 2 - 588 / 2;
             rules.Position = new Vector2(rulesX, rulesY);
@@ -70,7 +68,7 @@ namespace PirateSpadesGame.GameModes {
 
         private void SetUpSettings(GameWindow window) {
             settingsButton = new List<Button>();
-            settings = new Sprite() { Color = Color.White };
+            settings = new Sprite { Color = Color.White };
             int settingsX = window.ClientBounds.Width / 2 - 600 / 2;
             int settingsY = window.ClientBounds.Height / 2 - 468 / 2;
             settings.Position = new Vector2(settingsX, settingsY);
@@ -172,7 +170,7 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private bool ApplyChanges() {
-            if(Regex.IsMatch(playername.Text, @"^\w{3,20}$")) {
+            if(Regex.IsMatch(playername.Text, @"^[a-zA-Z0-9]{3,12}$")) {
                 game.PlayerName = playername.Text;
                 game.MusicVolume = volume.ParseInputToFloat();
                 return true;

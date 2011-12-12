@@ -3,12 +3,8 @@ A general TODO
 
 InGame related
 	- Graphics:
-		- Create the table graphics
-		- Create the players graphics
 		- Draw the table in the game
 		- Draw the players in the game
-		- Load cards into content with name like "Spades_Eight" like the two
-		  enums (PNG files)
 		- Scoreboard
 	- Implement the functionality
 

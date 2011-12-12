@@ -1,5 +1,3 @@
-using System;
-
 namespace PirateSpadesGame {
 #if WINDOWS || XBOX
     static class Program

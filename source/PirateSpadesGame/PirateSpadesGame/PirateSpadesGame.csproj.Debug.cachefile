@@ -21,7 +21,6 @@ Content\refresh.xnb
 Content\jointhisgame.xnb
 Content\backjoingame.xnb
 Content\cancelcg.xnb
-Content\creategamegm.xnb
 Content\PIRATESHIP.xnb
 Content\creategamewindow.xnb
 Content\exitgame.xnb
@@ -85,4 +84,15 @@ Content\Spades_Ten.xnb
 Content\Spades_Three.xnb
 Content\Spades_Two.xnb
 Content\bettingbox.xnb
+<<<<<<< HEAD
 Content\font.xnb
+=======
+Content\font2.xnb
+Content\scoreoverlay.xnb
+Content\creategamegm.xnb
+Content\5_player.xnb
+Content\4_player.xnb
+Content\3_player.xnb
+Content\2_player.xnb
+Content\bottom.xnb
+>>>>>>> 8498227924a6c1ef0c4f96932b65c2309400dcc8
