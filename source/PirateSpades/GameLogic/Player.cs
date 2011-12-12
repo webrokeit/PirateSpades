@@ -1,174 +1,156 @@
-﻿// <copyright file="Player.cs">
-//      mche@itu.dk
-// </copyright>
-// <summary>
-//      A player for the PirateSpades game.
-// </summary>
-// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
-
-namespace PirateSpades.GameLogic {
+﻿namespace PirateSpades.GameLogic {
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Linq;
 
     public class Player {
-        private readonly List<Card> hand;
-        private int bet;
-        private readonly List<List<Card>> tricks;
-        private readonly Table table = Table.GetTable();
-
-        public Player(string name) {
-            this.Name = name;
-            hand = new List<Card>();
-            this.IsDealer = false;
-            tricks = new List<List<Card>>();
-        }
-
+        public Game Game { get; private set; }
         public string Name { get; protected set; }
-
-        protected delegate void CardPlayedDelegate(Card c);
-
-        protected delegate void CardDealtDelegate(Player p, Card c);
-
-        protected delegate void BetSetDelegate(int bet);
-
-        protected event CardPlayedDelegate CardPlayed;
-        protected event CardDealtDelegate CardDealt;
-        protected event BetSetDelegate BetSet;
-
+        public int Bet { get; private set; }
         public bool IsDealer { get; set; }
+        public Card CardToPlay { get; private set; }
 
-        public Card CardToPlay { get; set; }
+        public IList<Card> Hand { get; protected set; }
+        protected SortedSet<Card> Cards { get; set; }
 
-        public int NumberOfCards {
+        public int CardsOnHand {
             get {
-                Contract.Ensures(Contract.Result<int>() >= 0);
-                return hand.Count;
+                return Hand.Count;
             }
         }
 
         public int Tricks {
             get {
-                Contract.Ensures(Contract.Result<int>() >= 0);
-                return tricks.Count;
+                return Game != null && Game.Started && Game.CurrentRound >= 1 && Game.Round.PlayerTricks.ContainsKey(this)
+                           ? Game.Round.PlayerTricks[this].Count
+                           : 0;
+            }
+        }
+
+        protected delegate void CardPlayedDelegate(Card c);
+        protected delegate void CardDealtDelegate(Player p, Card c);
+        protected delegate void BetSetDelegate(int bet);
+        protected event CardPlayedDelegate CardPlayed;
+        protected event CardDealtDelegate CardDealt;
+        protected event BetSetDelegate BetSet;
+
+        public Player(string name) {
+            this.Name = name;
+            this.Cards = new SortedSet<Card>();
+            this.Hand = Cards.ToList().AsReadOnly();
+            this.IsDealer = false;
+            this.UpdateHand();
+        }
+
+        private void UpdateHand() {
+            lock (this.Cards) {
+                this.Hand = this.Cards.ToList().AsReadOnly();
+            }
+        }
+
+        public void GetCard(Card card) {
+            Contract.Requires(card != null);
+            lock (this.Cards) {
+                this.Cards.Add(card);
+            }
+            this.UpdateHand();
+        }
+
+        public void RemoveCard(Card card) {
+            Contract.Requires(card != null && this.Cards.Contains(card));
+            lock (this.Cards) {
+                this.Cards.Remove(card);
+            }
+            this.UpdateHand();
+        }
+
+        public void ClearHand() {
+            this.Cards.Clear();
+            this.UpdateHand();
+        }
+
+        public void PlayCard(Card card) {
+            Contract.Requires(card != null && this.HasCard(card) && this.CardPlayable(card, Game.Round.BoardCards.FirstCard));
+            Contract.Ensures(!this.HasCard(card) && CardsOnHand == Contract.OldValue(CardsOnHand) - 1);
+            CardToPlay = card;
+            Game.Round.PlayCard(this, card);
+            this.RemoveCard(card);
+            if(CardPlayed != null) CardPlayed(card);
+        }
+
+        public void DealCards() {
+            Contract.Requires(IsDealer && Game != null);
+            var deck = Deck.GetShuffledDeck();
+            var dealTo = (Game.Round.Dealer + 1) % Game.Players.Count;
+            for(var i = 0; i < Game.CardsToDeal * Game.Players.Count; i++) {
+                var card = deck.Pop();
+                Game.Players[dealTo].GetCard(card);
+                if (CardDealt != null) CardDealt(Game.Players[dealTo], card);
+                dealTo = (dealTo + 1) % Game.Players.Count;
             }
         }
 
         [Pure]
-        public List<Card> GetHand() {
-            return hand;
+        public bool CardPlayable(Card toPlay) {
+            Contract.Requires(toPlay != null);
+            Contract.Requires(this.HasCard(toPlay));
+            Contract.Requires(this.Game.Started && this.Game.Round != null);
+            return CardPlayable(toPlay, Game.Round.BoardCards.FirstCard);
+        }
+
+        [Pure]
+        public bool CardPlayable(Card toPlay, Card mustMatch) {
+            Contract.Requires(toPlay != null);
+            Contract.Requires(this.HasCard(toPlay));
+            return mustMatch == null || (!this.HasCardOf(mustMatch.Suit) || toPlay.SameSuit(mustMatch));
+        }
+
+        [Pure]
+        public bool HasCardOf(Suit suit) {
+            return Hand.Any(c => c.Suit == suit);
+        }
+
+        [Pure]
+        public bool HasCard(Card card) {
+            lock (Cards) {
+                return this.Cards.Contains(card);
+            }
+        }
+
+        public void SetBet(int bet) {
+            Contract.Requires(this.Game != null && bet >= 0);
+            this.Bet = bet;
+            this.Game.Round.PlayerBet(this, bet);
+            if(BetSet != null) BetSet(bet);
+        }
+
+        public void SetGame(Game game) {
+            Contract.Requires(game != null);
+            this.Game = game;
         }
 
         [Pure]
         public Card GetPlayableCard() {
-            int i = 0;
-            while(!this.Playable(this.Hand(i))) {
-                i++;
-            }
-            return this.Hand(i);
-        }
-
-        [Pure]
-        public Card Hand(int idx) {
-            Contract.Requires(idx >= 0 && idx < NumberOfCards);
-            Contract.Ensures(this.HaveCard(Contract.Result<Card>()));
-            return hand[idx];
-        }
-
-        public int Bet {
-            get {
-                Contract.Ensures(Contract.Result<int>() >= 0);
-            return bet;
-            } set {
-                Contract.Requires(value >= 0);
-                bet = value;
-                if(BetSet != null) {
-                    BetSet(value);
+            Contract.Requires(Game != null && Game.Active && !Game.Round.BoardCards.HasPlayed(this) && Hand.Count > 0);
+            var toPlay = Hand[0];
+            if(Game.Round.BoardCards.FirstCard != null) {
+                foreach (var card in this.Hand.Where(card => this.CardPlayable(card, this.Game.Round.BoardCards.FirstCard))) {
+                    toPlay = card;
+                    break;
                 }
-            }
-        }
-
-        public void ReceiveTrick(List<Card> trick) {
-            Contract.Requires(trick != null);
-            Contract.Ensures(Tricks == Contract.OldValue(Tricks) + 1);
-            tricks.Add(new List<Card>(trick));
-        }
-
-        public void ClearTricks() {
-            Contract.Ensures(Tricks == 0 && Bet == 0);
-            tricks.Clear();
-            Bet = 0;
-        }
-
-        [Pure]
-        public bool HaveCard(Card c) {
-            Contract.Requires(c != null);
-            return hand.Contains(c);
-        }
-
-        [Pure]
-        public bool AnyCard(Suit s) {
-            return hand.Any(c => c.Suit == s);
-        }
-
-        [Pure]
-        public bool Playable(Card c) {
-            Contract.Requires(c != null);
-            Contract.Ensures(Contract.OldValue(table.OpeningCard) == null || c.Suit == table.OpeningCard.Suit || !this.AnyCard(table.OpeningCard.Suit) ? Contract.Result<bool>() : true);
-            if(table.OpeningCard == null) {
-                return true;
-            }
-            if(c.Suit == table.OpeningCard.Suit) {
-                return true;
-            }
-            return !this.AnyCard(table.OpeningCard.Suit);
-        }
-
-        public void PlayCard(Card c) {
-            Contract.Requires(c != null);
-            Contract.Requires(this.HaveCard(c));
-            Contract.Requires(this.Playable(c));
-            Contract.Ensures(!this.HaveCard(c) && NumberOfCards == Contract.OldValue(NumberOfCards) - 1);
-            CardToPlay = c;
-            if(CardPlayed != null) {
-                CardPlayed(c);
-            }
-            table.ReceiveCard(this, c);
-            hand.Remove(c);
-        }
-
-        public void ReceiveCard(Card c) {
-            Contract.Requires(c != null);
-            Contract.Ensures(this.HaveCard(c) && NumberOfCards == Contract.OldValue(NumberOfCards) + 1);
-            hand.Add(c);
-        }
-
-        public void DealCards(List<Player> players, int deal) {
-            Contract.Requires(players != null);
-            Contract.Requires(deal > 0);
-            Contract.Requires(IsDealer);
-            Contract.Ensures(NumberOfCards == deal);
-            Deck deck = Deck.ShuffleDeck();
-            for(int i = 0; i < deal; i++) {
-                foreach(var p in players) {
-                    var c = deck.Pop();
-                    if(CardDealt != null) {
-                        CardDealt(p, c);
-                    }
-                    p.ReceiveCard(c);
-                }
-            }
+            };
+            return toPlay;
         }
 
         [Pure]
         public override string ToString() {
             return Name;
         }
-        
+
         [ContractInvariantMethod]
         private void ObjectInvariant() {
-            Contract.Invariant(NumberOfCards >= 0 && NumberOfCards <= 10);
-            Contract.Invariant(Tricks >= 0);
+            Contract.Invariant(CardsOnHand >= 0 && CardsOnHand <= 10, "[" + Name + "] Cards: " + CardsOnHand);
+            Contract.Invariant(Tricks >= 0, "[" + Name + "] Tricks: " + Tricks);
         }
     }
 }

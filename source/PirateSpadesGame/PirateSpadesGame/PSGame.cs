@@ -4,7 +4,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace PirateSpadesGame {
+    using System.Text.RegularExpressions;
+
     using Microsoft.Xna.Framework.Audio;
+
+    using PirateSpades.GameLogic;
+    using PirateSpades.Network;
+
 
     using PirateSpadesGame.GameModes;
 
@@ -13,27 +19,18 @@ namespace PirateSpadesGame {
     /// </summary>
     public class PsGame : Microsoft.Xna.Framework.Game {
         private GraphicsDeviceManager graphics;
-
         private SpriteBatch spriteBatch;
-
         private IGameMode gameMode;
-
         private StartUp startUp;
         private JoinGame joinGame;
         private CreateGame createGame;
+        private InGame inGame;
         private Sprite title;
         private Sprite background;
-        private AudioEngine engine;
-        private SoundBank soundBank;
-        private WaveBank waveBank;
-        private AudioCategory musicCategory;
         private Sprite namePopUp;
         private Button ok;
         private Textbox textbox;
         private bool settingname = false;
-        private bool mpressed = false;
-        private bool prevmpressed = false;
-        private double frametime;
 
         public PsGame() {
             graphics = new GraphicsDeviceManager(this) { PreferredBackBufferWidth = 1024, PreferredBackBufferHeight = 720 };
@@ -43,6 +40,16 @@ namespace PirateSpadesGame {
             MusicVolume = 1.0f;
             PlayerName = "";
         }
+
+        public PirateHost Host { get; set; }
+
+        public PirateClient Client { get; set; }
+
+        public Game PlayingGame { get; set; }
+
+        public string GameName { get; set; }
+
+        public int MaxPlayers { get; set; }
 
         public string PlayerName { get; set; }
 
@@ -59,16 +66,8 @@ namespace PirateSpadesGame {
         /// and initialize them as well.
         /// </summary>
         protected override void Initialize() {
-            // TODO: Add your initialization logic here
             this.IsMouseVisible = true;
 
-            //engine = new AudioEngine("Content\\Audio\\ChangeSoundVolume.xgs");
-            //soundBank = new SoundBank(engine, "Content\\Audio\\Sound Bank.xsb");
-            //waveBank = new WaveBank(engine, "Content\\Audio\\Wave Bank.xwb");
-
-            //musicCategory = engine.GetCategory("Music");
-
-            //soundBank.PlayCue("music");
             title = new Sprite();
             background = new Sprite();
             var x = this.Window.ClientBounds.Width / 2 - 200;
@@ -87,7 +86,6 @@ namespace PirateSpadesGame {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
             background.LoadContent(this.Content, "PIRATESHIP");
             title.LoadContent(this.Content, "pspades");
             gameMode.LoadContent(this.Content);
@@ -112,23 +110,14 @@ namespace PirateSpadesGame {
             if(GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
-
             if(settingname && (State == GameState.JoinGame || State == GameState.CreateGame)) {
-                frametime = gameTime.ElapsedGameTime.Milliseconds / 1000.0;
-                MouseState mouseState = Mouse.GetState();
-                int mx = mouseState.X;
-                int my = mouseState.Y;
-                prevmpressed = mpressed;
-                mpressed = mouseState.LeftButton == ButtonState.Pressed;
-                this.UpdateButton(ok, mx, my);
+                if(ok.Update(gameTime)) {
+                    this.ButtonAction(ok);
+                }
                 textbox.Update(gameTime);
             } else {
                 this.GameMode(gameTime);
             }
-
-            //musicCategory.SetVolume(musicVolume);
-            //engine.Update();
 
             base.Update(gameTime);
         }
@@ -143,9 +132,15 @@ namespace PirateSpadesGame {
                     gameMode.Update(gameTime);
                     break;
                 case GameState.InGame:
+                    if(!(gameMode is InGame)) {
+                        inGame = new InGame(this);
+                        gameMode = inGame;
+                        gameMode.LoadContent(this.Content);
+                    }
+                    gameMode.Update(gameTime);
                     break;
                 case GameState.JoinGame:
-                    if(PlayerName == "") {
+                    if(PlayerName == "" || !Regex.IsMatch(PlayerName, @"^\w{3,20}$")) {
                         this.SetName();
                         break;
                     }
@@ -157,7 +152,7 @@ namespace PirateSpadesGame {
                     gameMode.Update(gameTime);
                     break;
                 case GameState.CreateGame:
-                    if(PlayerName == "") {
+                    if(PlayerName == "" || !Regex.IsMatch(PlayerName, @"^\w{3,20}$")) {
                         this.SetName();
                         break;
                     }
@@ -174,42 +169,16 @@ namespace PirateSpadesGame {
             }
         }
 
-        private void UpdateButton(Button b, int mx, int my) {
-            if(b.HitAlpha(b.Rectangle, b.Tex, mx, my)) {
-                b.Timer = 0.0;
-                if(mpressed) {
-                    b.State = BState.Down;
-                    b.Color = Color.GhostWhite;
-                } else if(!mpressed && prevmpressed && b.State == BState.Down) {
-                    b.State = BState.JustReleased;
-                } else {
-                    b.State = BState.Hover;
-                    b.Color = Color.White;
-                }
-            } else {
-                b.State = BState.Up;
-                if(b.Timer > 0) {
-                    b.Timer = b.Timer - frametime;
-                } else {
-                    b.Color = Color.CornflowerBlue;
-                }
-            }
-            if(b.State == BState.JustReleased) {
-                ButtonAction(b);
-            }
-        }
-
         private void ButtonAction(Button b) {
-            if (b == null) {
+            if(b == null) {
                 return;
             }
             var str = b.Name;
             switch(str) {
                 case "ok":
-                    if(textbox.Text != "PLAYER") {
+                    if(Regex.IsMatch(textbox.Text, @"^\w{3,20}$")) {
                         settingname = false;
                         this.PlayerName = textbox.Text;
-                        State = GameState.JoinGame;
                     } else {
                         settingname = true;
                     }
@@ -223,9 +192,9 @@ namespace PirateSpadesGame {
             namePopUp.LoadContent(this.Content, "PopUp");
             int x = this.Window.ClientBounds.Width / 2 - namePopUp.Tex.Width / 2;
             int y = this.Window.ClientBounds.Height / 2 - namePopUp.Tex.Height / 2;
-            namePopUp.Position = new Vector2(x,y);
+            namePopUp.Position = new Vector2(x, y);
             var rect = new Rectangle(x + (namePopUp.Tex.Width - 250), y + 50, 250, 75);
-            textbox = new Textbox(rect, "playername") { Text = this.PlayerName };
+            textbox = new Textbox(rect, "playername") { Text = this.PlayerName, Typable = true };
             textbox.MoveText(45);
             textbox.LoadContent(this.Content);
             int okX = x + namePopUp.Tex.Width / 2 - 75;
@@ -241,7 +210,6 @@ namespace PirateSpadesGame {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color);
 
-            // TODO: Add your drawing code here
             spriteBatch.Begin();
             background.Draw(spriteBatch);
             title.Draw(spriteBatch);

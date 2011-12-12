@@ -5,75 +5,80 @@ using System.Text;
 
 namespace PirateSpadesGame.GameModes {
     using System.Net;
+    using System.Text.RegularExpressions;
 
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
+
+    using PirateSpades.GameLogic;
+    using PirateSpades.Network;
+
+    using Game = PirateSpades.GameLogic.Game;
 
     public class CreateGame : IGameMode {
         private PsGame game;
         private Sprite backGround;
-        private JoinedGame inJoinedGame;
-        private bool joinedGame;
         private Button cancel;
         private Button createGame;
-        private bool mpressed;
-        private bool prevmpressed;
-        private double frametime;
+        private Numberbox numberOfPlayers;
+        private Textbox serverName;
+        private Vector2 namePos;
+        private Vector2 playersPos;
+        private SpriteFont font;
+        private ContentManager content;
+        private List<Button> buttons;
 
         public CreateGame(PsGame game) {
             this.game = game;
+            this.content = game.Content;
             this.SetUp(game.Window);
         }
 
         private void SetUp(GameWindow window) {
             backGround = new Sprite() { Color = Color.White };
-            var x = window.ClientBounds.Width / 2;
-            var y = window.ClientBounds.Height / 2;
+            var x = window.ClientBounds.Width / 2 - 400 / 2;
+            var y = window.ClientBounds.Height / 2 - 400 / 2;
             backGround.Position = new Vector2(x, y);
 
-            var cgX = 0;
-            var cgY = 0;
+            var cgX = x;
+            var cgY = y + 325;
             createGame = new Button("creategamegm", cgX, cgY);
 
-            var cancelX = 0;
-            var cancelY = 0;
+            var cancelX = x + 250;
+            var cancelY = y + 325;
             cancel = new Button("cancelcg", cancelX, cancelY);
+
+            var rect = new Rectangle(x + 250, y + 200, 100, 50);
+            numberOfPlayers = new Numberbox(rect, "volumebox", 1) { Limit = 5, Number = 5 };
+            numberOfPlayers.Text = numberOfPlayers.Number.ToString();
+
+            var sRect = new Rectangle(x + 150, y + 100, 250, 75);
+            serverName = new Textbox(sRect, "playername");
+            serverName.MoveText(45);
+
+            namePos = new Vector2(x + 10, y + 125);
+            playersPos = new Vector2(x + 10, y + 225);
+
+            buttons = new List<Button> { this.cancel, this.createGame };
         }
 
         public void LoadContent(ContentManager contentManager) {
+            backGround.LoadContent(contentManager, "creategamewindow");
+            font = contentManager.Load<SpriteFont>("font");
             cancel.LoadContent(contentManager);
             createGame.LoadContent(contentManager);
+            serverName.LoadContent(contentManager);
+            numberOfPlayers.LoadContent(contentManager);
         }
 
         public void Update(GameTime gameTime) {
-            
-        }
-
-        private void UpdateButton(Button b, int mx, int my) {
-            if(b.HitAlpha(b.Rectangle, b.Tex, mx, my)) {
-                b.Timer = 0.0;
-                if(mpressed) {
-                    b.State = BState.Down;
-                    b.Color = Color.GhostWhite;
-                } else if(!mpressed && prevmpressed && b.State == BState.Down) {
-                    b.State = BState.JustReleased;
-                } else {
-                    b.State = BState.Hover;
-                    b.Color = Color.White;
-                }
-            } else {
-                b.State = BState.Up;
-                if(b.Timer > 0) {
-                    b.Timer = b.Timer - frametime;
-                } else {
-                    b.Color = Color.CornflowerBlue;
-                }
+            foreach(var b in this.buttons.Where(b => b.Update(gameTime))) {
+                this.ButtonAction(b);
             }
-            if(b.State == BState.JustReleased) {
-                ButtonAction(b);
-            }
-
+            numberOfPlayers.Update(gameTime);
+            serverName.Update(gameTime);
         }
 
         private void ButtonAction(Button b) {
@@ -83,7 +88,23 @@ namespace PirateSpadesGame.GameModes {
             var str = b.Name;
             switch(str) {
                 case "creategamegm":
-                    inJoinedGame = new JoinedGame(true, IPAddress.Any);
+                    if(serverName.Text == "") {
+                        return;
+                    }
+                    var players = numberOfPlayers.ParseInput();
+                    var sName = serverName.Text;
+                    var host = new PirateHost(4939);
+                    host.Start(sName, players);
+                    var client = new PirateClient(game.PlayerName, host.Ip, 4939);
+                    PirateClientCommands.SendPlayerInfo(client);
+                    var playingGame = new Game();
+                    game.GameName = sName;
+                    game.MaxPlayers = players;
+                    game.Host = host;
+                    game.Client = client;
+                    client.SetGame(playingGame);
+                    game.PlayingGame = playingGame;
+                    game.State = GameState.InGame;
                     break;
                 case "cancelcg":
                     game.State = GameState.StartUp;
@@ -92,7 +113,14 @@ namespace PirateSpadesGame.GameModes {
         }
 
         public void Draw(SpriteBatch spriteBatch) {
-            
+            backGround.Draw(spriteBatch);
+            cancel.Draw(spriteBatch);
+            createGame.Draw(spriteBatch);
+            serverName.Draw(spriteBatch);
+            numberOfPlayers.Draw(spriteBatch);
+            spriteBatch.DrawString(font, "Server Name:", namePos, Color.White);
+            spriteBatch.DrawString(font, "Max Players:", playersPos, Color.White);
         }
+
     }
 }

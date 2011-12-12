@@ -12,18 +12,11 @@ namespace PirateSpades.Network {
     using System.Linq;
     using System.Text;
     using System.Diagnostics.Contracts;
-    using PirateSpades.GameLogicV2;
+
+    using PirateSpades.GameLogic;
     using PirateSpades.Misc;
 
     public class PirateHostCommands {
-        /*private static Table pTable = null;
-
-        private static Table Table {
-            get {
-                return pTable ?? (pTable = Table.GetTable());
-            }
-        }*/
-
         private const string WelcomePhrase = "YARRR!!";
 
         public static void KnockKnock(PirateHost host, PirateClient pclient) {
@@ -59,7 +52,7 @@ namespace PirateSpades.Network {
 
         public static void SetPlayerInfo(PirateHost host, PirateClient pclient, PirateMessage data) {
             Contract.Requires(host != null && pclient != null && data != null && data.Head == PirateMessageHead.Pnfo);
-            var player = PirateClient.NameFromString(data.Body);
+            var player = PirateMessage.GetPlayerName(data);
             if (player == null) return;
 
             if (!host.ContainsPlayer(player)) {
@@ -120,7 +113,7 @@ namespace PirateSpades.Network {
 
         public static void DealCard(PirateHost host, PirateMessage data) {
             Contract.Requires(host != null && data != null && data.Head == PirateMessageHead.Xcrd);
-            var player = PirateClient.NameFromString(data.Body);
+            var player = PirateMessage.GetPlayerName(data);
             if(player == null) {
                 return;
             }
@@ -156,7 +149,7 @@ namespace PirateSpades.Network {
 
         public static void PlayCard(PirateHost host, PirateMessage data) {
             Contract.Requires(host != null && data != null && data.Head == PirateMessageHead.Pcrd);
-            var playerName = PirateClient.NameFromString(data.Body);
+            var playerName = PirateMessage.GetPlayerName(data);
             var player = host.PlayerFromString(playerName);
             var card = Card.FromString(data.Body);
 

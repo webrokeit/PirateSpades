@@ -32,9 +32,9 @@
     <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
     <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
-    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
     <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
-    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
     <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
     <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
     <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
@@ -72,21 +72,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameLogicV2\Card.cs" />
-    <Compile Include="GameLogicV2\Deck.cs" />
-    <Compile Include="GameLogicV2\Game.cs" />
-    <Compile Include="GameLogicV2\Player.cs" />
-    <Compile Include="GameLogicV2\Round.cs" />
-    <Compile Include="GameLogicV2\Trick.cs" />
-    <Compile Include="Misc\CollectionFnc.cs" />
-    <Compile Include="Misc\ImmutableOrderedDictionary.cs" />
-    <Compile Include="Misc\Sorting.cs" />
     <Compile Include="GameLogic\Card.cs" />
     <Compile Include="GameLogic\Deck.cs" />
     <Compile Include="GameLogic\Game.cs" />
     <Compile Include="GameLogic\Player.cs" />
     <Compile Include="GameLogic\Round.cs" />
-    <Compile Include="GameLogic\Table.cs" />
+    <Compile Include="GameLogic\Trick.cs" />
+    <Compile Include="Misc\CollectionFnc.cs" />
+    <Compile Include="Misc\ImmutableOrderedDictionary.cs" />
     <Compile Include="Misc\OrderedDictionary.cs" />
     <Compile Include="Network\PirateBroadcaster.cs" />
     <Compile Include="Network\PirateClient.cs" />
@@ -98,7 +91,9 @@
     <Compile Include="Network\PirateScanner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="PirateSpades.bon" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

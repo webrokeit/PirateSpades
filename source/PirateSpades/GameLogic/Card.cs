@@ -1,21 +1,15 @@
-﻿// <copyright file="Card.cs">
-//      mche@itu.dk
-// </copyright>
-// <summary>
-//      A card, its suit and value for the PirateSpades game.
-// </summary>
-// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
-
-namespace PirateSpades.GameLogic {
-    using System.Text.RegularExpressions;
+﻿namespace PirateSpades.GameLogic {
     using System.Diagnostics.Contracts;
     using System;
+    using System.Text.RegularExpressions;
 
     public class Card : IComparable {
 
-        public Card(Suit s, CardValue v) {
-            this.Suit = s;
-            this.Value = v;
+        public Card(Suit suit, CardValue value) {
+            Contract.Requires((int)suit >= (int)Suit.Diamonds && (int)suit <= (int)Suit.Spades);
+            Contract.Requires((int)value >= (int)CardValue.Two && (int)value <= (int)CardValue.Ace);
+            this.Suit = suit;
+            this.Value = value;
         }
 
         public CardValue Value { get; private set; }
@@ -24,58 +18,134 @@ namespace PirateSpades.GameLogic {
 
         [Pure]
         public int CompareTo(Object obj) {
-            if(obj == null || !(obj is Card)) {
-                return 0;
-            }
-            var c = (Card)obj;
-            if(c.Suit == Suit) {
-                if(Value < c.Value) {
-                    return -1;
-                }
-                return 1;
-            }
-            if(Suit == Suit.Spades) {
-                return 1;
-            }
-            return -1;
+            Contract.Ensures(Contract.Result<int>() >= -1 && Contract.Result<int>() <= 1);
+            if(obj == null || !(obj is Card)) return 0;
+            var h = this.GetHashCode();
+            var oh = obj.GetHashCode();
+
+            if(h > oh) return 1;
+            if(h < oh) return -1;
+            return 0;
         }
 
         [Pure]
-        public bool SameSuit(Card c) {
-            Contract.Requires(c != null);
-            Contract.Ensures(this.Suit != c.Suit || Contract.Result<bool>());
-            return Suit == c.Suit;
+        public bool HigherThan(Card card) {
+            Contract.Requires(card != null);
+            if(Suit == Suit.Spades && card.Suit != Suit) return true;
+            if(Suit == card.Suit && Value > card.Value) return true;
+            return false;
+        }
+
+        [Pure]
+        public bool SameSuit(Card card) {
+            Contract.Requires(card != null);
+            return Suit == card.Suit;
         }
 
         [Pure]
         public override string ToString() {
+            Contract.Ensures(Contract.Result<string>() != null);
             return "card: " + Suit.ToString() + ";" + Value.ToString();
         }
 
         [Pure]
-        public static Card FromString(string s) {
-            Contract.Requires(Regex.IsMatch(s, @"^card: \w{5,8};\w{3,5}$", RegexOptions.Multiline));
-            var m = Regex.Match(s, @"^card: (\w{5,8});(\w{3,5})$", RegexOptions.Multiline);
-            if(m.Success) {
-                Suit suit;
-                if (Enum.TryParse(m.Groups[1].Value, true, out suit)) {
-                    CardValue value;
-                    if (Enum.TryParse(m.Groups[2].Value, true, out value)) {
-                        return new Card(suit, value);
-                    }
-                }
+        public string ToShortString() {
+            var suit = "♥";
+            switch(Suit) {
+                case Suit.Clubs:
+                    suit = "♣";
+                    break;
+                case Suit.Diamonds:
+                    suit = "♦";
+                    break;
+                case Suit.Spades:
+                    suit = "♠";
+                    break;
             }
-            return null;
+
+            var value = ((int)Value).ToString();
+            switch(Value) {
+                case CardValue.Ten:
+                    value = "T";
+                    break;
+                case CardValue.Jack:
+                    value = "J";
+                    break;
+                case CardValue.Queen:
+                    value = "Q";
+                    break;
+                case CardValue.King:
+                    value = "K";
+                    break;
+                case CardValue.Ace:
+                    value = "A";
+                    break;
+            }
+
+            return suit + value;
+        }
+
+        [Pure]
+        public static Card FromString(string s) {
+            Contract.Requires(s != null);
+            Contract.Requires(Regex.IsMatch(s, "^card: " + EnumRegexString(typeof(Suit)) + ";" + EnumRegexString(typeof(CardValue)) + "$", RegexOptions.Multiline));
+            Contract.Ensures(Contract.Result<Card>() != null);
+            var m = Regex.Match(s, "^card: " + EnumRegexString(typeof(Suit)) + ";" + EnumRegexString(typeof(CardValue)) + "$", RegexOptions.Multiline);
+            var suit = (Suit) Enum.Parse(typeof(Suit), m.Groups[1].Value, true);
+            var value = (CardValue) Enum.Parse(typeof(CardValue), m.Groups[2].Value, true);
+            return new Card(suit, value);
+        }
+
+        [Pure]
+        public static int CardsToDeal(int round, int players) {
+            Contract.Requires(round > 0 && players > 0);
+            var maxCards = 52 / players < 10 ? 52 / players : 10;
+            return (round <= maxCards ? maxCards - round + 1 : round - maxCards);
+        }
+
+        [Pure]
+        public override int GetHashCode() {
+            var h = (int)Math.Pow(10, (int)Suit) + (int)Value;
+            return h;
+        }
+
+        [Pure]
+        public override bool Equals(object obj) {
+            if (!(obj is Card)) {
+                return false;
+            }
+            if (obj.GetHashCode() != this.GetHashCode()) {
+                return false;
+            }
+            if (((Card)obj).Suit != Suit) {
+                return false;
+            }
+            return ((Card)obj).Value == this.Value;
         }
 
         [ContractInvariantMethod]
         private void ObjectInvariant() {
-            Contract.Invariant(Value > (CardValue)1 && Value < (CardValue)15);
+            Contract.Invariant((int)Suit >= (int)Suit.Diamonds && (int)Suit <= (int)Suit.Spades);
+            Contract.Invariant((int)Value >= (int)CardValue.Two && (int)Value <= (int)CardValue.Ace);
+        }
+
+        [Pure]
+        public static string EnumRegexString(Type enumType) {
+            Contract.Requires(enumType != null && Enum.GetNames(enumType).Length > 0);
+            var names = Enum.GetNames(enumType);
+            var res = new string[names.Length];
+            for(var i = 0; i < names.Length; i++) {
+                res[i] = Regex.Escape(names[i]);
+            }
+            return "(" + string.Join("|", res) + ")";
         }
     }
 
     public enum Suit {
-        Hearts, Spades, Diamonds, Clubs
+        Diamonds = 1,
+        Clubs = 2,
+        Hearts = 3,
+        Spades = 4
     }
 
     public enum CardValue {

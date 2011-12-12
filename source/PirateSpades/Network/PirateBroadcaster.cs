@@ -16,15 +16,15 @@ namespace PirateSpades.Network {
     public class PirateBroadcaster {
         private Socket Socket { get; set; }
         private IPEndPoint EndPoint { get; set; }
-        public byte[] Message { get; private set; }
+        public byte[] Message { get; set; }
         public int Port { get; private set; }
         public double Interval {
             get {
-                Contract.Ensures(Contract.Result<double>() >= 0);
+                Contract.Ensures(Contract.Result<double>() > 0.00);
                 return this.Timer.Interval;
             }
             set {
-                Contract.Requires(value >= 0);
+                Contract.Requires(value > 0.00 && value < int.MaxValue);
                 this.Timer.Interval = value;
             }
         }
@@ -34,12 +34,17 @@ namespace PirateSpades.Network {
         public event BroadcastEventDelegate BroadcastInitiated;
         public event BroadcastEventDelegate BroadcastExecuted;
 
-        public PirateBroadcaster(byte[] message, int port, double interval) {
-            Contract.Requires(message != null && port >= 0 && port <= 65536 && interval >= 0);
-            this.Message = message;
+        public PirateBroadcaster(int port, double interval) {
+            Contract.Requires(port >= 0 && port <= 65536 && interval > 0.00 && interval < int.MaxValue);
             this.Port = port;
             this.Timer = new Timer(interval);
             this.Timer.Elapsed += Trigger;
+            this.Message = new byte[] { };
+        }
+
+        public PirateBroadcaster(byte[] message, int port, double interval) : this(port, interval) {
+            Contract.Requires(message != null && port >= 0 && port <= 65536 && interval > 0.00 && interval < int.MaxValue);
+            this.Message = message;
         }
 
         public void Start() {

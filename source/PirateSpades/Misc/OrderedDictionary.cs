@@ -22,26 +22,30 @@ namespace PirateSpades.Misc {
 
         public new ICollection<TValue> Values {
             get {
+                Contract.Requires(base.Count > 0);
                 return base.Values.Cast<TValue>().ToList();
             }
         }
 
         public new object this[object key] {
             get {
-                Contract.Requires(key is TKey);
-                return base[key];
+                Contract.Requires(key != null && key is TKey && this.ContainsKey((TKey)key));
+                var value = base[key];
+                return !ReferenceEquals(value, null) ? value : null;
             }
             set {
-                Contract.Requires(key is TKey);
+                Contract.Requires(key is TKey && !ReferenceEquals(key, null) && value is TValue && !ReferenceEquals(value, null));
                 base[key] = value;
             }
         }
 
         public TValue this[TKey key] {
             get {
+                Contract.Requires(!ReferenceEquals(key, null) && this.ContainsKey(key));
                 return (TValue)base[key];
             }
             set {
+                Contract.Requires(!ReferenceEquals(key, null) && !ReferenceEquals(value, null));
                 base[key] = value;
             }
         }
@@ -52,26 +56,28 @@ namespace PirateSpades.Misc {
                 return (TValue)base[index];
             }
             set {
-                Contract.Requires(index >= 0 && index < base.Count);
+                Contract.Requires(index >= 0 && index < base.Count && !ReferenceEquals(value, null));
                 base[index] = value;
             }
         }
 
         public new void Add(object key, object value) {
-            Contract.Requires(key is TKey && value is TValue);
+            Contract.Requires(key != null && key is TKey && value != null && value is TValue && !this.ContainsKey((TKey)key));
             this.Add((TKey)key, (TValue)value);
         }
 
         public void Add(TKey key, TValue value) {
+            Contract.Requires(!ReferenceEquals(key, null) && !this.ContainsKey(key) && !ReferenceEquals(value, null));
             base.Add(key, value);
         }
 
         public new void Remove(object key) {
-            Contract.Requires(key is TKey);
+            Contract.Requires(key != null && key is TKey);
             this.Remove((TKey) key);
         }
 
         public void Remove(TKey key) {
+            Contract.Requires(!ReferenceEquals(key, null));
             base.Remove(key);
         }
 
@@ -82,27 +88,31 @@ namespace PirateSpades.Misc {
 
         public new void Insert(int index, object key, object value) {
             Contract.Requires(index >= 0 && index < base.Count && key is TKey && value is TValue);
+            Contract.Requires(key != null && !ContainsKey((TKey)key) && value != null);
             this.Insert(index, (TKey)key, (TValue)value);
         }
 
         public void Insert(int index, TKey key, TValue value) {
             Contract.Requires(index >= 0 && index < base.Count);
+            Contract.Requires(!ReferenceEquals(key, null) && !ContainsKey(key) && !ReferenceEquals(value, null));
             base.Insert(index, key, value);
         }
 
         [Pure]
         public new bool Contains(Object obj) {
-            Contract.Requires(obj is TKey);
+            Contract.Requires(obj != null && obj is TKey);
             return this.ContainsKey((TKey)obj);
         }
 
         [Pure]
         public bool ContainsKey(TKey key) {
+            Contract.Requires(!ReferenceEquals(key, null));
             return base.Contains(key);
         }
 
         [Pure]
         public bool ContainsValue(TValue value) {
+            Contract.Requires(!ReferenceEquals(value, null));
             return this.Values.Cast<TValue>().Contains(value);
         }
 

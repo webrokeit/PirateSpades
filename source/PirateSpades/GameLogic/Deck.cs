@@ -1,24 +1,16 @@
-﻿// <copyright file="Deck.cs">
-//      mche@itu.dk
-// </copyright>
-// <summary>
-//      A deck of cards for the PirateSpades game.
-// </summary>
-// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
-
-namespace PirateSpades.GameLogic {
-    using System.Collections;
+﻿namespace PirateSpades.GameLogic {
     using System.Collections.Generic;
+    using System.Collections;
     using System.Diagnostics.Contracts;
 
     using PirateSpades.Misc;
 
     public class Deck : IEnumerable<Card> {
         private static List<Card> mainDeck;
-        private List<Card> deck { get; set; }
+        private List<Card> TheDeck { get; set; }
 
         private Deck(List<Card> deck) {
-            this.deck = deck;
+            this.TheDeck = deck;
         }
 
         private static void CreateDeck() {
@@ -47,23 +39,26 @@ namespace PirateSpades.GameLogic {
         }
 
         public Card Pop() {
-            Contract.Requires(deck != null && deck.Count > 0);
-            var c = deck[deck.Count - 1];
-            deck.RemoveAt(deck.Count - 1);
+            Contract.Requires(TheDeck != null && TheDeck.Count > 0);
+            var c = TheDeck[TheDeck.Count - 1];
+            TheDeck.RemoveAt(TheDeck.Count - 1);
             return c;
         }
 
-        public static Deck ShuffleDeck() {
-            if(mainDeck == null) {
-                CreateDeck();
-            }
+        public static Deck GetShuffledDeck() {
+            if(mainDeck == null) CreateDeck();
+            return ShuffleDeck();
+        }
+
+        private static Deck ShuffleDeck() {
+            Contract.Requires(mainDeck != null);
             var deckClone = new List<Card>(mainDeck);
             CollectionFnc.FisherYatesShuffle(deckClone);
             return new Deck(deckClone);
         }
 
         public IEnumerator<Card> GetEnumerator() {
-            return ((IEnumerable<Card>)this.deck).GetEnumerator();
+            return TheDeck.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {

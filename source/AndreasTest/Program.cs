@@ -7,8 +7,9 @@ using PirateSpades.Network;
 namespace AndreasTest {
     using System.Net;
     using System.Text.RegularExpressions;
+    using System.Threading;
 
-    using PirateSpades.GameLogicV2;
+    using PirateSpades.GameLogic;
     using PirateSpades.Misc;
 
     class Program {
@@ -98,10 +99,10 @@ namespace AndreasTest {
                 }
                 Console.WriteLine("IP Found: " + ip);*/
 
-                var ips = new PirateScanner().ScanForIps(4939, 30000, 1);
-                if(ips.Count > 0) {
-                    for(var i = 0; i < ips.Count; i++) {
-                        Console.WriteLine("\t[" + i + "] " + ips[i].ToString());
+                var games = new PirateScanner().ScanForGames(4939, 10000);
+                if(games.Count > 0) {
+                    for(var i = 0; i < games.Count; i++) {
+                        Console.WriteLine("\t[" + i + "] " + games[i].Ip + " \"" + games[i].GameName + "\" (" + games[i].Players + "/" + games[i].MaxPlayers + ")");
                     }
                     Console.Write("Select IP (index): ");
                     var ipIndex = Console.ReadLine();
@@ -111,12 +112,12 @@ namespace AndreasTest {
                         return;
                     } else {
                         int index = int.Parse(ipIndex);
-                        if(index >= ips.Count) {
+                        if (index >= games.Count) {
                             Console.WriteLine("Invalid index specified...");
                             Player();
                             return;
                         }
-                        ip = ips[index];
+                        ip = games[index].Ip;
                     }
                 }else {
                     Console.WriteLine("No IP found... Make sure there's a host!");
@@ -136,7 +137,9 @@ namespace AndreasTest {
             Console.WriteLine("Initiating...");
             pc.InitConnection();
 
-            while(pc.Socket.Connected) {}
+            while(pc.Socket.Connected) {
+                Thread.Sleep(10);
+            }
             return;
         }
 

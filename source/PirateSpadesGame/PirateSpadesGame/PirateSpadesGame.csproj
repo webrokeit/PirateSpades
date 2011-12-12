@@ -107,21 +107,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Button.cs" />
-    <Compile Include="CardSprite.cs" />
-    <Compile Include="GameMode.cs" />
+    <Compile Include="IngameFunc\TableSprite.cs" />
+    <Compile Include="Misc\Button.cs" />
+    <Compile Include="IngameFunc\CardSprite.cs" />
+    <Compile Include="GameModes\GameMode.cs" />
     <Compile Include="GameModes\CreateGame.cs" />
     <Compile Include="GameModes\InGame.cs" />
-    <Compile Include="GameModes\JoinedGame.cs" />
     <Compile Include="GameModes\JoinGame.cs" />
     <Compile Include="GameModes\StartUp.cs" />
-    <Compile Include="Numberbox.cs" />
+    <Compile Include="Misc\Numberbox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PSGame.cs" />
+<<<<<<< HEAD
     <Compile Include="ServerSprite.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Textbox.cs" />
+=======
+    <Compile Include="Misc\ServerSprite.cs" />
+    <Compile Include="Misc\Sprite.cs" />
+    <Compile Include="Misc\Textbox.cs" />
+>>>>>>> 5c2af7d504527d6b0f9642da10cb3f65d2eb0e27
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -133,8 +139,9 @@
       <Name>PirateSpades</Name>
     </ProjectReference>
     <ProjectReference Include="..\PirateSpadesGameContent\PirateSpadesGameContent.contentproj">
-      <Name>PirateSpadesGameContent</Name>
+      <Name>PirateSpadesGameContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{991BDF3E-5AD5-40B9-ADB1-7624234E8443}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

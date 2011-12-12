@@ -1,0 +1,17 @@
+A general TODO
+	- Communicating with the underlying network and gamelogic
+
+InGame related
+	- Graphics:
+		- Create the table graphics
+		- Create the players graphics
+		- Draw the table in the game
+		- Draw the players in the game
+		- Scoreboard
+	- Implement the functionality
+
+Readme file
+Everything not program related (I don't know what else there is)
+
+I (Morten) have CDs we can use for the hand in.. I'll take them with me starting
+monday :)
