@@ -5,6 +5,7 @@ using System.Text;
 using PirateSpades.Network;
 
 namespace AndreasTest {
+    using System.IO;
     using System.Net;
     using System.Text.RegularExpressions;
     using System.Threading;
@@ -56,6 +57,7 @@ namespace AndreasTest {
                         if (!host.Game.Started) {
                             if (host.Game.Players.Count >= 2) {
                                 host.StartGame();
+                                host.Game.GameFinished += GameFinished;
                             } else {
                                 Console.WriteLine("Not enough players to start the game!");
                             }
@@ -70,6 +72,55 @@ namespace AndreasTest {
                         break;
                 }
             }
+        }
+
+        private static void GameFinished(Game game) {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("Testing GetRoundScore");
+            for(var i = 1; i <= game.RoundsPossible; i++) {
+                var s = game.GetRoundScore(i);
+                var t = game.GetRoundScoreTotal(i);
+                sb.AppendLine("Round #" + i);
+                foreach(var kvp in s) {
+                    sb.AppendLine("\t" + kvp.Key.Name + ": " + kvp.Value);
+                }
+                sb.AppendLine("\tTotals:");
+                foreach(var kvp in t) {
+                    sb.AppendLine("\t\t" + kvp.Key.Name + ": " + kvp.Value);
+                }
+            }
+            sb.AppendLine();
+            sb.AppendLine();
+
+            sb.AppendLine("Testing GetTotalScores");
+            var st = game.GetTotalScores();
+            foreach(var kvp in st) {
+                sb.AppendLine(kvp.Key.Name + ": " + kvp.Value);
+            }
+            sb.AppendLine();
+            sb.AppendLine();
+
+            sb.AppendLine("Testing GetScoreTable");
+            var sct = game.GetScoreTable();
+            sb.Append("Round");
+            foreach(var p in sct[1].Keys) {
+                sb.Append("\t" + p.Name);
+            }
+            sb.AppendLine();
+            foreach(var kvp in sct) {
+                sb.Append(kvp.Key.ToString());
+                foreach(var score in kvp.Value.Values) {
+                    sb.Append("\t" + score);
+                }
+                sb.AppendLine();
+            }
+
+
+            var fs = new FileStream("score test.txt", FileMode.OpenOrCreate, FileAccess.Write);
+            var buffer = Encoding.Default.GetBytes(sb.ToString());
+            fs.Write(buffer, 0, buffer.Length);
+            fs.Close();
         }
 
         private static void Player() {
@@ -146,9 +197,9 @@ namespace AndreasTest {
         private static void OnNameRequest(PirateClient pclient) {
             var playerName = string.Empty;
             while (String.IsNullOrEmpty(playerName)) {
-                Console.Write("Select a name [a-zA-Z0-9_] (3 - 20 chars): ");
+                Console.Write("Select a name [a-zA-Z0-9] (3 - 12 chars): ");
                 playerName = Console.ReadLine();
-                if (playerName == null || !Regex.IsMatch(playerName, @"^\w{3,20}$")) {
+                if(playerName == null || !Regex.IsMatch(playerName, @"^[a-zA-Z0-9]{3,12}$")) {
                     Console.WriteLine("Invalid name specified, try again...");
                     playerName = string.Empty;
                 }
@@ -162,8 +213,8 @@ namespace AndreasTest {
         }
 
         private static void OnBetRequest(PirateClient pclient) {
-            /*pclient.SetBet(CollectionFnc.PickRandom(0, pclient.Hand.Count));
-            return;*/
+            pclient.SetBet(CollectionFnc.PickRandom(0, pclient.Hand.Count));
+            return;
             var bet = string.Empty;
             var pbet = 0;
             Console.WriteLine("Your hand:");
@@ -187,8 +238,8 @@ namespace AndreasTest {
         }
 
         private static void OnCardRequest(PirateClient pclient) {
-            /*pclient.PlayCard(pclient.GetPlayableCard());
-            return;*/
+            pclient.PlayCard(pclient.GetPlayableCard());
+            return;
             var cardIndex = string.Empty;
             Card card = null;
             while(string.IsNullOrEmpty(cardIndex)) {

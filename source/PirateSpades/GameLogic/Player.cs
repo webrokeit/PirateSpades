@@ -21,7 +21,7 @@
 
         public int Tricks {
             get {
-                return Game != null && Game.Started && Game.CurrentRound >= 1 && Game.Round.PlayerTricks.ContainsKey(this)
+                return Game != null && Game.Started && Game.CurrentRound >= 1 && Game.GetRound(Game.CurrentRound).Started && Game.Round.PlayerTricks.ContainsKey(this)
                            ? Game.Round.PlayerTricks[this].Count
                            : 0;
             }
@@ -35,6 +35,7 @@
         protected event BetSetDelegate BetSet;
 
         public Player(string name) {
+            Contract.Requires(name != null);
             this.Name = name;
             this.Cards = new SortedSet<Card>();
             this.Hand = Cards.ToList().AsReadOnly();
@@ -149,8 +150,8 @@
 
         [ContractInvariantMethod]
         private void ObjectInvariant() {
-            Contract.Invariant(CardsOnHand >= 0 && CardsOnHand <= 10, "[" + Name + "] Cards: " + CardsOnHand);
-            Contract.Invariant(Tricks >= 0, "[" + Name + "] Tricks: " + Tricks);
+            Contract.Invariant(CardsOnHand >= 0 && CardsOnHand <= 10);
+            Contract.Invariant(Tricks >= 0 && Tricks <= 10);
         }
     }
 }

@@ -162,9 +162,9 @@ namespace PirateSpades.Network {
 
         [Pure]
         public static string GetPlayerName(PirateMessage msg) {
-            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^player_name: (\w{3,20})$", RegexOptions.Multiline));
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^player_name: ([a-zA-Z0-9]{3,12})$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<string>() != null);
-            return Regex.Match(msg.Body, @"^player_name: (\w{3,20})$", RegexOptions.Multiline).Groups[1].Value;
+            return Regex.Match(msg.Body, @"^player_name: ([a-zA-Z0-9]{3,12})$", RegexOptions.Multiline).Groups[1].Value;
         }
 
         [Pure]
@@ -172,7 +172,7 @@ namespace PirateSpades.Network {
             Contract.Requires(msg != null);
             Contract.Ensures(Contract.Result<HashSet<string>>() != null);
             var res = new HashSet<string>();
-            foreach (Match m in Regex.Matches(msg.Body, @"^player_name: (\w{3,20})$", RegexOptions.Multiline)) {
+            foreach(Match m in Regex.Matches(msg.Body, @"^player_name: ([a-zA-Z0-9]{3,12})$", RegexOptions.Multiline)) {
                 res.Add(m.Groups[1].Value);
             }
             return res;
@@ -187,11 +187,11 @@ namespace PirateSpades.Network {
 
         [Pure]
         public static int GetPlayersInGame(PirateMessage msg) {
-            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^players_ingame: [0-5]$", RegexOptions.Multiline));
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^players_ingame: [0-" + Game.MaxPlayersInGame + "]$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= Game.MaxPlayersInGame);
             return
                 int.Parse(
-                    Regex.Match(msg.Body, @"^players_ingame: ([0-5])$", RegexOptions.Multiline).Groups[1].Value);
+                    Regex.Match(msg.Body, @"^players_ingame: ([0-" + Game.MaxPlayersInGame + "])$", RegexOptions.Multiline).Groups[1].Value);
         }
 
         [Pure]
@@ -202,11 +202,11 @@ namespace PirateSpades.Network {
         }
 
         public static int GetMaxPlayersInGame(PirateMessage msg) {
-            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^players_ingamemax: [0-5]$", RegexOptions.Multiline));
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^players_ingamemax: [0-" + Game.MaxPlayersInGame + "]$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= Game.MaxPlayersInGame);
             return
                 int.Parse(
-                    Regex.Match(msg.Body, @"^players_ingamemax: ([0-5])$", RegexOptions.Multiline).Groups[1].Value);
+                    Regex.Match(msg.Body, @"^players_ingamemax: ([0-" + Game.MaxPlayersInGame + "])$", RegexOptions.Multiline).Groups[1].Value);
         }
 
         [Pure]
@@ -221,7 +221,7 @@ namespace PirateSpades.Network {
             Contract.Requires(msg != null);
             Contract.Ensures(Contract.Result<Dictionary<string, int>>() != null);
             var res = new Dictionary<string, int>();
-            foreach(Match m in Regex.Matches(msg.Body, @"^player_bet: (\w+);([0-9])$", RegexOptions.Multiline)) {
+            foreach(Match m in Regex.Matches(msg.Body, @"^player_bet: ([a-zA-Z0-9]+);(10|[0-9])$", RegexOptions.Multiline)) {
                 res[m.Groups[1].Value] = int.Parse(m.Groups[2].Value);
             }
             return res;
@@ -251,9 +251,9 @@ namespace PirateSpades.Network {
 
         [Pure]
         public static string GetDealer(PirateMessage msg) {
-            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^dealer: \w+$", RegexOptions.Multiline));
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^dealer: [a-zA-Z0-9]+$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<string>() != null);
-            return Regex.Match(msg.Body, @"^dealer: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
+            return Regex.Match(msg.Body, @"^dealer: ([a-zA-Z0-9]+)$", RegexOptions.Multiline).Groups[1].Value;
         }
 
         [Pure]
@@ -265,9 +265,9 @@ namespace PirateSpades.Network {
 
         [Pure]
         public static string GetStartingPlayer(PirateMessage msg) {
-            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^starting_player: \w+$", RegexOptions.Multiline));
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^starting_player: [a-zA-Z0-9]+$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<string>() != null);
-            return Regex.Match(msg.Body, @"^starting_player: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
+            return Regex.Match(msg.Body, @"^starting_player: ([a-zA-Z0-9]+)$", RegexOptions.Multiline).Groups[1].Value;
         }
 
         [Pure]
@@ -279,9 +279,9 @@ namespace PirateSpades.Network {
 
         [Pure]
         public static string GetWinner(PirateMessage msg) {
-            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^winning_player: \w+$", RegexOptions.Multiline));
+            Contract.Requires(msg != null && Regex.IsMatch(msg.Body, @"^winning_player: [a-zA-Z0-9]\w+$", RegexOptions.Multiline));
             Contract.Ensures(Contract.Result<string>() != null);
-            return Regex.Match(msg.Body, @"^winning_player: (\w+)$", RegexOptions.Multiline).Groups[1].Value;
+            return Regex.Match(msg.Body, @"^winning_player: ([a-zA-Z0-9]+)$", RegexOptions.Multiline).Groups[1].Value;
         }
 
         [Pure]
@@ -303,7 +303,7 @@ namespace PirateSpades.Network {
             Contract.Requires(msg != null);
             Contract.Ensures(Contract.Result<Dictionary<string, int>>() != null);
             var res = new Dictionary<string, int>();
-            foreach (Match m in Regex.Matches(msg.Body, @"^player_tricks: (\w+);([0-9]+)$", RegexOptions.Multiline)) {
+            foreach(Match m in Regex.Matches(msg.Body, @"^player_tricks: ([a-zA-Z0-9]+);(10|[0-9]+)$", RegexOptions.Multiline)) {
                 res[m.Groups[1].Value] = int.Parse(m.Groups[2].Value);
             }
             return res;
@@ -328,7 +328,7 @@ namespace PirateSpades.Network {
             Contract.Requires(msg != null);
             Contract.Ensures(Contract.Result<Dictionary<string, int>>() != null);
             var res = new Dictionary<string, int>();
-            foreach (Match m in Regex.Matches(msg.Body, @"^player_score: (\w+);(-?[0-9]+)$", RegexOptions.Multiline)) {
+            foreach(Match m in Regex.Matches(msg.Body, @"^player_score: ([a-zA-Z0-9]+);(-?[0-9]+)$", RegexOptions.Multiline)) {
                 res[m.Groups[1].Value] = int.Parse(m.Groups[2].Value);
             }
             return res;
