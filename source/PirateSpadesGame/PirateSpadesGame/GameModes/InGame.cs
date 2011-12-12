@@ -9,6 +9,12 @@ namespace PirateSpadesGame.GameModes {
     using Microsoft.Xna.Framework.Input;
     using PirateSpades.Misc;
     using PirateSpades.Network;
+<<<<<<< HEAD
+=======
+
+    using PirateSpadesGame.IngameFunc;
+
+>>>>>>> f1de359ae965d948403163a4e94d5ca2bb90d43f
     using Game = PirateSpades.GameLogic.Game;
 
     public class InGame : IGameMode {
@@ -48,7 +54,16 @@ namespace PirateSpadesGame.GameModes {
         private SpriteFont font2;
         private Texture2D scoreOverlay;
         private Rectangle scoreOverlayRect;
+<<<<<<< HEAD
         private Texture2D board;
+=======
+        private TableSprite playingGround;
+        private Rectangle ingameBottom;
+        private Texture2D bottom;
+        private bool cardRequested;
+        private bool finished = false;
+
+>>>>>>> f1de359ae965d948403163a4e94d5ca2bb90d43f
         public InGame(PsGame game) {
             this.game = game;
             this.SetUp();
@@ -118,6 +133,10 @@ namespace PirateSpadesGame.GameModes {
 
             scoreOverlayRect = new Rectangle(1024-177, 0, 177, 520);
 
+<<<<<<< HEAD
+=======
+            ingameBottom = new Rectangle(0,615, 1024, 120);
+>>>>>>> f1de359ae965d948403163a4e94d5ca2bb90d43f
         }
 
         public void LoadContent(ContentManager contentManager) {
@@ -137,9 +156,17 @@ namespace PirateSpadesGame.GameModes {
             contentManager.Load<Texture2D>("cardback");
             betBox.LoadContent(contentManager);
             scoreOverlay = contentManager.Load<Texture2D>("scoreoverlay");
+            bottom = contentManager.Load<Texture2D>("bottom");
         }
 
         public void Update(GameTime gameTime) {
+            if(finished) {
+                leaveGame = new Button("leavegame", game.Window.ClientBounds.Width / 2 - Button.Width / 2, game.Window.ClientBounds.Height - 50);
+                leaveGame.LoadContent(game.Content);
+                if(leaveGame.Update(gameTime)) {
+                    this.ButtonAction(leaveGame);
+                }
+            }
             if(!playing) {
                 if(hosting) {
                     if(startGame.Update(gameTime)) {
@@ -152,6 +179,10 @@ namespace PirateSpadesGame.GameModes {
                 }
 
             } else {
+                if(playingGround == null) {
+                    playingGround = new TableSprite(game, playingGame, new Rectangle(0,0,1024,615));
+                    playingGround.LoadContent(game.Content);
+                }
                 currentKeyboardState = Keyboard.GetState();
                 if(this.CheckEscape()) {
                     this.showMenu = !this.showMenu;
@@ -163,7 +194,9 @@ namespace PirateSpadesGame.GameModes {
                     }
                 }
                 if(currentKeyboardState.IsKeyDown(Keys.Tab)) {
-                    this.showScoreboard = !this.showScoreboard;
+                    this.showScoreboard = true;
+                } else if(currentKeyboardState.IsKeyUp(Keys.Tab)) {
+                    this.showScoreboard = false;
                 }
                 if(bet.Update(gameTime)) {
                     this.ButtonAction(bet);
@@ -174,7 +207,14 @@ namespace PirateSpadesGame.GameModes {
                         c.Update(gameTime);
                         if(c.DoubleClick) {
                             this.cardToPlay = c;
+                            break;
                         }
+                    }
+                    if(cardToPlay != null && cardRequested && client.CardPlayable(cardToPlay.Card, client.Game.Round.BoardCards.FirstCard)) {
+                        client.PlayCard(cardToPlay.Card);
+                        cards.Remove(cardToPlay);
+                        cardToPlay = null;
+                        cardRequested = false;
                     }
                 } else if(client.Hand.Count == client.Game.CardsToDeal && cards.Count == 0) {
                     betBox.Limit = client.Hand.Count;
@@ -188,6 +228,7 @@ namespace PirateSpadesGame.GameModes {
                         tempX += cardSize.Width;
                     }
                 }
+                playingGround.Update(gameTime);
             }
         }
 
@@ -203,7 +244,7 @@ namespace PirateSpadesGame.GameModes {
             switch(str) {
                 case "startgame":
                     if(host.Game.Players.Count >= Game.MinPlayersInGame && host.Game.Players.Count <= Game.MaxPlayersInGame) {
-                        host.Game.Start(true, CollectionFnc.PickRandom(0, host.Game.Players.Count - 1));
+                        host.StartGame();
                     }
                     break;
                 case "bet":
@@ -237,6 +278,11 @@ namespace PirateSpadesGame.GameModes {
         }
 
         public void Draw(SpriteBatch spriteBatch) {
+            if(this.finished) {
+                this.DrawScoreboard(spriteBatch);
+                leaveGame.Draw(spriteBatch);
+                return;
+            }
             if(!playing) {
                 inJoinbackGround.Draw(spriteBatch);
                 leaveGame.Draw(spriteBatch);
@@ -254,6 +300,10 @@ namespace PirateSpadesGame.GameModes {
                     y += namesRectangle.Height;
                 }
             } else {
+                spriteBatch.Draw(bottom, ingameBottom, Color.White);
+                if(playingGround != null) {
+                    playingGround.Draw(spriteBatch);
+                }
                 this.DrawRoundScore(spriteBatch);
                 if(cards.Count > 0) {
                     foreach(var c in cards) {
@@ -331,11 +381,11 @@ namespace PirateSpadesGame.GameModes {
             foreach(var p in client.Game.Players) {
                 var betted = client.Game.Round.PlayerBets[p];
                 var tricks = client.Game.Round.PlayerTricks[p].Count;
-                spriteBatch.DrawString(font2, p.Name, new Vector2(nameRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Black);
+                spriteBatch.DrawString(font2, p.Name, new Vector2(nameRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Red);
                 y += scoreRectangle.Height;
-                spriteBatch.DrawString(font2, "Bet: " + (betted == -1 ? "?" : betted.ToString()), new Vector2(betRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Black);
+                spriteBatch.DrawString(font2, "Bet: " + (betted == -1 ? "?" : betted.ToString()), new Vector2(betRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Red);
                 y += scoreRectangle.Height;
-                spriteBatch.DrawString(font2, "Tricks: " + tricks, new Vector2(tricksRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Black);
+                spriteBatch.DrawString(font2, "Tricks: " + tricks, new Vector2(tricksRect.X, y), p.Name == game.PlayerName ? Color.Blue : Color.Red);
                 y += 40;
             }
         }
@@ -343,6 +393,7 @@ namespace PirateSpadesGame.GameModes {
         private void OnGameFinished(Game g) {
             if(g.Finished) {
                 showScoreboard = true;
+                finished = true;
             }
         }
 
@@ -368,11 +419,13 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void OnCardRequest(PirateClient pc) {
-            while(cardToPlay == null || !client.CardPlayable(cardToPlay.Card)) { }
-            if(client.CardPlayable(cardToPlay.Card)) {
+            if(cardToPlay != null && cardToPlay.Card != null && client.CardPlayable(cardToPlay.Card)) {
                 client.PlayCard(cardToPlay.Card);
                 cards.Remove(cardToPlay);
                 cardToPlay = null;
+                cardRequested = false;
+            } else {
+                cardRequested = true;
             }
         }
     }

@@ -67,7 +67,7 @@ namespace PirateSpades.Network {
             Contract.Requires(!Started);
             Contract.Ensures(Started);
 
-            this.Start(PirateScanner.GetLocalIpV4().ToString(), Game.MaxPlayersInGame);
+            this.Start(PirateScanner.GetLocalIpV4().ToString().Replace(".", ""), Game.MaxPlayersInGame);
         }
 
         public void Start(string gameName) {
@@ -81,7 +81,7 @@ namespace PirateSpades.Network {
             Contract.Requires(!Started && maxPlayers >= Game.MinPlayersInGame && maxPlayers <= Game.MaxPlayersInGame);
             Contract.Ensures(Started);
 
-            this.Start(PirateScanner.GetLocalIpV4().ToString(), maxPlayers);
+            this.Start(PirateScanner.GetLocalIpV4().ToString().Replace(".", ""), maxPlayers);
         }
 
         public void Start(string gameName, int maxPlayers){
@@ -418,7 +418,7 @@ namespace PirateSpades.Network {
 
         public static bool IsValidGameName(string gameName) {
             Contract.Requires(!string.IsNullOrEmpty(gameName));
-            return Regex.IsMatch(gameName, @"^[a-zA-Z0-9 _.\[\{\(\)\}\]-]{1,40}$");
+            return Regex.IsMatch(gameName, @"^[a-zA-Z0-9]{1,12}$");
         }
     }
 }

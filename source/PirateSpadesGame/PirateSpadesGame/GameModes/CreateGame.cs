@@ -34,7 +34,7 @@ namespace PirateSpadesGame.GameModes {
 
             var cgX = x;
             var cgY = y + 325;
-            createGame = new Button("creategamegm", cgX, cgY);
+            createGame = new Button("creategame", cgX, cgY);
 
             var cancelX = x + 250;
             var cancelY = y + 325;
@@ -77,8 +77,8 @@ namespace PirateSpadesGame.GameModes {
             }
             var str = b.Name;
             switch(str) {
-                case "creategamegm":
-                    if(serverName.Text == "" || PirateHost.IsValidGameName(serverName.Text)) {
+                case "creategame":
+                    if(serverName.Text == "" || !PirateHost.IsValidGameName(serverName.Text)) {
                         return;
                     }
                     var players = numberOfPlayers.ParseInput();
@@ -105,11 +105,11 @@ namespace PirateSpadesGame.GameModes {
         public void Draw(SpriteBatch spriteBatch) {
             backGround.Draw(spriteBatch);
             cancel.Draw(spriteBatch);
-            createGame.Draw(spriteBatch);
             serverName.Draw(spriteBatch);
             numberOfPlayers.Draw(spriteBatch);
             spriteBatch.DrawString(font, "Server Name:", namePos, Color.White);
             spriteBatch.DrawString(font, "Max Players:", playersPos, Color.White);
+            createGame.Draw(spriteBatch);
         }
 
     }

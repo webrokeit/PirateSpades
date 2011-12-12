@@ -29,7 +29,7 @@
             }
         }
 
-        private Dictionary<int, Round> Rounds { get; set; }
+        public IList<Round> Rounds { get; set; }
         public int CurrentRound { get; private set; }
         public Round Round {
             get {
@@ -38,7 +38,7 @@
                 Contract.Requires(CurrentRound >= 1);
                 Contract.Requires(CurrentRound <= RoundsPossible);
                 Contract.Requires(Players.Count >= MinPlayersInGame);
-                Contract.Ensures(Contract.Result<Round>() == Rounds[CurrentRound]);
+                Contract.Ensures(Contract.Result<Round>() == Rounds[CurrentRound - 1]);
                 return this.GetRound(CurrentRound);
             }
         }
@@ -85,7 +85,7 @@
             GamePlayers = new OrderedDictionary<Player, int>();
             PlayerNames = new Dictionary<string, Player>();
             this.UpdatePlayers();
-            Rounds = new Dictionary<int, Round>();
+            Rounds = new List<Round>().AsReadOnly();
             CurrentRound = 0;
             Started = false;
             IsHost = false;
@@ -107,7 +107,15 @@
             CurrentDealer = dealer;
             this.Started = true;
             this.IsHost = isHost;
-            if(this.IsHost) {
+
+            var lRounds = new List<Round>();
+            for (var i = 1; i <= RoundsPossible; i++) {
+                lRounds.Add(new Round(this, i, dealer));
+                dealer = (dealer + 1) % Players.Count;
+            }
+            Rounds = lRounds.AsReadOnly();
+
+            if (this.IsHost) {
                 this.NewRound();
             }
         }
@@ -121,17 +129,11 @@
             Contract.Requires(Started);
             CurrentRound++;
             if(Active) {
-                if (CurrentRound > 1) {
-                    CurrentDealer = (this.GetRound(CurrentRound - 1).Dealer + 1) % Players.Count;
-                }
+                var r = GetRound(CurrentRound);
+                r.RoundBegun += this.OnRoundBegun;
+                r.RoundFinished += this.OnRoundFinished;
+                r.NewPile += this.OnRoundNewPile;
 
-                var r = new Round(this, CurrentDealer);
-                if(IsHost) {
-                    r.RoundBegun += this.OnRoundBegun;
-                    r.RoundFinished += this.OnRoundFinished;
-                    r.NewPile += this.OnRoundNewPile;
-                }
-                Rounds.Add(CurrentRound, r);
                 r.Start();
                 if (RoundStarted != null) RoundStarted(this);
             } else {
@@ -143,19 +145,14 @@
         private void OnRoundBegun(Round round) {
             Contract.Requires(round != null && Active);
             if (RoundBegun != null) RoundBegun(this);
-            if(IsHost) {
-                round.RoundBegun -= this.OnRoundBegun;
-            }
+            round.RoundBegun -= this.OnRoundBegun;
         }
 
         private void OnRoundFinished(Round round) {
             Contract.Requires(round != null && (Active || Finished));
             if (RoundFinished != null) RoundFinished(this);
-            if (IsHost) {
-                round.RoundFinished -= this.OnRoundFinished;
-                round.NewPile -= this.OnRoundNewPile;
-                //this.NewRound();
-            }
+            round.RoundFinished -= this.OnRoundFinished;
+            round.NewPile -= this.OnRoundNewPile;
         }
 
         private void OnRoundNewPile(Round round) {
@@ -235,31 +232,32 @@
         public Round GetRound(int round) {
             Contract.Requires(Started && round >= 1);
             Contract.Requires(round <= RoundsPossible);
-            Contract.Requires(Rounds.ContainsKey(round));
+            Contract.Requires(Rounds.Count >= round);
             Contract.Ensures(Contract.Result<Round>() != null);
-            return Rounds[round];
+            return Rounds[round - 1];
         }
 
         public Dictionary<Player, int> GetRoundScore(int round) {
-            Contract.Requires(this.Rounds.ContainsKey(round));
+            Contract.Requires(round >= 1 && round <= RoundsPossible);
             Contract.Ensures(Contract.Result<Dictionary<Player, int>>() != null);
-            return this.Players.ToDictionary(player => player, player => this.Rounds[round].PlayerScore(player));
+            return this.Players.ToDictionary(player => player, player => this.GetRound(round).PlayerScore(player));
         }
 
         public Dictionary<Player, int> GetRoundScoreTotal(int roundNum) {
-            Contract.Requires(this.Rounds.ContainsKey(roundNum));
+            Contract.Requires(roundNum >= 1 && roundNum <= RoundsPossible);
             Contract.Ensures(Contract.Result<Dictionary<Player, int>>() != null);
-            return this.Players.ToDictionary(player => player, player => this.Rounds.Where(kvp => kvp.Key <= roundNum).Sum(round => round.Value.PlayerScore(player)));
+            return this.Players.ToDictionary(player => player, player => this.Rounds.Where(round => round.Number <= roundNum).Sum(round => round.PlayerScore(player)));
         }
 
         public Dictionary<Player, int> GetTotalScores() {
+            Contract.Requires(CurrentRound >= 1 && CurrentRound <= RoundsPossible);
             Contract.Ensures(Contract.Result<Dictionary<Player, int>>() != null);
-            return this.Players.ToDictionary(player => player, player => this.Rounds.Values.Sum(round => round.PlayerScore(player)));
+            return this.GetRoundScoreTotal(CurrentRound);
         }
 
         public Dictionary<int, Dictionary<Player, int>> GetScoreTable() {
             Contract.Ensures(Contract.Result<Dictionary<int, Dictionary<Player, int>>>() != null);
-            return this.Rounds.Keys.ToDictionary(round => round, this.GetRoundScoreTotal);
+            return this.Rounds.Where(round => round.Number <= CurrentRound).ToDictionary(round => round.Number, round => this.GetRoundScoreTotal(round.Number));
         } 
     }
 }

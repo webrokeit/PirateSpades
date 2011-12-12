@@ -1,12 +1,6 @@
-A general TODO
-	- Communicating with the underlying network and gamelogic
-
 InGame related
 	- Graphics:
-		- Create the table graphics
-		- Create the players graphics
-		- Draw the table in the game
-		- Draw the players in the game
+		- Place the cards correctly
 		- Scoreboard
 	- Implement the functionality
 

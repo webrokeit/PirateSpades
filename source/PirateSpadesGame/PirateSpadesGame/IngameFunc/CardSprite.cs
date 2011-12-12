@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace PirateSpadesGame {
+    using System;
+
     using Microsoft.Xna.Framework.Graphics;
 
     using PirateSpades.GameLogic;
@@ -35,13 +37,17 @@ namespace PirateSpadesGame {
 
         public Color Color { get; set; }
 
-        public bool DoubleClick { get; set; }
+        public bool DoubleClick { get { return clickCount >= 1 && (DateTime.Now - lastClick).TotalSeconds <= 1.0; }}
 
         public Card Card { get; private set; }
 
         public Rectangle Rect { get; private set; }
 
         public int Scale { get; set; }
+
+        private int clickCount = 0;
+
+        private DateTime lastClick = DateTime.Now;
 
         public void LoadContent(ContentManager theContentManager) {
             cardSprite = theContentManager.Load<Texture2D>(Name);
@@ -78,7 +84,15 @@ namespace PirateSpadesGame {
                 }
             }
             if(State == BState.JustReleased) {
-                var wasSelected = Selected;
+                var curClick = DateTime.Now;
+                if((curClick - lastClick).TotalSeconds <= 1.0) {
+                    clickCount++;
+                }else {
+                    clickCount = 0;
+                }
+                lastClick = curClick;
+
+                /*var wasSelected = Selected;
                 lock(InGame.Cardsprites) {
                     foreach(var c in InGame.Cardsprites) {
                         c.Selected = false;
@@ -89,7 +103,7 @@ namespace PirateSpadesGame {
                 } else {
                     Color = Color.Green;
                     Selected = true;
-                }
+                }*/
             }
         }
 

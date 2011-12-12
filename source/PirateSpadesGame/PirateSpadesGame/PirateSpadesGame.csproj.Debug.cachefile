@@ -21,8 +21,12 @@ Content\volumebox.xnb
 Content\PopUp.xnb
 Content\ok.xnb
 Content\cancelcg.xnb
+<<<<<<< HEAD
 Content\font.xnb
 Content\creategamegm.xnb
+=======
+Content\PIRATESHIP.xnb
+>>>>>>> f1de359ae965d948403163a4e94d5ca2bb90d43f
 Content\creategamewindow.xnb
 Content\exitgame.xnb
 Content\leavegame.xnb
@@ -87,5 +91,21 @@ Content\Spades_Three.xnb
 Content\Spades_Two.xnb
 Content\bettingbox.xnb
 Content\scoreoverlay.xnb
+<<<<<<< HEAD
 Content\font2.xnb
 Content\Scoreboard.xnb
+=======
+Content\creategamegm.xnb
+Content\5_player.xnb
+Content\4_player.xnb
+Content\3_player.xnb
+Content\2_player.xnb
+<<<<<<< HEAD
+Content\font2.xnb
+Content\creategamegm.xnb
+Content\devils_dance_floor.xnb
+Content\devils_dance_floor.wma
+=======
+Content\bottom.xnb
+>>>>>>> 1ef5e7c06a859443b6ed84c66eebc365b3546edd
+>>>>>>> f1de359ae965d948403163a4e94d5ca2bb90d43f

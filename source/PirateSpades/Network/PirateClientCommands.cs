@@ -71,7 +71,7 @@ namespace PirateSpades.Network {
             pclient.Game.ClearPlayers();
             var players = PirateMessage.GetPlayerNames(data);
             if(players.Count > 0) {
-                Console.WriteLine("Current players in game:");
+               Console.WriteLine("Current players in game:");
                foreach(var player in players) {
                    var p = pclient.Name == player ? pclient : new Player(player);
                    p.SetGame(pclient.Game);
