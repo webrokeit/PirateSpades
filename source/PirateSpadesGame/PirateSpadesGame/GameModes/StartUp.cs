@@ -170,7 +170,7 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private bool ApplyChanges() {
-            if(Regex.IsMatch(playername.Text, @"^\w{3,20}$")) {
+            if(Regex.IsMatch(playername.Text, @"^[a-zA-Z0-9]{3,12}$")) {
                 game.PlayerName = playername.Text;
                 game.MusicVolume = volume.ParseInputToFloat();
                 return true;

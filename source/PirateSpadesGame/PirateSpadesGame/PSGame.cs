@@ -140,7 +140,7 @@ namespace PirateSpadesGame {
                     gameMode.Update(gameTime);
                     break;
                 case GameState.JoinGame:
-                    if(PlayerName == "" || !Regex.IsMatch(PlayerName, @"^\w{3,20}$")) {
+                    if(PlayerName == "" || !Regex.IsMatch(PlayerName, @"^[a-zA-Z0-9]{3,12}$")) {
                         this.SetName();
                         break;
                     }
@@ -152,7 +152,7 @@ namespace PirateSpadesGame {
                     gameMode.Update(gameTime);
                     break;
                 case GameState.CreateGame:
-                    if(PlayerName == "" || !Regex.IsMatch(PlayerName, @"^\w{3,20}$")) {
+                    if(PlayerName == "" || !Regex.IsMatch(PlayerName, @"^[a-zA-Z0-9]{3,12}$")) {
                         this.SetName();
                         break;
                     }
