@@ -12,11 +12,12 @@ namespace PirateSpadesGame.GameModes {
     using PirateSpades.GameLogic;
     using PirateSpades.Network;
 
+    using PirateSpadesGame.IngameFunc;
+
     using Game = PirateSpades.GameLogic.Game;
 
     public class InGame : IGameMode {
         private Vector2 screenCenter;
-        private Dictionary<string, int> score;
         private Dictionary<string, Dictionary<string, int>> score;
         private bool playing = false;
         private bool showMenu = false;
@@ -56,6 +57,7 @@ namespace PirateSpadesGame.GameModes {
         private SpriteFont font2;
         private Texture2D scoreOverlay;
         private Rectangle scoreOverlayRect;
+        private TableSprite playingGround;
 
         public InGame(PsGame game) {
             this.game = game;
@@ -160,6 +162,10 @@ namespace PirateSpadesGame.GameModes {
                 }
 
             } else {
+                if(playingGround == null) {
+                    playingGround = new TableSprite(game, playingGame, new Rectangle(0,0,1024,615));
+                    playingGround.LoadContent(game.Content);
+                }
                 currentKeyboardState = Keyboard.GetState();
                 if(this.CheckEscape()) {
                     this.showMenu = !this.showMenu;
@@ -262,6 +268,7 @@ namespace PirateSpadesGame.GameModes {
                     y += namesRectangle.Height;
                 }
             } else {
+                playingGround.Draw(spriteBatch);
                 this.DrawRoundScore(spriteBatch);
                 if(cards.Count > 0) {
                     foreach(var c in cards) {

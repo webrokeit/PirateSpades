@@ -21,7 +21,6 @@ Content\refresh.xnb
 Content\jointhisgame.xnb
 Content\backjoingame.xnb
 Content\cancelcg.xnb
-Content\creategamegm.xnb
 Content\PIRATESHIP.xnb
 Content\creategamewindow.xnb
 Content\exitgame.xnb
@@ -88,3 +87,4 @@ Content\Spades_Two.xnb
 Content\bettingbox.xnb
 Content\font2.xnb
 Content\scoreoverlay.xnb
+Content\creategamegm.xnb
