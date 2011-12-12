@@ -193,6 +193,11 @@
     </Compile>
     <Compile Include="creategamegm.png">
       <Name>creategamegm</Name>
+<<<<<<< HEAD
+    </Compile>
+    <Compile Include="Gamesettings.png">
+      <Name>Gamesettings</Name>
+=======
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -533,6 +538,7 @@
   <ItemGroup>
     <Compile Include="bettingbox.png">
       <Name>bettingbox</Name>
+>>>>>>> 5c2af7d504527d6b0f9642da10cb3f65d2eb0e27
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

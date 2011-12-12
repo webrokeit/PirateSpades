@@ -119,9 +119,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PSGame.cs" />
+<<<<<<< HEAD
+    <Compile Include="ServerSprite.cs" />
+    <Compile Include="Sprite.cs" />
+    <Compile Include="Textbox.cs" />
+=======
     <Compile Include="Misc\ServerSprite.cs" />
     <Compile Include="Misc\Sprite.cs" />
     <Compile Include="Misc\Textbox.cs" />
+>>>>>>> 5c2af7d504527d6b0f9642da10cb3f65d2eb0e27
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

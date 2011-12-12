@@ -16,6 +16,7 @@ namespace PirateSpadesGame.GameModes {
 
     public class InGame : IGameMode {
         private Vector2 screenCenter;
+        private Dictionary<string, int> score;
         private Dictionary<string, Dictionary<string, int>> score;
         private bool playing = false;
         private bool showMenu = false;
@@ -153,7 +154,6 @@ namespace PirateSpadesGame.GameModes {
                         this.ButtonAction(startGame);
                     }
                 }
-
                 players = client.Game.Players.Count;
                 if(leaveGame.Update(gameTime)) {
                     this.ButtonAction(leaveGame);
