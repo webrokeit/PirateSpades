@@ -15,7 +15,8 @@ namespace PirateSpadesGame {
         private bool typable = false;
         private readonly Keys[] keysToCheck = new Keys[] {
             Keys.NumPad0, Keys.NumPad1, Keys.NumPad2, Keys.NumPad3, Keys.NumPad4, Keys.NumPad5, Keys.NumPad6, Keys.NumPad7,
-            Keys.NumPad8, Keys.NumPad9, Keys.Enter, Keys.Back };
+            Keys.NumPad8, Keys.NumPad9, Keys.Enter, Keys.Back, Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5,
+            Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.Down, Keys.Up};
         private KeyboardState lastKeyboardState;
         private KeyboardState currentKeyboardState;
         private SpriteFont font;
@@ -51,7 +52,7 @@ namespace PirateSpadesGame {
             
             if(typable) {
                 currentKeyboardState = Keyboard.GetState();
-                
+
                 foreach(var k in this.keysToCheck.Where(this.CheckKey)) {
                     this.AddLetter(k);
                     break;
@@ -89,40 +90,64 @@ namespace PirateSpadesGame {
         }
 
         private void AddLetter(Keys k) {
-            var newChar = "";
+           var newChar = "";
             
-            if(Text.Length == maxNumber && k != Keys.Back)
+            if(Text.Length == maxNumber && k != Keys.Back && k != Keys.Down)
                 return;
 
+            var curNum = 0;
             switch(k) {
+                case Keys.Down:
+                    if(int.TryParse(Text, out curNum) && curNum > 0) {
+                        curNum -= 1;
+                    }
+                    Text = curNum.ToString();
+                    break;
+                case Keys.Up:
+                    if(int.TryParse(Text, out curNum) && curNum < int.MaxValue) {
+                        curNum += 1;
+                    }
+                    Text = curNum.ToString();
+                    break;
+                    break;
                 case Keys.NumPad1:
+                case Keys.D1:
                     newChar += "1";
                     break;
                 case Keys.NumPad2:
+                case Keys.D2:
                     newChar += "2";
                     break;
                 case Keys.NumPad3:
+                case Keys.D3:
                     newChar += "3";
                     break;
                 case Keys.NumPad4:
+                case Keys.D4:
                     newChar += "4";
                     break;
                 case Keys.NumPad5:
+                case Keys.D5:
                     newChar += "5";
                     break;
                 case Keys.NumPad6:
+                case Keys.D6:
                     newChar += "6";
                     break;
                 case Keys.NumPad7:
+                case Keys.D7:
                     newChar += "7";
                     break;
                 case Keys.NumPad8:
+                case Keys.D8:
                     newChar += "8";
                     break;
                 case Keys.NumPad9:
+                case Keys.D9:
                     newChar += "9";
                     break;
                 case Keys.NumPad0:
+                case Keys.D0:
                     newChar += "0";
                     break;
                 case Keys.Enter:

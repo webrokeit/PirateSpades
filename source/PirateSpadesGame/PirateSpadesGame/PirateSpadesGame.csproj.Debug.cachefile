@@ -1,3 +1,4 @@
+Content\Clubs_Eight.xnb
 Content\creategame.xnb
 Content\exit.xnb
 Content\joingame.xnb
@@ -7,7 +8,6 @@ Content\pspades.xnb
 Content\Gamerules.xnb
 Content\back.xnb
 Content\solidred.xnb
-Content\font.xnb
 Content\playername.xnb
 Content\apply.xnb
 Content\cancel.xnb
@@ -30,10 +30,9 @@ Content\startgame.xnb
 Content\servertex.xnb
 Content\ingamewindow.xnb
 Content\menubackground.xnb
-Content\bet.xnb
 Content\cardback.xnb
+Content\bet.xnb
 Content\Clubs_Ace.xnb
-Content\Clubs_Eight.xnb
 Content\Clubs_Five.xnb
 Content\Clubs_Four.xnb
 Content\Clubs_Jack.xnb
@@ -85,6 +84,9 @@ Content\Spades_Ten.xnb
 Content\Spades_Three.xnb
 Content\Spades_Two.xnb
 Content\bettingbox.xnb
+<<<<<<< HEAD
+Content\font.xnb
+=======
 Content\font2.xnb
 Content\scoreoverlay.xnb
 Content\creategamegm.xnb
@@ -93,3 +95,4 @@ Content\4_player.xnb
 Content\3_player.xnb
 Content\2_player.xnb
 Content\bottom.xnb
+>>>>>>> 8498227924a6c1ef0c4f96932b65c2309400dcc8

@@ -6,6 +6,7 @@
 
     public class Round {
         public Game Game { get; private set; }
+        public int Number { get; private set; }
         public int Cards { get; private set; }
         public int TotalCards {
             get {
@@ -17,6 +18,7 @@
                 return AwaitingBets ? Game.Players.Sum(player => player.CardsOnHand) : TotalCards;
             }
         }
+        public bool Started { get; private set; }
         public bool AwaitingBets { get; private set; }
         public bool BetsDone {
             get {
@@ -25,7 +27,7 @@
         }
         public bool Finished {
             get {
-                return TricksDone >= Cards;
+                return Started && TricksDone >= Cards;
             }
         }
         private bool PileDone {
@@ -51,21 +53,25 @@
         public event RoundEventDelegate RoundBegun;
         public event RoundEventDelegate RoundFinished;
 
-        public Round(Game game, int dealer) {
+        public Round(Game game, int number, int dealer) {
             Contract.Requires(game != null && dealer >= 0 && dealer < game.Players.Count);
             this.Game = game;
-            this.Cards = Card.CardsToDeal(Game.CurrentRound, Game.Players.Count);
             this.Dealer = dealer;
+            this.Number = number;
             this.CurrentPlayer = dealer;
             this.BoardCards = new Trick();
             this.PlayerTricks = new Dictionary<Player, List<Trick>>();
             this.PlayerBets = new Dictionary<Player, int>();
-            TricksDone = 0;
+            this.Started = false;
+            this.TricksDone = 0;
+            this.Cards = 0;
         }
 
         public void Start() {
             Contract.Requires(!Finished && !AwaitingBets && Game.Players.Count >= Game.MinPlayersInGame);
             Contract.Ensures(AwaitingBets);
+            this.Started = true;
+            this.Cards = Card.CardsToDeal(Number, Game.Players.Count);
             foreach(var player in Game.Players) {
                 player.IsDealer = false;
                 PlayerTricks.Add(player, new List<Trick>());
