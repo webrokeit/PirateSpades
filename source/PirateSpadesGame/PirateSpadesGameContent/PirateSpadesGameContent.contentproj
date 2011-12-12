@@ -42,13 +42,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clubs_Eight.png">
-      <Name>Clubs_Eight</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="creategame.png">
       <Name>creategame</Name>
       <Importer>TextureImporter</Importer>
@@ -200,6 +193,7 @@
     </Compile>
     <Compile Include="creategamegm.png">
       <Name>creategamegm</Name>
+    </Compile>
     <Compile Include="Gamesettings.png">
       <Name>Gamesettings</Name>
       <Importer>TextureImporter</Importer>

@@ -121,7 +121,6 @@
     <Compile Include="PSGame.cs" />
     <Compile Include="ServerSprite.cs" />
     <Compile Include="Sprite.cs" />
-    <Compile Include="TableSprite.cs" />
     <Compile Include="Textbox.cs" />
   </ItemGroup>
   <ItemGroup>

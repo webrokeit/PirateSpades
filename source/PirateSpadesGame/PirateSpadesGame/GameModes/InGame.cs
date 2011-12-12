@@ -9,17 +9,15 @@ namespace PirateSpadesGame.GameModes {
 
     public class InGame : IGameMode {
         private Vector2 screenCenter;
-        private Dictionary<string, Dictionary<string, int>> score;
+        private Dictionary<string, int> score;
 
         public InGame() {
-                
+
+            Dictionary <int, Dictionary<string, int>>;
         }
 
         protected void LoadContent()
         {
-            
-            
-
         }
 
         public void LoadContent(ContentManager contentManager) {
@@ -29,7 +27,7 @@ namespace PirateSpadesGame.GameModes {
             KeyboardState state = Keyboard.GetState();
 
             if (state.IsKeyDown(Keys.Tab)) {
-                //TODO: do this;
+                score.Add();
             }
 
         }
