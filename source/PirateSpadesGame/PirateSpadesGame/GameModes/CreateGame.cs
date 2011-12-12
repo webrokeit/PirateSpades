@@ -18,12 +18,11 @@ namespace PirateSpadesGame.GameModes {
         private Vector2 namePos;
         private Vector2 playersPos;
         private SpriteFont font;
-        private ContentManager content;
+
         private List<Button> buttons;
 
         public CreateGame(PsGame game) {
             this.game = game;
-            this.content = game.Content;
             this.SetUp(game.Window);
         }
 
