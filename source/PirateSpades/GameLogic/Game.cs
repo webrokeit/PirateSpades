@@ -130,11 +130,9 @@
             CurrentRound++;
             if(Active) {
                 var r = GetRound(CurrentRound);
-                if(IsHost) {
-                    r.RoundBegun += this.OnRoundBegun;
-                    r.RoundFinished += this.OnRoundFinished;
-                    r.NewPile += this.OnRoundNewPile;
-                }
+                r.RoundBegun += this.OnRoundBegun;
+                r.RoundFinished += this.OnRoundFinished;
+                r.NewPile += this.OnRoundNewPile;
 
                 r.Start();
                 if (RoundStarted != null) RoundStarted(this);
@@ -147,18 +145,14 @@
         private void OnRoundBegun(Round round) {
             Contract.Requires(round != null && Active);
             if (RoundBegun != null) RoundBegun(this);
-            if(IsHost) {
-                round.RoundBegun -= this.OnRoundBegun;
-            }
+            round.RoundBegun -= this.OnRoundBegun;
         }
 
         private void OnRoundFinished(Round round) {
             Contract.Requires(round != null && (Active || Finished));
             if (RoundFinished != null) RoundFinished(this);
-            if (IsHost) {
-                round.RoundFinished -= this.OnRoundFinished;
-                round.NewPile -= this.OnRoundNewPile;
-            }
+            round.RoundFinished -= this.OnRoundFinished;
+            round.NewPile -= this.OnRoundNewPile;
         }
 
         private void OnRoundNewPile(Round round) {
