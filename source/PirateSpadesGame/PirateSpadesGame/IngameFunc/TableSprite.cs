@@ -32,6 +32,7 @@ namespace PirateSpadesGame.IngameFunc {
         private void SetUp() {
             cardsOnTable = new List<CardSprite>();
             playingGame.RoundFinished += OnRoundFinished;
+            playingGame.RoundNewPile += OnRoundFinished;
         }
 
         public void LoadContent(ContentManager contentManager) {
@@ -39,12 +40,15 @@ namespace PirateSpadesGame.IngameFunc {
         }
 
         public void Update(GameTime gameTime) {
-            var tempX = 400;
-            foreach(var c in playingGame.Round.BoardCards.Pile.Values) {
-                var cs = new CardSprite(c, new Rectangle(tempX,300,50,60));
-                cs.LoadContent(game.Content);
-                cardsOnTable.Add(cs);
-                tempX += 50;
+            if(playingGame.Started && playingGame.Round.BoardCards.Pile.Count > 0) {
+                var tempX = 400;
+                cardsOnTable.Clear();
+                foreach(var c in playingGame.Round.BoardCards.Pile.Values) {
+                    var cs = new CardSprite(c, new Rectangle(tempX, 300, 50, 60));
+                    cs.LoadContent(game.Content);
+                    cardsOnTable.Add(cs);
+                    tempX += 50;
+                }
             }
         }
 

@@ -60,6 +60,8 @@ namespace PirateSpadesGame.GameModes {
         private TableSprite playingGround;
         private Rectangle ingameBottom;
         private Texture2D bottom;
+        private bool cardRequested;
+        private bool betRequested;
 
         public InGame(PsGame game) {
             this.game = game;
@@ -182,7 +184,9 @@ namespace PirateSpadesGame.GameModes {
                     }
                 }
                 if(currentKeyboardState.IsKeyDown(Keys.Tab)) {
-                    this.showScoreboard = !this.showScoreboard;
+                    this.showScoreboard = true;
+                } else if(currentKeyboardState.IsKeyUp(Keys.Tab)) {
+                    this.showScoreboard = false;
                 }
                 if(bet.Update(gameTime)) {
                     this.ButtonAction(bet);
@@ -193,7 +197,14 @@ namespace PirateSpadesGame.GameModes {
                         c.Update(gameTime);
                         if(c.DoubleClick) {
                             this.cardToPlay = c;
+                            break;
                         }
+                    }
+                    if(cardToPlay != null && cardRequested) {
+                        client.PlayCard(cardToPlay.Card);
+                        cards.Remove(cardToPlay);
+                        cardToPlay = null;
+                        cardRequested = false;
                     }
                 } else if(client.Hand.Count == client.Game.CardsToDeal && cards.Count == 0) {
                     betBox.Limit = client.Hand.Count;
@@ -207,6 +218,7 @@ namespace PirateSpadesGame.GameModes {
                         tempX += cardSize.Width;
                     }
                 }
+                playingGround.Update(gameTime);
             }
         }
 
@@ -222,7 +234,7 @@ namespace PirateSpadesGame.GameModes {
             switch(str) {
                 case "startgame":
                     if(host.Game.Players.Count >= Game.MinPlayersInGame && host.Game.Players.Count <= Game.MaxPlayersInGame) {
-                        host.Game.Start(true, CollectionFnc.PickRandom(0, host.Game.Players.Count - 1));
+                        host.StartGame();
                     }
                     break;
                 case "bet":
@@ -345,11 +357,13 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void OnCardRequest(PirateClient pc) {
-            while(cardToPlay == null || !client.CardPlayable(cardToPlay.Card)) { }
-            if(client.CardPlayable(cardToPlay.Card)) {
+            if(cardToPlay != null && cardToPlay.Card != null && client.CardPlayable(cardToPlay.Card)) {
                 client.PlayCard(cardToPlay.Card);
                 cards.Remove(cardToPlay);
                 cardToPlay = null;
+                cardRequested = false;
+            } else {
+                cardRequested = true;
             }
         }
     }

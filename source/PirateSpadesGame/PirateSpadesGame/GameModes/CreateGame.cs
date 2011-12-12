@@ -79,7 +79,7 @@ namespace PirateSpadesGame.GameModes {
             var str = b.Name;
             switch(str) {
                 case "creategamegm":
-                    if(serverName.Text == "" || PirateHost.IsValidGameName(serverName.Text)) {
+                    if(serverName.Text == "" || !PirateHost.IsValidGameName(serverName.Text)) {
                         return;
                     }
                     var players = numberOfPlayers.ParseInput();
