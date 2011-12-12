@@ -1,0 +1,36 @@
+﻿On Wednesday, 14 December at 15:00 your project submission is due to the Exam Office in 2E.
+
+Your submission must include documentation for each milestone indicated by the project description.  As indicated, the manner in which you write-up each of these milestones is up to you.  It is suggested that they are in the form of PDF, RTF, or ASCII files that are attached together as described below.
+
+As a reminder, the major milestones for your project are:
+
+• submission and approval of the Project Overview, including system requirements,
+• production of your system analysis,
+• production of your system design,
+• production and demonstration of your working system,
+• update and submission of your final Project Overview that incorporates and summarizes the aforementioned artifacts.
+
+It is mandatory that you put the ITU standard front cover on your submission.  
+  https://intranet.itu.dk/en/Studiehaandbogen/Eksamen/Standardforside
+
+The contents of the submission are an updated Project Overview and those artifacts relating to each of these milestones.   It is recommended that all of the above be put together into a single PDF document included with your digital project submission (see below).
+
+Recall that your Project Overview has a place for referencing related documents, so that is the place to point to the various artifacts you have created to fulfill these milestones.  As such, it is quite helpful to have every document have the following information on it: (i) a name, (ii) the team name, (iii) the responsible team members, and (iv) a version number and/or date.
+
+When updating your final Project Overview, remember to reflect upon which requirements you have fulfilled and to what degree.  It is also important to reflect upon the manner in which you have validated your system.
+
+You must also point the examiners to your version control repository so that, if we desire, we can have a look at your log.  If your repository is not public, you must include a snapshot of it with the digital project submission (see below).
+
+Recall that it is very important for the exam situation that every artifact identify which team members were responsible for that artifacts.  In code, this is accomplished using comments or annotations for authors, and with other documents it is covered by the above metadata.
+
+Finally, you must submit a working system, both in development and executable form.  This means that you need to put on a CD, DVD, or USB key a snapshot of your entire Visual Studio solution(s) and, preferably, separately an installer or executable that can be run with a double-click.  Recall that your Project Overview is your README file, so it should contain running and installation instructions.
+
+As you have two examiners, you must submit three (3) documents containing the above information and three (3) CDs/DVDs/USB keys (as you wish).  One of these pairs goes to the Exam Office and the other two go to myself and the censor.
+
+Please ask any questions about your submission in the Project page in the course website.
+  https://blog.itu.dk/BDSA-E2011/projects/
+
+We will be scheduling an ITU internal demonstration session for projects.  More on that soon.
+
+Good luck,
+Joe

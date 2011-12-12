@@ -7,6 +7,7 @@ namespace PirateSpadesGame.GameModes {
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Media;
 
     public class StartUp : IGameMode {
         private List<Button> buttons;
@@ -105,6 +106,11 @@ namespace PirateSpadesGame.GameModes {
             foreach(var b in buttons) {
                 b.LoadContent(contentManager);
             }
+
+            Song song = contentManager.Load<Song>("devils_dance_floor");  // Put the name of your song here instead of "song_title"
+            MediaPlayer.Play(song);
+            MediaPlayer.Volume = 50f;
+            MediaPlayer.IsRepeating = true;
         }
 
         public void Update(GameTime gameTime) {
