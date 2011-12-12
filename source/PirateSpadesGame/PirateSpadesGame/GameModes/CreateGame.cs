@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿// Helena
 namespace PirateSpadesGame.GameModes {
-    using System.Net;
-    using System.Text.RegularExpressions;
-
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
-    using Microsoft.Xna.Framework.Input;
-
-    using PirateSpades.GameLogic;
+    using System.Collections.Generic;
+    using System.Linq;
     using PirateSpades.Network;
-
     using Game = PirateSpades.GameLogic.Game;
 
     public class CreateGame : IGameMode {
@@ -37,7 +28,7 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void SetUp(GameWindow window) {
-            backGround = new Sprite() { Color = Color.White };
+            backGround = new Sprite { Color = Color.White };
             var x = window.ClientBounds.Width / 2 - 400 / 2;
             var y = window.ClientBounds.Height / 2 - 400 / 2;
             backGround.Position = new Vector2(x, y);
