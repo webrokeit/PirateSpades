@@ -1,10 +1,26 @@
-﻿using System;
+﻿// <copyright file="ImmutableOrderedDictionary.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      An immutable version of the ordered dictionary
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
 
 namespace PirateSpades.Misc {
+    using System;
     using System.Diagnostics.Contracts;
 
+    /// <summary>
+    /// An immutable dictionary that keeps tracks of the insertion order
+    /// </summary>
+    /// <typeparam name="TKey">The key</typeparam>
+    /// <typeparam name="TValue">The value</typeparam>
     public class ImmutableOrderedDictionary<TKey, TValue> : OrderedDictionary<TKey, TValue> {
 
+        /// <summary>
+        /// Make a new ImmutableOrderedDictionary from this OrderDictionary
+        /// </summary>
+        /// <param name="from">The OrderedDictionary to make Immutable</param>
         public ImmutableOrderedDictionary(OrderedDictionary<TKey, TValue> from) {
             Contract.Requires(from != null);
             foreach(var key in from.Keys) {
