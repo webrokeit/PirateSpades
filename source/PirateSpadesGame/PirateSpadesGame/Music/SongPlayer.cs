@@ -72,7 +72,7 @@ namespace PirateSpadesGame.Music {
         /// Start the SongPlayer.
         /// </summary>
         public void Start() {
-            Contract.Ensures(Playing = true);
+            Contract.Ensures(Playing);
             Playing = true;
             PlayList.Next();
             this.UpdateState();
@@ -82,7 +82,7 @@ namespace PirateSpadesGame.Music {
         /// Stop the SongPlayer.
         /// </summary>
         public void Stop() {
-            Contract.Ensures(Playing = false);
+            Contract.Ensures(!Playing);
             Playing = false;
             this.UpdateState();
         }

@@ -15,23 +15,70 @@ namespace PirateSpades.Network {
 
     using PirateSpades.GameLogic;
 
+    /// <summary>
+    /// A network client for the PirateSpades game.
+    /// </summary>
     public class PirateClient : Player {
+        /// <summary>
+        /// The socket to use for communicating.
+        /// </summary>
         public Socket Socket { get; private set; }
+
+        /// <summary>
+        /// The buffer to use for messages.
+        /// </summary>
         public int BufferSize { get; private set; }
 
+        /// <summary>
+        /// Whether or not debug mode is in use.
+        /// </summary>
         public bool DebugMode { get; set; }
 
+        /// <summary>
+        /// Whether or not the client is a virtual player.
+        /// </summary>
         public bool VirtualPlayer { get; private set; }
+
+        /// <summary>
+        /// Whether or not the client is dead.
+        /// </summary>
         public bool IsDead { get; private set; }
 
+        /// <summary>
+        /// Delegate to be used for events involving PirateClient.
+        /// </summary>
+        /// <param name="pclient">The PirateClient.</param>
         public delegate void PirateClientDelegate(PirateClient pclient);
+
+        /// <summary>
+        /// Fires when the client has been disconnected.
+        /// </summary>
         public event PirateClientDelegate Disconnected;
+
+        /// <summary>
+        /// Fires when a name request was received.
+        /// </summary>
         public event PirateClientDelegate NameRequested;
+
+        /// <summary>
+        /// Fires when a bet request was received.
+        /// </summary>
         public event PirateClientDelegate BetRequested;
+
+        /// <summary>
+        /// Fires when card request was received.
+        /// </summary>
         public event PirateClientDelegate CardRequested;
 
+        /// <summary>
+        /// A collection of socket errors to ignore.
+        /// </summary>
         private static readonly HashSet<SocketError> IgnoreSocketErrors = new HashSet<SocketError>() { SocketError.ConnectionReset };
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="socket">The name of the player.</param>
         public PirateClient (Socket socket) : base("") {
             Contract.Requires(socket != null);
             this.Socket = socket;
@@ -39,6 +86,12 @@ namespace PirateSpades.Network {
             this.Init();
         }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="name">The name of the player.</param>
+        /// <param name="ip">The ip to connect to.</param>
+        /// <param name="port">The port to use.</param>
         public PirateClient(string name, IPAddress ip, int port) : base(name) {
             Contract.Requires(name != null && ip != null && port > 0 && port <= 65535 && PirateScanner.IsValidIp(ip));
             this.VirtualPlayer = false;
@@ -57,10 +110,19 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="name">The name of the player.</param>
+        /// <param name="ip">The ip to connect to.</param>
+        /// <param name="port">The port to use.</param>
         public PirateClient (string name, string ip, int port) : this(name, IPAddress.Parse(ip), port) {
             Contract.Requires(name != null && ip != null && port > 0 && port <= 65535 && PirateScanner.IsValidIp(ip));
         }
 
+        /// <summary>
+        /// Initialize the client.
+        /// </summary>
         private void Init() {
             IsDead = false;
             BufferSize = PirateMessage.BufferSize;
@@ -71,10 +133,16 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Initialize the connection to the host.
+        /// </summary>
         public void InitConnection() {
             PirateClientCommands.InitConnection(this);
         }
 
+        /// <summary>
+        /// Disconnect.
+        /// </summary>
         public void Disconnect() {
             if(this.Socket.Connected) {
                 this.Socket.Close();
@@ -85,18 +153,35 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// When a card has been played.
+        /// </summary>
+        /// <param name="card">The card played.</param>
         private void OnCardPlayed(Card card) {
             PirateClientCommands.PlayCard(this, card);
         }
 
+        /// <summary>
+        /// When a card has been dealt.
+        /// </summary>
+        /// <param name="p">Receiving player.</param>
+        /// <param name="c">Card dealt.</param>
         private void OnCardDealt(Player p, Card c) {
             PirateClientCommands.DealCard(this, p, c);
         }
 
+        /// <summary>
+        /// When a bet has been set.
+        /// </summary>
+        /// <param name="bet">The bet.</param>
         private void OnBetSet(int bet) {
             PirateClientCommands.SetBet(this, bet);
         }
 
+        /// <summary>
+        /// When the name has been set.
+        /// </summary>
+        /// <param name="name">The name.</param>
         public void SetName(string name) {
             Contract.Requires(name != null);
             this.Name = name;
@@ -105,6 +190,9 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Receive socket messages asynchronously.
+        /// </summary>
         private void SocketMessageReceive() {
             var mobj = new PirateMessageObj(this);
             Socket.BeginReceive(
@@ -117,6 +205,10 @@ namespace PirateSpades.Network {
             );
         }
 
+        /// <summary>
+        /// When a message was received through the socket.
+        /// </summary>
+        /// <param name="ar">AsyncResult containing information about the asynchronous operation.</param>
         private void SocketMessageReceived(IAsyncResult ar) {
             Contract.Requires(ar != null && ar.AsyncState is PirateMessageObj);
             try {
@@ -143,12 +235,20 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Send socket message asynchronously.
+        /// </summary>
+        /// <param name="msg">The message to send.</param>
         public void SendMessage(PirateMessage msg) {
             Contract.Requires(msg != null);
             var buffer = msg.GetBytes();
             Socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, MessageSent, msg);
         }
 
+        /// <summary>
+        /// When a message has been sent.
+        /// </summary>
+        /// <param name="ar">AsyncResult containing information about the asynchronous operation.</param>
         private void MessageSent(IAsyncResult ar) {
             Contract.Requires(ar != null && ar.AsyncState is PirateMessage);
             var sent = Socket.EndSend(ar);
@@ -156,6 +256,10 @@ namespace PirateSpades.Network {
             // TODO: Log that the message has been sent?
         }
 
+        /// <summary>
+        /// Handle the incoming message.
+        /// </summary>
+        /// <param name="msg">The message.</param>
         private void HandleMessage(PirateMessage msg) {
             switch(msg.Head) {
                 case PirateMessageHead.Erro:
@@ -207,14 +311,23 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Request bet.
+        /// </summary>
         public void RequestBet() {
             if(BetRequested != null) BetRequested(this);
         }
 
+        /// <summary>
+        /// Request card.
+        /// </summary>
         public void RequestCard() {
             if (CardRequested != null) CardRequested(this);
         }
 
+        /// <summary>
+        /// Name not available.
+        /// </summary>
         public void NameNotAvailable() {
             if (NameRequested != null) NameRequested(this);
         }
