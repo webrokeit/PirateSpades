@@ -95,6 +95,7 @@ namespace PirateSpadesGame.GameModes {
             client.CardRequested += OnCardRequest;
             client.Game.RoundStarted += OnGameStarted;
             client.Game.GameFinished += OnGameFinished;
+            client.Game.RoundFinished += OnRoundFinished;
 
             cards = new List<CardSprite>();
 
@@ -132,7 +133,7 @@ namespace PirateSpadesGame.GameModes {
           
 
             var rect = new Rectangle(900, 520, 100, 50);
-            betBox = new Numberbox(rect, "bettingbox", 2) { Limit = 10, Number = 0 };
+            betBox = new Numberbox(rect, "bettingbox", 2) { Limit = 10, Number = 0, Locked = false };
             betBox.Text = betBox.Number.ToString();
 
             bet = new Button("bet", 860,  565);
@@ -176,11 +177,11 @@ namespace PirateSpadesGame.GameModes {
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Update(GameTime gameTime) {
             if(finished) {
-                leaveGame = new Button("leavegame", game.Window.ClientBounds.Width / 2 - Button.Width / 2, game.Window.ClientBounds.Height - Button.Width);
-                leaveGame.LoadContent(game.Content);
+                leaveGame.Rectangle = new Rectangle(game.Window.ClientBounds.Width / 2 - Button.Width / 2, game.Window.ClientBounds.Height - Button.Height, Button.Width, Button.Height);
                 if(leaveGame.Update(gameTime)) {
                     this.ButtonAction(leaveGame);
                 }
+                return;
             }
             if(!playing) {
                 if(hosting) {
@@ -217,7 +218,7 @@ namespace PirateSpadesGame.GameModes {
                     this.ButtonAction(bet);
                 }
                 betBox.Update(gameTime);
-                if(cards.Count > 0) {
+                if(cards.Count > 0 && cardRequested) {
                     foreach(var c in this.cards) {
                         c.Update(gameTime);
                         if(c.DoubleClick) {
@@ -225,7 +226,7 @@ namespace PirateSpadesGame.GameModes {
                             break;
                         }
                     }
-                    if(cardToPlay != null && cardRequested && client.CardPlayable(cardToPlay.Card, client.Game.Round.BoardCards.FirstCard)) {
+                    if(cardToPlay != null && client.CardPlayable(cardToPlay.Card, client.Game.Round.BoardCards.FirstCard) && client.HasCard(cardToPlay.Card)) {
                         this.PlayCard();
                     }
                 } else if(client.Hand.Count == client.Game.CardsToDeal && cards.Count == 0) {
@@ -249,11 +250,13 @@ namespace PirateSpadesGame.GameModes {
         /// </summary>
         private void PlayCard() {
             Contract.Requires(cardToPlay.Card != null && cardToPlay != null && cards.Contains(cardToPlay) && client.HasCard(cardToPlay.Card));
-            Contract.Ensures(!client.HasCard(Contract.OldValue(cardToPlay.Card)) && !cards.Contains(cardToPlay) && cardToPlay == null && cardRequested == false);
+            Contract.Ensures(!client.HasCard(Contract.OldValue(cardToPlay.Card)));
+            Contract.Ensures(!cards.Contains(cardToPlay));
+            Contract.Ensures(cardToPlay == null);
+            cardRequested = false;
             client.PlayCard(cardToPlay.Card);
             cards.Remove(cardToPlay);
             cardToPlay = null;
-            cardRequested = false;
         }
 
         /// <summary>
@@ -261,7 +264,7 @@ namespace PirateSpadesGame.GameModes {
         /// </summary>
         /// <returns>Returns True if Escape has been pressed and released</returns>
         private bool CheckEscape() {
-            Contract.Ensures(Contract.Result<bool>() == lastKeyboardState.IsKeyDown(Keys.Escape) && currentKeyboardState.IsKeyUp(Keys.Escape));
+            Contract.Ensures(Contract.Result<bool>() == (lastKeyboardState.IsKeyDown(Keys.Escape) && currentKeyboardState.IsKeyUp(Keys.Escape)));
             return lastKeyboardState.IsKeyDown(Keys.Escape) && currentKeyboardState.IsKeyUp(Keys.Escape);
         }
 
@@ -283,6 +286,7 @@ namespace PirateSpadesGame.GameModes {
                     if(client.Game.Round.PlayerBets[client] > -1) {
                         return;
                     }
+                    betBox.Locked = true;
                     hasBet = true;
                     break;
                 case "resumegame":
@@ -370,11 +374,6 @@ namespace PirateSpadesGame.GameModes {
         /// round is finished or the game is finished. 
         /// </summary>
         /// <param name="spriteBatch"></param>
-        /// <summary>
-        /// Draw the scoreboard on the given SpriteBatch
-        /// The points for each player
-        /// </summary>
-        /// <param name="spriteBatch">The SpriteBatch</param>
         private void DrawScoreboard(SpriteBatch spriteBatch) {
             //Create rectangle
             var rectX = game.Window.ClientBounds.Width / 2 - 700 / 2;
@@ -505,15 +504,19 @@ namespace PirateSpadesGame.GameModes {
         }
 
         /// <summary>
+        /// Helper method for the event RoundFinished
+        /// </summary>
+        /// <param name="g">The game</param>
+        private void OnRoundFinished(Game g) {
+            betBox.Locked = false;
+        }
+
+        /// <summary>
         /// Helper method for the event CardRequested
         /// </summary>
         /// <param name="pc">The client</param>
         private void OnCardRequest(PirateClient pc) {
-            if(cardToPlay != null && cardToPlay.Card != null && client.CardPlayable(cardToPlay.Card)) {
-                this.PlayCard();
-            } else {
-                cardRequested = true;
-            }
+            cardRequested = true;
         }
     }
 }

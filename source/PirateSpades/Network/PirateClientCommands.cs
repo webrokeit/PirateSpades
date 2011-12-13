@@ -140,7 +140,8 @@ namespace PirateSpades.Network {
 
             var scores = PirateMessage.GetPlayerScores(data);
             var winner = PirateMessage.GetWinner(data);
-
+            
+            pclient.Game.NewRound();
             if(!pclient.VirtualPlayer) {
                 Console.WriteLine("GAME FINISHED - Scores:");
                 foreach (var kvp in scores) {

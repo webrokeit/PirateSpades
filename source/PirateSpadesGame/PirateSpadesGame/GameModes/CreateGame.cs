@@ -108,8 +108,13 @@ namespace PirateSpadesGame.GameModes {
         /// <param name="b">The button that has been pressed</param>
         private void ButtonAction(Button b) {
             Contract.Requires(b != null);
-            Contract.Ensures((PirateHost.IsValidGameName(serverName.Text) ? (game.Host != null && game.Client != null && game.PlayingGame != null && game.State == GameState.InGame) : game.State == GameState.CreateGame)
-                || game.State == GameState.StartUp);
+            Contract.Ensures(
+                game.State == GameState.StartUp
+                ||
+                (PirateHost.IsValidGameName(serverName.Text)
+                     ? (game.Host != null && game.Client != null && game.PlayingGame != null
+                        && game.State == GameState.InGame)
+                     : game.State == GameState.CreateGame));
             var str = b.Name;
             switch(str) {
                 case "creategame":

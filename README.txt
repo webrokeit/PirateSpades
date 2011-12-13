@@ -1,9 +1,9 @@
-Pirate Bridge
+Pirate Spades
 
 Authors:
-» Helena Charlotte Lyn Krüger (hclk@itu.dk) - graphics
-» Morten Chabert Eskesen (mche@itu.dk) - Game logic
-» Andreas Hallberg Kjeldsen (ahal@itu.dk) - networking and database
+» Helena Charlotte Lyn Krüger (hclk@itu.dk) - Graphics + XNA
+» Morten Chabert Eskesen (mche@itu.dk) - XNA + graphics
+» Andreas Hallberg Kjeldsen (ahal@itu.dk) - GameLogic and network
 
 Abstract:
 Card game for two players and up. You can play for fun, for money or

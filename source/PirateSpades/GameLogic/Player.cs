@@ -164,7 +164,7 @@ namespace PirateSpades.GameLogic {
         /// <param name="card">The card to play.</param>
         public void PlayCard(Card card) {
             Contract.Requires(card != null && this.HasCard(card) && this.CardPlayable(card, Game.Round.BoardCards.FirstCard));
-            Contract.Ensures(!this.HasCard(card) && CardsOnHand == Contract.OldValue(CardsOnHand) - 1);
+            Contract.Ensures(!this.HasCard(card));
             CardToPlay = card;
             Game.Round.PlayCard(this, card);
             this.RemoveCard(card);
