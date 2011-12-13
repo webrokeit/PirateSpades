@@ -349,7 +349,7 @@ namespace PirateSpadesGame.GameModes {
                     }
                 }
                 if(client.Game.Round.CurrentPlayer == client.Game.PlayerIndex(client)) {
-                    spriteBatch.DrawString(font2, "Your Turn!", new Vector2(1024-175, 510), Color.Red);
+                    spriteBatch.DrawString(font2, "Your Turn!", new Vector2(1024-175, 500), Color.Red);
                 }
                 betBox.Draw(spriteBatch);
                 bet.Draw(spriteBatch);
