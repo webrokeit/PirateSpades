@@ -1,4 +1,12 @@
-﻿namespace PirateSpades.GameLogic {
+﻿// <copyright file="Deck.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      A representation of a deck of cards in the Pirate Spades Game.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
+
+namespace PirateSpades.GameLogic {
     using System.Collections.Generic;
     using System.Collections;
     using System.Diagnostics.Contracts;

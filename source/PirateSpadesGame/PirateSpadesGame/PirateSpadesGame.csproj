@@ -16,7 +16,7 @@
     <XnaProfile>Reach</XnaProfile>
     <XnaCrossPlatformGroupID>4d5dcce3-23fb-491f-8e42-aa953105f475</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
-    <ApplicationIcon>Game.ico</ApplicationIcon>
+    <ApplicationIcon>GameIcon.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -127,7 +127,8 @@
     <Compile Include="Settings\PirateSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Game.ico" />
+    <Content Include="GameIcon.ico" />
+    <Content Include="GameXbox.ico" />
     <Content Include="GameThumbnail.png" />
     <Content Include="piratesettings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
