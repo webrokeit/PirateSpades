@@ -46,7 +46,6 @@ namespace PirateSpadesGame.GameModes {
         private Vector2 playerPos;
         private Vector2 maxPlayerPos;
         private List<CardSprite> cards;
-        public static IList<CardSprite> Cardsprites = new List<CardSprite>().AsReadOnly();
         private CardSprite cardToPlay;
         private Button bet;
         private Rectangle cardSize;

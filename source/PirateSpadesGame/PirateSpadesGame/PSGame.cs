@@ -98,6 +98,7 @@ namespace PirateSpadesGame {
         /// </summary>
         protected override void UnloadContent() {
             // TODO: Unload any non ContentManager content here
+            this.Content.Unload();
         }
 
         /// <summary>
@@ -127,7 +128,7 @@ namespace PirateSpadesGame {
                 case GameState.StartUp:
                     if(!(gameMode is StartUp)) {
                         gameMode = startUp;
-                        gameMode.LoadContent(this.Content);
+                        //gameMode.LoadContent(this.Content);
                     }
                     gameMode.Update(gameTime);
                     break;

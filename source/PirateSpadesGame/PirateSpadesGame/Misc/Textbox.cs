@@ -56,7 +56,7 @@ namespace PirateSpadesGame {
             if(state.LeftButton == ButtonState.Pressed && (state.X < box.X || state.X > (box.X + box.Width) || state.Y < box.Y || state.Y > (box.Y + box.Height))) {
                 Typable = false;
             }
-            
+
             if(Typable) {
                 currentKeyboardState = Keyboard.GetState();
                 foreach(var k in this.keysToCheck.Where(this.CheckKey)) {
