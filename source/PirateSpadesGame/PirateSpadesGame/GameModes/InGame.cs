@@ -377,8 +377,8 @@ namespace PirateSpadesGame.GameModes {
         /// <param name="spriteBatch">The SpriteBatch</param>
         private void DrawScoreboard(SpriteBatch spriteBatch) {
             //Create rectangle
-            var rectX = game.Window.ClientBounds.Width / 2 - 375 / 2;
-            var rectY = game.Window.ClientBounds.Height / 2 - 350 / 2;
+            var rectX = game.Window.ClientBounds.Width / 2 - 700 / 2;
+            var rectY = game.Window.ClientBounds.Height / 2 - 650 / 2;
             var rect = new Rectangle(rectX, rectY, 700, 650);
             spriteBatch.Draw(board, rect, Color.White);
             

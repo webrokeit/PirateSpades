@@ -128,7 +128,7 @@ namespace PirateSpadesGame.Music {
         /// Update/recreate the shuffled list.
         /// </summary>
         private void UpdateShuffleList() {
-            Contract.Ensures(RestartAfterSong = true);
+            Contract.Ensures(RestartAfterSong);
             ShuffledList = new List<int>();
             for(var i = 0; i < SongNames.Count; i++) {
                 ShuffledList.Add(i);
