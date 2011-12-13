@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_91 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src91" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateClientTest.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+
+using System;
+using Microsoft.Pex.Framework;
+using Microsoft.Pex.Framework.Validation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PirateSpades.Network;
+using System.Net;
+using System.Net.Sockets;
+
+namespace PirateSpades.Network
+{
+    [TestClass]
+    [PexClass(typeof(PirateClient))]
+    [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]
+    [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
+    public partial class PirateClientTest
+    {
+        [PexMethod]
+        public PirateClient Constructor02(
+            string name,
+            string ip,
+            int port
+        ) {
+            PirateClient target = new PirateClient(name, ip, port);
+            return target;
+            // TODO: add assertions to method PirateClientTest.Constructor02(String, String, Int32)
+        }
+        [PexMethod]
+        public PirateClient Constructor01(
+            string name,
+            IPAddress ip,
+            int port
+        ) {
+            PirateClient target = new PirateClient(name, ip, port);
+            return target;
+            // TODO: add assertions to method PirateClientTest.Constructor01(String, IPAddress, Int32)
+        }
+        [PexMethod]
+        public PirateClient Constructor(Socket socket) {
+            PirateClient target = new PirateClient(socket);
+            return target;
+            // TODO: add assertions to method PirateClientTest.Constructor(Socket)
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src91', RANGES_91)
+		</script>
+	</body>
+</html>

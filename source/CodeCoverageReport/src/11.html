@@ -1,0 +1,103 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_11 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src11" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateMessageTest.GetMessages.g.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+// &lt;auto-generated&gt;
+// This file contains automatically generated unit tests.
+// Do NOT modify this file manually.
+// 
+// When Pex is invoked again,
+// it might remove or update any previously generated unit tests.
+// 
+// If the contents of this file becomes outdated, e.g. if it does not
+// compile anymore, you may delete this file and invoke Pex again.
+// &lt;/auto-generated&gt;
+using System;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Pex.Framework.Generated;
+using Microsoft.Pex.Engine.Exceptions;
+
+namespace PirateSpades.Network
+{
+    public partial class PirateMessageTest {
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void GetMessagesThrowsContractException704()
+{
+    try
+    {
+      List&lt;PirateMessage&gt; list;
+      byte[] bs = new byte[0];
+      list = this.GetMessages(bs, 1);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetMessages839()
+{
+    List&lt;PirateMessage&gt; list;
+    byte[] bs = new byte[5];
+    list = this.GetMessages(bs, 5);
+    Assert.IsNotNull((object)list);
+    Assert.AreEqual&lt;int&gt;(0, list.Capacity);
+    Assert.AreEqual&lt;int&gt;(0, list.Count);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void GetMessagesThrowsContractException39()
+{
+    try
+    {
+      List&lt;PirateMessage&gt; list;
+      byte[] bs = new byte[0];
+      list = this.GetMessages(bs, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void GetMessagesThrowsContractException948()
+{
+    try
+    {
+      List&lt;PirateMessage&gt; list;
+      list = this.GetMessages((byte[])null, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src11', RANGES_11)
+		</script>
+	</body>
+</html>

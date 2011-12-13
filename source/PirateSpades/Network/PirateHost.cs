@@ -161,7 +161,7 @@ namespace PirateSpades.Network {
         /// <param name="gameName">The game name to use.</param>
         /// <param name="maxPlayers">Max amount of players in game.</param>
         public void Start(string gameName, int maxPlayers){
-            Contract.Requires(!Started && !string.IsNullOrEmpty(gameName) && maxPlayers >= Game.MinPlayersInGame && maxPlayers <= Game.MaxPlayersInGame);
+            Contract.Requires(!Started && IsValidGameName(gameName) && maxPlayers >= Game.MinPlayersInGame && maxPlayers <= Game.MaxPlayersInGame);
             Contract.Ensures(Started);
 
             this.GameName = gameName;
@@ -183,6 +183,7 @@ namespace PirateSpades.Network {
         /// </summary>
         public void StopAccepting() {
             AcceptNewConnections = false;
+            if(Broadcaster.Enabled) Broadcaster.Stop();
         }
 
         /// <summary>
@@ -192,7 +193,7 @@ namespace PirateSpades.Network {
             Contract.Requires(Started);
             Contract.Ensures(!Started);
             Started = false;
-            Broadcaster.Stop();
+            if(Broadcaster.Enabled) Broadcaster.Stop();
             var tmpClients = new List<PirateClient>(Clients.Values);
             foreach(var pclient in tmpClients) {
                 this.SocketDisconnect(pclient);

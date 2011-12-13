@@ -1,0 +1,120 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_21 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src21" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateMessageTest.GetBytes.g.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+// &lt;auto-generated&gt;
+// This file contains automatically generated unit tests.
+// Do NOT modify this file manually.
+// 
+// When Pex is invoked again,
+// it might remove or update any previously generated unit tests.
+// 
+// If the contents of this file becomes outdated, e.g. if it does not
+// compile anymore, you may delete this file and invoke Pex again.
+// &lt;/auto-generated&gt;
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Pex.Framework.Generated;
+
+namespace PirateSpades.Network
+{
+    public partial class PirateMessageTest {
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetBytes988()
+{
+    PirateMessage pirateMessage;
+    byte[] bs;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;\ud880\ud880&quot;);
+    bs = this.GetBytes(pirateMessage);
+    Assert.IsNotNull((object)bs);
+    Assert.AreEqual&lt;int&gt;(14, bs.Length);
+    Assert.AreEqual&lt;byte&gt;((byte)48, bs[0]);
+    Assert.AreEqual&lt;byte&gt;((byte)48, bs[1]);
+    Assert.AreEqual&lt;byte&gt;((byte)49, bs[2]);
+    Assert.AreEqual&lt;byte&gt;((byte)48, bs[3]);
+    Assert.AreEqual&lt;byte&gt;((byte)70, bs[4]);
+    Assert.AreEqual&lt;byte&gt;((byte)65, bs[5]);
+    Assert.AreEqual&lt;byte&gt;((byte)73, bs[6]);
+    Assert.AreEqual&lt;byte&gt;((byte)76, bs[7]);
+    Assert.AreEqual&lt;byte&gt;((byte)239, bs[8]);
+    Assert.AreEqual&lt;byte&gt;((byte)191, bs[9]);
+    Assert.AreEqual&lt;byte&gt;((byte)189, bs[10]);
+    Assert.AreEqual&lt;byte&gt;((byte)239, bs[11]);
+    Assert.AreEqual&lt;byte&gt;((byte)191, bs[12]);
+    Assert.AreEqual&lt;byte&gt;((byte)189, bs[13]);
+    Assert.IsNotNull((object)pirateMessage);
+    Assert.AreEqual&lt;PirateMessageHead&gt;(PirateMessageHead.Fail, pirateMessage.Head);
+    Assert.AreEqual&lt;string&gt;(&quot;\ud880\ud880&quot;, pirateMessage.Body);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetBytes366()
+{
+    PirateMessage pirateMessage;
+    byte[] bs;
+    pirateMessage =
+      new PirateMessage(PirateMessageHead.Fail, &quot;\0\0\0\0\0\0\udc00\0\0\0\0&quot;);
+    bs = this.GetBytes(pirateMessage);
+    Assert.IsNotNull((object)bs);
+    Assert.AreEqual&lt;int&gt;(21, bs.Length);
+    Assert.AreEqual&lt;byte&gt;((byte)48, bs[0]);
+    Assert.AreEqual&lt;byte&gt;((byte)48, bs[1]);
+    Assert.AreEqual&lt;byte&gt;((byte)49, bs[2]);
+    Assert.AreEqual&lt;byte&gt;((byte)55, bs[3]);
+    Assert.AreEqual&lt;byte&gt;((byte)70, bs[4]);
+    Assert.AreEqual&lt;byte&gt;((byte)65, bs[5]);
+    Assert.AreEqual&lt;byte&gt;((byte)73, bs[6]);
+    Assert.AreEqual&lt;byte&gt;((byte)76, bs[7]);
+    Assert.AreEqual&lt;byte&gt;((byte)0, bs[8]);
+    Assert.AreEqual&lt;byte&gt;((byte)0, bs[9]);
+    Assert.AreEqual&lt;byte&gt;((byte)0, bs[10]);
+    Assert.AreEqual&lt;byte&gt;((byte)0, bs[11]);
+    Assert.AreEqual&lt;byte&gt;((byte)0, bs[12]);
+    Assert.AreEqual&lt;byte&gt;((byte)0, bs[13]);
+    Assert.AreEqual&lt;byte&gt;((byte)239, bs[14]);
+    Assert.AreEqual&lt;byte&gt;((byte)191, bs[15]);
+    Assert.AreEqual&lt;byte&gt;((byte)189, bs[16]);
+    Assert.AreEqual&lt;byte&gt;((byte)0, bs[17]);
+    Assert.AreEqual&lt;byte&gt;((byte)0, bs[18]);
+    Assert.AreEqual&lt;byte&gt;((byte)0, bs[19]);
+    Assert.AreEqual&lt;byte&gt;((byte)0, bs[20]);
+    Assert.IsNotNull((object)pirateMessage);
+    Assert.AreEqual&lt;PirateMessageHead&gt;(PirateMessageHead.Fail, pirateMessage.Head);
+    Assert.AreEqual&lt;string&gt;(&quot;\0\0\0\0\0\0\udc00\0\0\0\0&quot;, pirateMessage.Body);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetBytes641()
+{
+    PirateMessage pirateMessage;
+    byte[] bs;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;&quot;);
+    bs = this.GetBytes(pirateMessage);
+    Assert.IsNotNull((object)bs);
+    Assert.AreEqual&lt;int&gt;(8, bs.Length);
+    Assert.AreEqual&lt;byte&gt;((byte)48, bs[0]);
+    Assert.AreEqual&lt;byte&gt;((byte)48, bs[1]);
+    Assert.AreEqual&lt;byte&gt;((byte)48, bs[2]);
+    Assert.AreEqual&lt;byte&gt;((byte)52, bs[3]);
+    Assert.AreEqual&lt;byte&gt;((byte)70, bs[4]);
+    Assert.AreEqual&lt;byte&gt;((byte)65, bs[5]);
+    Assert.AreEqual&lt;byte&gt;((byte)73, bs[6]);
+    Assert.AreEqual&lt;byte&gt;((byte)76, bs[7]);
+    Assert.IsNotNull((object)pirateMessage);
+    Assert.AreEqual&lt;PirateMessageHead&gt;(PirateMessageHead.Fail, pirateMessage.Head);
+    Assert.AreEqual&lt;string&gt;(&quot;&quot;, pirateMessage.Body);
+}
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src21', RANGES_21)
+		</script>
+	</body>
+</html>

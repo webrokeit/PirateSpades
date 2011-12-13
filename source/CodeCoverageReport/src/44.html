@@ -1,0 +1,71 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_44 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src44" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateMessageObjTest.Constructor01.g.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+// &lt;auto-generated&gt;
+// This file contains automatically generated unit tests.
+// Do NOT modify this file manually.
+// 
+// When Pex is invoked again,
+// it might remove or update any previously generated unit tests.
+// 
+// If the contents of this file becomes outdated, e.g. if it does not
+// compile anymore, you may delete this file and invoke Pex again.
+// &lt;/auto-generated&gt;
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Pex.Framework.Generated;
+using Microsoft.Pex.Engine.Exceptions;
+
+namespace PirateSpades.Network
+{
+    public partial class PirateMessageObjTest {
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageObjTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void Constructor01ThrowsContractException354()
+{
+    try
+    {
+      PirateMessageObj pirateMessageObj;
+      pirateMessageObj = this.Constructor01((PirateClient)null, (PirateMessage)null);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageObjTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void ConstructorThrowsContractException501()
+{
+    try
+    {
+      PirateMessageObj pirateMessageObj;
+      pirateMessageObj = this.Constructor((PirateClient)null);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src44', RANGES_44)
+		</script>
+	</body>
+</html>

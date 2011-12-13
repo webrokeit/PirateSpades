@@ -1,0 +1,312 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_95 = [
+   [27,17,27,18,'dccv']
+, [28,17,28,56,'dccv']
+, [29,13,29,14,'dccv']
+, [37,17,37,51,'dccv']
+, [36,17,36,18,'dccv']
+, [38,17,38,60,'dccv']
+, [39,13,39,14,'dccv']
+, [68,17,68,89,'dccv']
+, [68,17,68,89,'dccv']
+, [67,17,67,18,'dccv']
+, [69,17,69,42,'dccv']
+, [70,13,70,14,'dccv']
+, [72,17,72,97,'dccv']
+, [72,17,72,97,'dccv']
+, [71,17,71,18,'dccv']
+, [73,17,73,35,'dccv']
+, [74,13,74,14,'dccv']
+, [85,17,85,69,'dccv']
+, [85,17,85,69,'dccv']
+, [84,17,84,18,'dccv']
+, [86,17,86,44,'dccv']
+, [87,13,87,14,'dccv']
+, [110,13,110,119,'dccv']
+, [110,13,110,119,'dccv']
+, [109,49,109,50,'dccv']
+, [111,13,111,34,'dccv']
+, [112,9,112,10,'dccv']
+, [128,13,128,60,'dccv']
+, [127,38,127,39,'dccv']
+, [129,13,129,30,'dccv']
+, [130,9,130,10,'dccv']
+, [183,13,183,60,'dccv']
+, [182,43,182,44,'dccv']
+, [184,13,184,39,'dccv']
+, [185,9,185,10,'dccv']
+, [202,71,202,72,'dccv']
+, [203,13,203,71,'dccv']
+, [204,9,204,10,'dccv']
+, [50,17,50,94,'dcuc']
+, [50,17,50,94,'dcuc']
+, [49,17,49,18,'dcuc']
+, [51,17,51,39,'dcuc']
+, [52,17,52,69,'dcuc']
+, [53,13,53,14,'dcuc']
+, [55,17,55,131,'dcuc']
+, [55,17,55,131,'dcuc']
+, [54,17,54,18,'dcuc']
+, [56,17,56,35,'dcuc']
+, [57,13,57,14,'dcuc']
+, [89,17,89,102,'dcuc']
+, [89,17,89,102,'dcuc']
+, [88,17,88,18,'dcuc']
+, [90,17,90,37,'dcuc']
+, [91,13,91,14,'dcuc']
+, [100,13,100,127,'dcuc']
+, [100,13,100,127,'dcuc']
+, [99,55,99,56,'dcuc']
+, [101,13,101,48,'dcuc']
+, [102,9,102,10,'dcuc']
+, [119,13,119,59,'dcuc']
+, [119,13,119,59,'dcuc']
+, [118,44,118,45,'dcuc']
+, [120,13,120,37,'dcuc']
+, [121,9,121,10,'dcuc']
+, [137,13,137,65,'dcuc']
+, [137,13,137,65,'dcuc']
+, [136,45,136,46,'dcuc']
+, [138,13,138,34,'dcuc']
+, [139,9,139,10,'dcuc']
+, [148,13,148,99,'dcuc']
+, [148,13,148,99,'dcuc']
+, [149,13,149,88,'dcuc']
+, [149,13,149,88,'dcuc']
+, [147,69,147,70,'dcuc']
+, [150,13,150,58,'dcuc']
+, [151,9,151,10,'dcuc']
+, [160,13,160,65,'dcuc']
+, [160,13,160,65,'dcuc']
+, [161,13,161,114,'dcuc']
+, [161,13,161,114,'dcuc']
+, [159,63,159,64,'dcuc']
+, [162,13,162,44,'dcuc']
+, [163,9,163,10,'dcuc']
+, [172,13,172,59,'dcuc']
+, [172,13,172,59,'dcuc']
+, [171,46,171,47,'dcuc']
+, [173,13,173,48,'dcuc']
+, [174,9,174,10,'dcuc']
+, [194,13,194,62,'dcuc']
+, [193,49,193,50,'dcuc']
+, [195,13,195,63,'dcuc']
+, [196,9,196,10,'dcuc']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src95" class="dotCoverSource"><pre>// &lt;copyright file=&quot;OrderedDictionary.cs&quot;&gt;
+//      ahal@itu.dk
+// &lt;/copyright&gt;
+// &lt;summary&gt;
+//      A generic version of the OrderedDictionary.
+//      It&#39;s more or less just a proxy for the OrderedDictionary found in System.Collections.Specialized.
+// &lt;/summary&gt;
+// &lt;author&gt;Andreas Hallberg Kjeldsen (ahal@itu.dk)&lt;/author&gt;
+
+namespace PirateSpades.Misc {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Diagnostics.Contracts;
+
+    /// &lt;summary&gt;
+    /// A dictionarty that keeps track of the insertion order
+    /// Make a new dictionary with this type as key and this type as value
+    /// &lt;/summary&gt;
+    /// &lt;typeparam name=&quot;TKey&quot;&gt;The key&lt;/typeparam&gt;
+    /// &lt;typeparam name=&quot;TValue&quot;&gt;The value&lt;/typeparam&gt;
+    public class OrderedDictionary&lt;TKey, TValue&gt; : System.Collections.Specialized.OrderedDictionary {
+        /// &lt;summary&gt;
+        /// Get a collection containing all the keys
+        /// &lt;/summary&gt;
+        public new ICollection&lt;TKey&gt; Keys {
+            get {
+                return base.Keys.Cast&lt;TKey&gt;().ToList();
+            }
+        } 
+
+        /// &lt;summary&gt;
+        /// Get a collection containing all the values
+        /// &lt;/summary&gt;
+        public new ICollection&lt;TValue&gt; Values {
+            get {
+                Contract.Requires(base.Count &gt; 0);
+                return base.Values.Cast&lt;TValue&gt;().ToList();
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Set the value at this key
+        /// Get the value at this key
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;key&quot;&gt;The value to be inputted&lt;/param&gt;
+        /// &lt;returns&gt;The value at this key&lt;/returns&gt;
+        public new object this[object key] {
+            get {
+                Contract.Requires(key != null &amp;&amp; key is TKey &amp;&amp; this.ContainsKey((TKey)key));
+                var value = base[key];
+                return !ReferenceEquals(value, null) ? value : null;
+            }
+            set {
+                Contract.Requires(key is TKey &amp;&amp; !ReferenceEquals(key, null) &amp;&amp; value is TValue &amp;&amp; !ReferenceEquals(value, null));
+                base[key] = value;
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Set the value at this key
+        /// Get the value at this key
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;key&quot;&gt;The value to be inputted&lt;/param&gt;
+        /// &lt;returns&gt;The value at this key&lt;/returns&gt;
+        public TValue this[TKey key] {
+            get {
+                Contract.Requires(!ReferenceEquals(key, null) &amp;&amp; this.ContainsKey(key));
+                return (TValue)base[key];
+            }
+            set {
+                Contract.Requires(!ReferenceEquals(key, null) &amp;&amp; !ReferenceEquals(value, null));
+                base[key] = value;
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Add this value at this index
+        /// Get the value at this index
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;index&quot;&gt;The index&lt;/param&gt;
+        /// &lt;returns&gt;The value at the index&lt;/returns&gt;
+        public new TValue this[int index] {
+            get {
+                Contract.Requires(index &gt;= 0 &amp;&amp; index &lt; base.Count);
+                return (TValue)base[index];
+            }
+            set {
+                Contract.Requires(index &gt;= 0 &amp;&amp; index &lt; base.Count &amp;&amp; !ReferenceEquals(value, null));
+                base[index] = value;
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Add this key and value
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;key&quot;&gt;The key&lt;/param&gt;
+        /// &lt;param name=&quot;value&quot;&gt;The value&lt;/param&gt;
+        public new void Add(object key, object value) {
+            Contract.Requires(key != null &amp;&amp; key is TKey &amp;&amp; value != null &amp;&amp; value is TValue &amp;&amp; !this.ContainsKey((TKey)key));
+            this.Add((TKey)key, (TValue)value);
+        }
+
+        /// &lt;summary&gt;
+        /// Add this key and value
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;key&quot;&gt;The key&lt;/param&gt;
+        /// &lt;param name=&quot;value&quot;&gt;The value&lt;/param&gt;
+        public void Add(TKey key, TValue value) {
+            Contract.Requires(!ReferenceEquals(key, null) &amp;&amp; !this.ContainsKey(key) &amp;&amp; !ReferenceEquals(value, null));
+            base.Add(key, value);
+        }
+
+        /// &lt;summary&gt;
+        /// Remove this key
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;key&quot;&gt;The key to remove&lt;/param&gt;
+        public new void Remove(object key) {
+            Contract.Requires(key != null &amp;&amp; key is TKey);
+            this.Remove((TKey) key);
+        }
+
+        /// &lt;summary&gt;
+        /// Remove this key
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;key&quot;&gt;The key to remove&lt;/param&gt;
+        public void Remove(TKey key) {
+            Contract.Requires(!ReferenceEquals(key, null));
+            base.Remove(key);
+        }
+
+        /// &lt;summary&gt;
+        /// Remove the item at the given index
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;index&quot;&gt;The index&lt;/param&gt;
+        public new void RemoveAt(int index) {
+            Contract.Requires(index &gt;= 0 &amp;&amp; index &lt; base.Count);
+            base.RemoveAt(index);
+        }
+
+        /// &lt;summary&gt;
+        /// Insert this key and value at the given index
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;index&quot;&gt;The index&lt;/param&gt;
+        /// &lt;param name=&quot;key&quot;&gt;The key&lt;/param&gt;
+        /// &lt;param name=&quot;value&quot;&gt;The value&lt;/param&gt;
+        public new void Insert(int index, object key, object value) {
+            Contract.Requires(index &gt;= 0 &amp;&amp; index &lt; base.Count &amp;&amp; key is TKey &amp;&amp; value is TValue);
+            Contract.Requires(key != null &amp;&amp; !ContainsKey((TKey)key) &amp;&amp; value != null);
+            this.Insert(index, (TKey)key, (TValue)value);
+        }
+
+        /// &lt;summary&gt;
+        /// Insert this key and this value at this index
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;index&quot;&gt;The index&lt;/param&gt;
+        /// &lt;param name=&quot;key&quot;&gt;The key&lt;/param&gt;
+        /// &lt;param name=&quot;value&quot;&gt;The value&lt;/param&gt;
+        public void Insert(int index, TKey key, TValue value) {
+            Contract.Requires(index &gt;= 0 &amp;&amp; index &lt; base.Count);
+            Contract.Requires(!ReferenceEquals(key, null) &amp;&amp; !ContainsKey(key) &amp;&amp; !ReferenceEquals(value, null));
+            base.Insert(index, key, value);
+        }
+
+        /// &lt;summary&gt;
+        /// Does the dictionary contain this key?
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;obj&quot;&gt;The key to check for&lt;/param&gt;
+        /// &lt;returns&gt;True if the dictionary contains the key&lt;/returns&gt;
+        [Pure]
+        public new bool Contains(Object obj) {
+            Contract.Requires(obj != null &amp;&amp; obj is TKey);
+            return this.ContainsKey((TKey)obj);
+        }
+
+        /// &lt;summary&gt;
+        /// Does the dictionary contain this key?
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;key&quot;&gt;The key to check for&lt;/param&gt;
+        /// &lt;returns&gt;True if the dictionary contains the key&lt;/returns&gt;
+        [Pure]
+        public bool ContainsKey(TKey key) {
+            Contract.Requires(!ReferenceEquals(key, null));
+            return base.Contains(key);
+        }
+
+        /// &lt;summary&gt;
+        /// Does the dictionary contain this value?
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;value&quot;&gt;The value to check for&lt;/param&gt;
+        /// &lt;returns&gt;True if the dictionary contains the value&lt;/returns&gt;
+        [Pure]
+        public bool ContainsValue(TValue value) {
+            Contract.Requires(!ReferenceEquals(value, null));
+            return this.Values.Cast&lt;TValue&gt;().Contains(value);
+        }
+
+        /// &lt;summary&gt;
+        /// Make a immutable ordered dictionary with this type as key and this type as value
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;The immutable ordered dictionary&lt;/returns&gt;
+        public ImmutableOrderedDictionary&lt;TKey, TValue&gt; AsImmutable() {
+            return new ImmutableOrderedDictionary&lt;TKey, TValue&gt;(this);
+        } 
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src95', RANGES_95)
+		</script>
+	</body>
+</html>

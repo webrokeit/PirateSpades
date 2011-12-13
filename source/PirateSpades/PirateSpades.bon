@@ -347,15 +347,14 @@ component
 			RemoveCard
 				-> card : CARD
 			ClearHand
-			PlayerCard
+			PlayCard
 				-> card : CARD
 				require
 					card /= Void;
 					HasCard(card);
 					CardPlayable(card, Game.Round.BoardCards.FirstCard)
 				ensure
-					not HasCard(card);
-					CardsOnHand = old CardsOnHand - 1
+					not HasCard(card)
 				end
 			DealCards
 				require

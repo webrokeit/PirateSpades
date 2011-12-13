@@ -52,6 +52,15 @@ namespace PirateSpades.Network {
         }
 
         /// <summary>
+        /// Whether or not the broadcaster is enabled!
+        /// </summary>
+        public bool Enabled {
+            get {
+                return Timer.Enabled;
+            }
+        }
+
+        /// <summary>
         /// The timer to execute the broadcast method.
         /// </summary>
         private Timer Timer { get; set; }

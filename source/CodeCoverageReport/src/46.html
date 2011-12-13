@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_46 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src46" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateHostTest.IsValidGameName.g.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+// &lt;auto-generated&gt;
+// This file contains automatically generated unit tests.
+// Do NOT modify this file manually.
+// 
+// When Pex is invoked again,
+// it might remove or update any previously generated unit tests.
+// 
+// If the contents of this file becomes outdated, e.g. if it does not
+// compile anymore, you may delete this file and invoke Pex again.
+// &lt;/auto-generated&gt;
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Pex.Framework.Generated;
+using Microsoft.Pex.Engine.Exceptions;
+
+namespace PirateSpades.Network
+{
+    public partial class PirateHostTest {
+[TestMethod]
+[PexGeneratedBy(typeof(PirateHostTest))]
+public void IsValidGameName638()
+{
+    bool b;
+    b = this.IsValidGameName(&quot;\0&quot;);
+    Assert.AreEqual&lt;bool&gt;(false, b);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateHostTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void IsValidGameNameThrowsContractException996()
+{
+    try
+    {
+      bool b;
+      b = this.IsValidGameName((string)null);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src46', RANGES_46)
+		</script>
+	</body>
+</html>

@@ -1,0 +1,115 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_3 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src3" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateScannerTest.GetIp.g.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+// &lt;auto-generated&gt;
+// This file contains automatically generated unit tests.
+// Do NOT modify this file manually.
+// 
+// When Pex is invoked again,
+// it might remove or update any previously generated unit tests.
+// 
+// If the contents of this file becomes outdated, e.g. if it does not
+// compile anymore, you may delete this file and invoke Pex again.
+// &lt;/auto-generated&gt;
+using System;
+using System.Net;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Net.Sockets;
+using Microsoft.Pex.Framework.Generated;
+using Microsoft.Pex.Engine.Exceptions;
+
+namespace PirateSpades.Network
+{
+    public partial class PirateScannerTest {
+[TestMethod]
+[PexGeneratedBy(typeof(PirateScannerTest))]
+public void GetIp364()
+{
+    IPAddress iPAddress;
+    iPAddress = this.GetIp(&quot;4.1.0.250&quot;);
+    Assert.IsNotNull((object)iPAddress);
+    Assert.AreEqual&lt;AddressFamily&gt;
+        (AddressFamily.InterNetwork, iPAddress.AddressFamily);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6Multicast);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6LinkLocal);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6SiteLocal);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6Teredo);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateScannerTest))]
+public void GetIp129()
+{
+    IPAddress iPAddress;
+    iPAddress = this.GetIp(&quot;1.0.0.80&quot;);
+    Assert.IsNotNull((object)iPAddress);
+    Assert.AreEqual&lt;AddressFamily&gt;
+        (AddressFamily.InterNetwork, iPAddress.AddressFamily);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6Multicast);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6LinkLocal);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6SiteLocal);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6Teredo);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateScannerTest))]
+public void GetIp100()
+{
+    IPAddress iPAddress;
+    iPAddress = this.GetIp(&quot;4.0.6.8&quot;);
+    Assert.IsNotNull((object)iPAddress);
+    Assert.AreEqual&lt;AddressFamily&gt;
+        (AddressFamily.InterNetwork, iPAddress.AddressFamily);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6Multicast);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6LinkLocal);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6SiteLocal);
+    Assert.AreEqual&lt;bool&gt;(false, iPAddress.IsIPv6Teredo);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateScannerTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void GetIpThrowsContractException181()
+{
+    try
+    {
+      IPAddress iPAddress;
+      iPAddress = this.GetIp(&quot;&quot;);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateScannerTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void GetIpThrowsContractException792()
+{
+    try
+    {
+      IPAddress iPAddress;
+      iPAddress = this.GetIp((string)null);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src3', RANGES_3)
+		</script>
+	</body>
+</html>

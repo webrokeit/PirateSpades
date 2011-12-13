@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_45 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src45" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateHostTest.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+
+using System;
+using Microsoft.Pex.Framework;
+using Microsoft.Pex.Framework.Validation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PirateSpades.Network;
+
+namespace PirateSpades.Network
+{
+    [TestClass]
+    [PexClass(typeof(PirateHost))]
+    [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]
+    [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
+    public partial class PirateHostTest
+    {
+        [PexMethod]
+        public bool IsValidGameName(string gameName) {
+            bool result = PirateHost.IsValidGameName(gameName);
+            return result;
+            // TODO: add assertions to method PirateHostTest.IsValidGameName(String)
+        }
+        [PexMethod]
+        public PirateHost Constructor(int port) {
+            PirateHost target = new PirateHost(port);
+            return target;
+            // TODO: add assertions to method PirateHostTest.Constructor(Int32)
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src45', RANGES_45)
+		</script>
+	</body>
+</html>

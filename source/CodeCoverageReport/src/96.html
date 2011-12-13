@@ -1,0 +1,227 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_96 = [
+   [25,13,25,45,'dccv']
+, [24,9,24,80,'dccv']
+, [24,81,24,82,'dccv']
+, [26,13,26,20,'dccv']
+, [26,32,26,41,'dccv']
+, [26,21,26,28,'dccv']
+, [26,43,26,44,'dccv']
+, [27,17,27,47,'dccv']
+, [28,13,28,14,'dccv']
+, [26,29,26,31,'dccv']
+, [29,9,29,10,'dccv']
+, [35,17,35,94,'dcuc']
+, [35,17,35,94,'dcuc']
+, [34,17,34,18,'dcuc']
+, [36,17,36,34,'dcuc']
+, [37,13,37,14,'dcuc']
+, [39,17,39,63,'dcuc']
+, [39,17,39,63,'dcuc']
+, [40,17,40,98,'dcuc']
+, [40,17,40,98,'dcuc']
+, [38,17,38,18,'dcuc']
+, [41,17,41,89,'dcuc']
+, [49,17,49,89,'dcuc']
+, [49,17,49,89,'dcuc']
+, [48,17,48,18,'dcuc']
+, [50,17,50,42,'dcuc']
+, [51,13,51,14,'dcuc']
+, [53,17,53,94,'dcuc']
+, [53,17,53,94,'dcuc']
+, [54,17,54,98,'dcuc']
+, [54,17,54,98,'dcuc']
+, [52,17,52,18,'dcuc']
+, [55,17,55,89,'dcuc']
+, [63,17,63,69,'dcuc']
+, [63,17,63,69,'dcuc']
+, [62,17,62,18,'dcuc']
+, [64,17,64,44,'dcuc']
+, [65,13,65,14,'dcuc']
+, [67,17,67,61,'dcuc']
+, [67,17,67,61,'dcuc']
+, [68,17,68,98,'dcuc']
+, [68,17,68,98,'dcuc']
+, [66,17,66,18,'dcuc']
+, [69,17,69,89,'dcuc']
+, [77,13,77,59,'dcuc']
+, [77,13,77,59,'dcuc']
+, [78,13,78,63,'dcuc']
+, [78,13,78,63,'dcuc']
+, [76,55,76,56,'dcuc']
+, [79,13,79,85,'dcuc']
+, [85,13,85,90,'dcuc']
+, [85,13,85,90,'dcuc']
+, [86,13,86,94,'dcuc']
+, [86,13,86,94,'dcuc']
+, [84,53,84,54,'dcuc']
+, [87,13,87,85,'dcuc']
+, [93,13,93,59,'dcuc']
+, [93,13,93,59,'dcuc']
+, [92,44,92,45,'dcuc']
+, [94,13,94,85,'dcuc']
+, [100,13,100,90,'dcuc']
+, [100,13,100,90,'dcuc']
+, [99,42,99,43,'dcuc']
+, [101,13,101,85,'dcuc']
+, [107,13,107,57,'dcuc']
+, [107,13,107,57,'dcuc']
+, [106,45,106,46,'dcuc']
+, [108,13,108,85,'dcuc']
+, [114,13,114,57,'dcuc']
+, [114,13,114,57,'dcuc']
+, [115,13,115,59,'dcuc']
+, [115,13,115,59,'dcuc']
+, [116,13,116,63,'dcuc']
+, [116,13,116,63,'dcuc']
+, [113,69,113,70,'dcuc']
+, [117,13,117,85,'dcuc']
+, [123,13,123,57,'dcuc']
+, [123,13,123,57,'dcuc']
+, [124,13,124,90,'dcuc']
+, [124,13,124,90,'dcuc']
+, [125,13,125,94,'dcuc']
+, [125,13,125,94,'dcuc']
+, [122,67,122,68,'dcuc']
+, [126,13,126,85,'dcuc']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src96" class="dotCoverSource"><pre>// &lt;copyright file=&quot;ImmutableOrderedDictionary.cs&quot;&gt;
+//      ahal@itu.dk
+// &lt;/copyright&gt;
+// &lt;summary&gt;
+//      An immutable version of the ordered dictionary
+// &lt;/summary&gt;
+// &lt;author&gt;Andreas Hallberg Kjeldsen (ahal@itu.dk)&lt;/author&gt;
+
+namespace PirateSpades.Misc {
+    using System;
+    using System.Diagnostics.Contracts;
+
+    /// &lt;summary&gt;
+    /// An immutable dictionary that keeps tracks of the insertion order
+    /// &lt;/summary&gt;
+    /// &lt;typeparam name=&quot;TKey&quot;&gt;The key&lt;/typeparam&gt;
+    /// &lt;typeparam name=&quot;TValue&quot;&gt;The value&lt;/typeparam&gt;
+    public class ImmutableOrderedDictionary&lt;TKey, TValue&gt; : OrderedDictionary&lt;TKey, TValue&gt; {
+
+        /// &lt;summary&gt;
+        /// Make a new ImmutableOrderedDictionary from this OrderDictionary
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;from&quot;&gt;The OrderedDictionary to make Immutable&lt;/param&gt;
+        public ImmutableOrderedDictionary(OrderedDictionary&lt;TKey, TValue&gt; from) {
+            Contract.Requires(from != null);
+            foreach(var key in from.Keys) {
+                base[key] = (TValue)from[key];
+            }
+        }
+
+        /// &lt;summary&gt;Only get a value, setting one will thrown a NotSupportedException.&lt;/summary&gt;
+        /// &lt;exception cref=&quot;System.NotSupportedException&quot;&gt;Always throws NotSupportedException&lt;/exception&gt;
+        public new object this[object key] {
+            get {
+                Contract.Requires(key != null &amp;&amp; key is TKey &amp;&amp; this.ContainsKey((TKey)key));
+                return base[key];
+            }
+            set {
+                Contract.Requires(key == null &amp;&amp; key != null);
+                Contract.Requires(ReferenceEquals(value, null) &amp;&amp; !ReferenceEquals(value, null));
+                throw new NotSupportedException(&quot;This OrderedDictionary is Immutable.&quot;);
+            }
+        }
+
+        /// &lt;summary&gt;Only get a value, setting one will thrown a NotSupportedException.&lt;/summary&gt;
+        /// &lt;exception cref=&quot;System.NotSupportedException&quot;&gt;Always throws NotSupportedException&lt;/exception&gt;
+        public new TValue this[TKey key] {
+            get {
+                Contract.Requires(!ReferenceEquals(key, null) &amp;&amp; base.ContainsKey(key));
+                return (TValue)base[key];
+            }
+            set {
+                Contract.Requires(ReferenceEquals(key, null) &amp;&amp; !ReferenceEquals(key, null));
+                Contract.Requires(ReferenceEquals(value, null) &amp;&amp; !ReferenceEquals(value, null));
+                throw new NotSupportedException(&quot;This OrderedDictionary is Immutable.&quot;);
+            }
+        }
+
+        /// &lt;summary&gt;Only get a value, setting one will thrown a NotSupportedException.&lt;/summary&gt;
+        /// &lt;exception cref=&quot;System.NotSupportedException&quot;&gt;Always throws NotSupportedException&lt;/exception&gt;
+        public new TValue this[int index] {
+            get {
+                Contract.Requires(index &gt;= 0 &amp;&amp; index &lt; base.Count);
+                return (TValue)base[index];
+            }
+            set {
+                Contract.Requires(index == 0 &amp;&amp; index == 1);
+                Contract.Requires(ReferenceEquals(value, null) &amp;&amp; !ReferenceEquals(value, null));
+                throw new NotSupportedException(&quot;This OrderedDictionary is Immutable.&quot;);
+            }
+        }
+
+        /// &lt;summary&gt;Always throws NotSupportedException&lt;/summary&gt;
+        /// &lt;exception cref=&quot;System.NotSupportedException&quot;&gt;Always throws NotSupportedException&lt;/exception&gt;
+        [Pure]
+        public new void Add(object key, object value) {
+            Contract.Requires(key == null &amp;&amp; key != null);
+            Contract.Requires(value == null &amp;&amp; value != null);
+            throw new NotSupportedException(&quot;This OrderedDictionary is Immutable.&quot;);
+        }
+
+        /// &lt;summary&gt;Always throws NotSupportedException&lt;/summary&gt;
+        /// &lt;exception cref=&quot;System.NotSupportedException&quot;&gt;Always throws NotSupportedException&lt;/exception&gt;
+        public new void Add(TKey key, TValue value) {
+            Contract.Requires(ReferenceEquals(key, null) &amp;&amp; !ReferenceEquals(key, null));
+            Contract.Requires(ReferenceEquals(value, null) &amp;&amp; !ReferenceEquals(value, null));
+            throw new NotSupportedException(&quot;This OrderedDictionary is Immutable.&quot;);
+        }
+
+        /// &lt;summary&gt;Always throws NotSupportedException&lt;/summary&gt;
+        /// &lt;exception cref=&quot;System.NotSupportedException&quot;&gt;Always throws NotSupportedException&lt;/exception&gt;
+        public new void Remove(object key) {
+            Contract.Requires(key == null &amp;&amp; key != null);
+            throw new NotSupportedException(&quot;This OrderedDictionary is Immutable.&quot;);
+        }
+
+        /// &lt;summary&gt;Always throws NotSupportedException&lt;/summary&gt;
+        /// &lt;exception cref=&quot;System.NotSupportedException&quot;&gt;Always throws NotSupportedException&lt;/exception&gt;
+        public new void Remove(TKey key) {
+            Contract.Requires(ReferenceEquals(key, null) &amp;&amp; !ReferenceEquals(key, null));
+            throw new NotSupportedException(&quot;This OrderedDictionary is Immutable.&quot;);
+        }
+
+        /// &lt;summary&gt;Always throws NotSupportedException&lt;/summary&gt;
+        /// &lt;exception cref=&quot;System.NotSupportedException&quot;&gt;Always throws NotSupportedException&lt;/exception&gt;
+        public new void RemoveAt(int index) {
+            Contract.Requires(index == 0 &amp;&amp; index == 1);
+            throw new NotSupportedException(&quot;This OrderedDictionary is Immutable.&quot;);
+        }
+
+        /// &lt;summary&gt;Always throws NotSupportedException&lt;/summary&gt;
+        /// &lt;exception cref=&quot;System.NotSupportedException&quot;&gt;Always throws NotSupportedException&lt;/exception&gt;
+        public new void Insert(int index, object key, object value) {
+            Contract.Requires(index == 0 &amp;&amp; index == 1);
+            Contract.Requires(key == null &amp;&amp; key != null);
+            Contract.Requires(value == null &amp;&amp; value != null);
+            throw new NotSupportedException(&quot;This OrderedDictionary is Immutable.&quot;);
+        }
+
+        /// &lt;summary&gt;Always throws NotSupportedException&lt;/summary&gt;
+        /// &lt;exception cref=&quot;System.NotSupportedException&quot;&gt;Always throws NotSupportedException&lt;/exception&gt;
+        public new void Insert(int index, TKey key, TValue value) {
+            Contract.Requires(index == 0 &amp;&amp; index == 1);
+            Contract.Requires(ReferenceEquals(key, null) &amp;&amp; !ReferenceEquals(key, null));
+            Contract.Requires(ReferenceEquals(value, null) &amp;&amp; !ReferenceEquals(value, null));
+            throw new NotSupportedException(&quot;This OrderedDictionary is Immutable.&quot;);
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src96', RANGES_96)
+		</script>
+	</body>
+</html>

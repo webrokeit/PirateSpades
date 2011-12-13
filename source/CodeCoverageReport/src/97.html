@@ -1,0 +1,175 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_97 = [
+   [36,9,36,38,'dccv']
+, [36,39,36,40,'dccv']
+, [37,13,37,33,'dccv']
+, [38,9,38,10,'dccv']
+, [43,42,43,43,'dccv']
+, [44,13,44,41,'dccv']
+, [45,13,45,98,'dccv']
+, [46,13,60,15,'dccv']
+, [61,13,61,20,'dccv']
+, [61,30,61,35,'dccv']
+, [61,21,61,26,'dccv']
+, [61,37,61,38,'dccv']
+, [62,17,62,24,'dccv']
+, [62,34,62,40,'dccv']
+, [62,25,62,30,'dccv']
+, [62,42,62,43,'dccv']
+, [63,21,63,50,'dccv']
+, [64,17,64,18,'dccv']
+, [62,31,62,33,'dccv']
+, [65,13,65,14,'dccv']
+, [61,27,61,29,'dccv']
+, [66,9,66,10,'dccv']
+, [73,13,73,69,'dccv']
+, [73,13,73,69,'dccv']
+, [72,27,72,28,'dccv']
+, [74,13,74,48,'dccv']
+, [75,13,75,49,'dccv']
+, [76,13,76,22,'dccv']
+, [77,9,77,10,'dccv']
+, [83,46,83,47,'dccv']
+, [84,13,84,33,'dccv']
+, [84,34,84,47,'dccv']
+, [85,13,85,34,'dccv']
+, [86,9,86,10,'dccv']
+, [93,13,93,49,'dccv']
+, [92,43,92,44,'dccv']
+, [94,13,94,54,'dccv']
+, [95,13,95,57,'dccv']
+, [96,13,96,40,'dccv']
+, [97,9,97,10,'dccv']
+, [103,50,103,51,'dcuc']
+, [104,13,104,44,'dcuc']
+, [105,9,105,10,'dcuc']
+, [111,49,111,50,'dcuc']
+, [112,13,112,41,'dcuc']
+, [113,9,113,10,'dcuc']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src97" class="dotCoverSource"><pre>// &lt;copyright file=&quot;Deck.cs&quot;&gt;
+//      ahal@itu.dk,
+//      mche@itu.dk
+// &lt;/copyright&gt;
+// &lt;summary&gt;
+//      A representation of a deck of cards in the Pirate Spades Game.
+// &lt;/summary&gt;
+// &lt;author&gt;Andreas Hallberg Kjeldsen (ahal@itu.dk)&lt;/author&gt;
+// &lt;author&gt;Morthen Chabert Eskesen (mche@itu.dk)&lt;/author&gt;
+
+namespace PirateSpades.GameLogic {
+    using System.Collections.Generic;
+    using System.Collections;
+    using System.Diagnostics.Contracts;
+
+    using PirateSpades.Misc;
+
+    /// &lt;summary&gt;
+    /// A representation of a deck of cards in the Pirate Spades Game.
+    /// &lt;/summary&gt;
+    public class Deck : IEnumerable&lt;Card&gt; {
+        /// &lt;summary&gt;
+        /// Lazy initialized list of cards in a deck of cards (52 cards).
+        /// &lt;/summary&gt;
+        private static List&lt;Card&gt; mainDeck;
+
+        /// &lt;summary&gt;
+        /// The list of cards in the deck.
+        /// &lt;/summary&gt;
+        private List&lt;Card&gt; TheDeck { get; set; }
+
+        /// &lt;summary&gt;
+        /// Private constructor called by the factory method GetShuffledDeck.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;deck&quot;&gt;The list of cards in the deck.&lt;/param&gt;
+        private Deck(List&lt;Card&gt; deck) {
+            this.TheDeck = deck;
+        }
+
+        /// &lt;summary&gt;
+        /// Create the mainDeck.
+        /// &lt;/summary&gt;
+        private static void CreateDeck() {
+            mainDeck = new List&lt;Card&gt;();
+            var suits = new List&lt;Suit&gt;() { Suit.Clubs, Suit.Diamonds, Suit.Hearts, Suit.Spades };
+            var values = new List&lt;CardValue&gt;() {
+                CardValue.Two,
+                CardValue.Three,
+                CardValue.Four,
+                CardValue.Five,
+                CardValue.Six,
+                CardValue.Seven,
+                CardValue.Eight,
+                CardValue.Nine,
+                CardValue.Ten,
+                CardValue.Jack,
+                CardValue.Queen,
+                CardValue.King,
+                CardValue.Ace
+            };
+            foreach(var s in suits) {
+                foreach(var v in values) {
+                    mainDeck.Add(new Card(s, v));
+                }
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Remove the top most card and return it.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;The top most card.&lt;/returns&gt;
+        public Card Pop() {
+            Contract.Requires(TheDeck != null &amp;&amp; TheDeck.Count &gt; 0);
+            var c = TheDeck[TheDeck.Count - 1];
+            TheDeck.RemoveAt(TheDeck.Count - 1);
+            return c;
+        }
+
+        /// &lt;summary&gt;
+        /// Get a shuffled deck.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;A shuffled deck.&lt;/returns&gt;
+        public static Deck GetShuffledDeck() {
+            if(mainDeck == null) CreateDeck();
+            return ShuffleDeck();
+        }
+
+        /// &lt;summary&gt;
+        /// Clone the main deck, shuffle it and return the shuffled deck.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;A shuffled deck.&lt;/returns&gt;
+        private static Deck ShuffleDeck() {
+            Contract.Requires(mainDeck != null);
+            var deckClone = new List&lt;Card&gt;(mainDeck);
+            CollectionFnc.FisherYatesShuffle(deckClone);
+            return new Deck(deckClone);
+        }
+
+        /// &lt;summary&gt;
+        /// Get an enumerator of the cards in the deck.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;An enumerator of the cards in the deck.&lt;/returns&gt;
+        public IEnumerator&lt;Card&gt; GetEnumerator() {
+            return TheDeck.GetEnumerator();
+        }
+
+        /// &lt;summary&gt;
+        /// Get an enumerator of the cards in the deck.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;An enumerator of the cards in the deck.&lt;/returns&gt;
+        IEnumerator IEnumerable.GetEnumerator() {
+            return this.GetEnumerator();
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src97', RANGES_97)
+		</script>
+	</body>
+</html>

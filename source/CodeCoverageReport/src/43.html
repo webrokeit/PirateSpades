@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_43 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src43" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateMessageObjTest.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+
+using System;
+using Microsoft.Pex.Framework;
+using Microsoft.Pex.Framework.Validation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PirateSpades.Network;
+
+namespace PirateSpades.Network
+{
+    [TestClass]
+    [PexClass(typeof(PirateMessageObj))]
+    [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]
+    [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
+    public partial class PirateMessageObjTest
+    {
+        [PexMethod]
+        public PirateMessageObj Constructor01(PirateClient client, PirateMessage msg) {
+            PirateMessageObj target = new PirateMessageObj(client, msg);
+            return target;
+            // TODO: add assertions to method PirateMessageObjTest.Constructor01(PirateClient, PirateMessage)
+        }
+        [PexMethod]
+        public PirateMessageObj Constructor(PirateClient client) {
+            PirateMessageObj target = new PirateMessageObj(client);
+            return target;
+            // TODO: add assertions to method PirateMessageObjTest.Constructor(PirateClient)
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src43', RANGES_43)
+		</script>
+	</body>
+</html>

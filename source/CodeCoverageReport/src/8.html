@@ -1,0 +1,90 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_8 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src8" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateScannerTest.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+
+using System;
+using Microsoft.Pex.Framework;
+using Microsoft.Pex.Framework.Validation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PirateSpades.Network;
+using System.Collections.Generic;
+using System.Net;
+
+namespace PirateSpades.Network
+{
+    [TestClass]
+    [PexClass(typeof(PirateScanner))]
+    [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]
+    [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
+    public partial class PirateScannerTest
+    {
+        [PexMethod]
+        public IList&lt;PirateScanner.GameInfo&gt; ScanForGames(
+            [PexAssumeUnderTest]PirateScanner target,
+            int port,
+            int timeout
+        ) {
+            IList&lt;PirateScanner.GameInfo&gt; result = target.ScanForGames(port, timeout);
+            return result;
+            // TODO: add assertions to method PirateScannerTest.ScanForGames(PirateScanner, Int32, Int32)
+        }
+        [PexMethod]
+        public bool IsValidIp01(IPAddress ip) {
+            bool result = PirateScanner.IsValidIp(ip);
+            return result;
+            // TODO: add assertions to method PirateScannerTest.IsValidIp01(IPAddress)
+        }
+        [PexMethod]
+        public bool IsValidIp(string ip) {
+            bool result = PirateScanner.IsValidIp(ip);
+            return result;
+            // TODO: add assertions to method PirateScannerTest.IsValidIp(String)
+        }
+        [PexMethod]
+        public IPAddress GetLocalIpV4() {
+            IPAddress result = PirateScanner.GetLocalIpV4();
+            return result;
+            // TODO: add assertions to method PirateScannerTest.GetLocalIpV4()
+        }
+        [PexMethod]
+        public IEnumerable&lt;IPAddress&gt; GetLocalIpsV4() {
+            IEnumerable&lt;IPAddress&gt; result = PirateScanner.GetLocalIpsV4();
+            return result;
+            // TODO: add assertions to method PirateScannerTest.GetLocalIpsV4()
+        }
+        [PexMethod]
+        public IPAddress GetIp(string ip) {
+            IPAddress result = PirateScanner.GetIp(ip);
+            return result;
+            // TODO: add assertions to method PirateScannerTest.GetIp(String)
+        }
+        [PexMethod]
+        public PirateScanner Constructor() {
+            PirateScanner target = new PirateScanner();
+            return target;
+            // TODO: add assertions to method PirateScannerTest.Constructor()
+        }
+        [PexMethod]
+        public bool CheckIp(
+            IPAddress ip,
+            int port,
+            int timeout
+        ) {
+            bool result = PirateScanner.CheckIp(ip, port, timeout);
+            return result;
+            // TODO: add assertions to method PirateScannerTest.CheckIp(IPAddress, Int32, Int32)
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src8', RANGES_8)
+		</script>
+	</body>
+</html>

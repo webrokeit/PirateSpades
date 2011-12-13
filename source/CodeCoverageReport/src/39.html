@@ -1,0 +1,220 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_39 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src39" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateMessageTest.GetPlayerNames.g.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+// &lt;auto-generated&gt;
+// This file contains automatically generated unit tests.
+// Do NOT modify this file manually.
+// 
+// When Pex is invoked again,
+// it might remove or update any previously generated unit tests.
+// 
+// If the contents of this file becomes outdated, e.g. if it does not
+// compile anymore, you may delete this file and invoke Pex again.
+// &lt;/auto-generated&gt;
+using System;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Pex.Framework.Generated;
+using Microsoft.Pex.Engine.Exceptions;
+
+namespace PirateSpades.Network
+{
+    public partial class PirateMessageTest {
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerNames644()
+{
+    PirateMessage pirateMessage;
+    HashSet&lt;string&gt; hashSet;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;player_name: AaAA\0&quot;);
+    hashSet = this.GetPlayerNames(pirateMessage);
+    Assert.IsNotNull((object)hashSet);
+    Assert.AreEqual&lt;int&gt;(0, hashSet.Count);
+    Assert.IsNotNull(hashSet.Comparer);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerNames108()
+{
+    PirateMessage pirateMessage;
+    HashSet&lt;string&gt; hashSet;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;player_name: AaAZ&quot;);
+    hashSet = this.GetPlayerNames(pirateMessage);
+    Assert.IsNotNull((object)hashSet);
+    Assert.AreEqual&lt;int&gt;(1, hashSet.Count);
+    Assert.IsNotNull(hashSet.Comparer);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerNames738()
+{
+    PirateMessage pirateMessage;
+    HashSet&lt;string&gt; hashSet;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;player_name: AaA\0&quot;);
+    hashSet = this.GetPlayerNames(pirateMessage);
+    Assert.IsNotNull((object)hashSet);
+    Assert.AreEqual&lt;int&gt;(0, hashSet.Count);
+    Assert.IsNotNull(hashSet.Comparer);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerNames282()
+{
+    PirateMessage pirateMessage;
+    HashSet&lt;string&gt; hashSet;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;player_name: AaJ&quot;);
+    hashSet = this.GetPlayerNames(pirateMessage);
+    Assert.IsNotNull((object)hashSet);
+    Assert.AreEqual&lt;int&gt;(1, hashSet.Count);
+    Assert.IsNotNull(hashSet.Comparer);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerNames269()
+{
+    PirateMessage pirateMessage;
+    HashSet&lt;string&gt; hashSet;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;player_name: \0\0\0&quot;);
+    hashSet = this.GetPlayerNames(pirateMessage);
+    Assert.IsNotNull((object)hashSet);
+    Assert.AreEqual&lt;int&gt;(0, hashSet.Count);
+    Assert.IsNotNull(hashSet.Comparer);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerNames799()
+{
+    PirateMessage pirateMessage;
+    HashSet&lt;string&gt; hashSet;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;player_name: &quot;);
+    hashSet = this.GetPlayerNames(pirateMessage);
+    Assert.IsNotNull((object)hashSet);
+    Assert.AreEqual&lt;int&gt;(0, hashSet.Count);
+    Assert.IsNotNull(hashSet.Comparer);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerNames75()
+{
+    PirateMessage pirateMessage;
+    HashSet&lt;string&gt; hashSet;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, new string(&#39;\0&#39;, 13));
+    hashSet = this.GetPlayerNames(pirateMessage);
+    Assert.IsNotNull((object)hashSet);
+    Assert.AreEqual&lt;int&gt;(0, hashSet.Count);
+    Assert.IsNotNull(hashSet.Comparer);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerNames138()
+{
+    PirateMessage pirateMessage;
+    HashSet&lt;string&gt; hashSet;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;&quot;);
+    hashSet = this.GetPlayerNames(pirateMessage);
+    Assert.IsNotNull((object)hashSet);
+    Assert.AreEqual&lt;int&gt;(0, hashSet.Count);
+    Assert.IsNotNull(hashSet.Comparer);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void GetPlayerNamesThrowsContractException810()
+{
+    try
+    {
+      HashSet&lt;string&gt; hashSet;
+      hashSet = this.GetPlayerNames((PirateMessage)null);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerName430()
+{
+    PirateMessage pirateMessage;
+    string s;
+    pirateMessage =
+      new PirateMessage(PirateMessageHead.Fail, &quot;player_name: AA00000000&quot;);
+    s = this.GetPlayerName(pirateMessage);
+    Assert.AreEqual&lt;string&gt;(&quot;AA00000000&quot;, s);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerName363()
+{
+    PirateMessage pirateMessage;
+    string s;
+    pirateMessage =
+      new PirateMessage(PirateMessageHead.Fail, &quot;player_name: 000000000000&quot;);
+    s = this.GetPlayerName(pirateMessage);
+    Assert.AreEqual&lt;string&gt;(new string(&#39;0&#39;, 12), s);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetPlayerName816()
+{
+    PirateMessage pirateMessage;
+    string s;
+    pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;player_name: 000&quot;);
+    s = this.GetPlayerName(pirateMessage);
+    Assert.AreEqual&lt;string&gt;(&quot;000&quot;, s);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void GetPlayerNameThrowsContractException671()
+{
+    try
+    {
+      PirateMessage pirateMessage;
+      string s;
+      pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;&quot;);
+      s = this.GetPlayerName(pirateMessage);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void GetPlayerNameThrowsContractException485()
+{
+    try
+    {
+      string s;
+      s = this.GetPlayerName((PirateMessage)null);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src39', RANGES_39)
+		</script>
+	</body>
+</html>
