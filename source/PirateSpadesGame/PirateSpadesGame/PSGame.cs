@@ -7,6 +7,8 @@ namespace PirateSpadesGame {
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+    using Game = PirateSpades.GameLogic.Game;
+
     /// <summary>
     /// This is the main type for your game
     /// </summary>
