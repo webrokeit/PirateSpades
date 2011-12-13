@@ -1,4 +1,12 @@
-﻿namespace PirateSpades.GameLogic {
+﻿// <copyright file="Game.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      A representation of a game in the Pirate Spades Game.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
+
+namespace PirateSpades.GameLogic {
     using System;
     using System.Collections.Generic;
     using System.Linq;

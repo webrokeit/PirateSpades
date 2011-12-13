@@ -1,4 +1,12 @@
-﻿namespace PirateSpades.GameLogic {
+﻿// <copyright file="Trick.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      A representation of a trick in the Pirate Spades Game.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
+
+namespace PirateSpades.GameLogic {
     using System.Diagnostics.Contracts;
 
     using PirateSpades.Misc;

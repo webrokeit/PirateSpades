@@ -1,9 +1,20 @@
-﻿namespace PirateSpades.GameLogic {
+﻿// <copyright file="Round.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      A representation of a round in the Pirate Spades Game.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
+
+namespace PirateSpades.GameLogic {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Diagnostics.Contracts;
 
+    /// <summary>
+    /// A representation of a round in the Pirate Spades Game.
+    /// </summary>
     public class Round {
         public Game Game { get; private set; }
         public int Number { get; private set; }

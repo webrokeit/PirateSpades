@@ -1,4 +1,12 @@
-﻿namespace PirateSpades.GameLogic {
+﻿// <copyright file="Card.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      A representation of a card in the Pirate Spades Game.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
+
+namespace PirateSpades.GameLogic {
     using System.Diagnostics.Contracts;
     using System;
     using System.Text.RegularExpressions;
