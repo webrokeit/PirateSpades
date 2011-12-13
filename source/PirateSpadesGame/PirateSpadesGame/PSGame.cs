@@ -1,16 +1,31 @@
-//Helena
+// <copyright file="Textbox.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      This is the main type for our game
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
+// <author>Helena Charlotte Lyn Krüger (hclk@itu.dk)</author>
+
 namespace PirateSpadesGame {
+    using System.Diagnostics.Contracts;
     using System.Text.RegularExpressions;
     using PirateSpades.GameLogic;
     using PirateSpades.Network;
     using PirateSpadesGame.GameModes;
+    using PirateSpadesGame.Misc;
+    using PirateSpadesGame.Settings;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+<<<<<<< HEAD
+=======
+
+>>>>>>> f9bb06c1b7b6cafa03844a7db456f8c53804bb89
     using Game = PirateSpades.GameLogic.Game;
 
     /// <summary>
-    /// This is the main type for your game
+    /// This is the main type for our game
     /// </summary>
     public class PsGame : Microsoft.Xna.Framework.Game {
         private GraphicsDeviceManager graphics;
@@ -31,27 +46,64 @@ namespace PirateSpadesGame {
             graphics = new GraphicsDeviceManager(this) { PreferredBackBufferWidth = 1024, PreferredBackBufferHeight = 720 };
             Content.RootDirectory = "Content";
             State = GameState.StartUp;
-            Color = Color.CornflowerBlue;
-            MusicVolume = 1.0f;
-            PlayerName = "";
+            MusicVolume = PirateSettings.GetFloat("musicvolume");
+            PlayerName = PirateSettings.GetString("playername");
         }
 
+        /// <summary>
+        /// The width of the screen
+        /// </summary>
+        public static int Width { get {
+            Contract.Ensures(Width > 0); return 1024; } }
+
+        /// <summary>
+        /// The height of the screen
+        /// </summary>
+        public static int Height { get { Contract.Ensures(Height > 0); return 720; } }
+
+        /// <summary>
+        /// Is the screen active?
+        /// </summary>
+        public static bool Active { get; private set; }
+
+        /// <summary>
+        /// The host
+        /// </summary>
         public PirateHost Host { get; set; }
 
+        /// <summary>
+        /// The client
+        /// </summary>
         public PirateClient Client { get; set; }
 
+        /// <summary>
+        /// The game being played
+        /// </summary>
         public Game PlayingGame { get; set; }
 
+        /// <summary>
+        /// The name of the game
+        /// </summary>
         public string GameName { get; set; }
 
+        /// <summary>
+        /// Number of max players in the current game
+        /// </summary>
         public int MaxPlayers { get; set; }
 
+        /// <summary>
+        /// The name of the player using this game
+        /// </summary>
         public string PlayerName { get; set; }
 
+        /// <summary>
+        /// The state of the game
+        /// </summary>
         public GameState State { get; set; }
 
-        public Color Color { get; set; }
-
+        /// <summary>
+        /// The volume level of the game
+        /// </summary>
         public float MusicVolume { get; set; }
 
         /// <summary>
@@ -74,6 +126,16 @@ namespace PirateSpadesGame {
         }
 
         /// <summary>
+        /// Method for saving player states between games
+        /// </summary>
+        protected new void Exit() {
+            PirateSettings.Set("playername", PlayerName);
+            PirateSettings.Set("musicvolume", MusicVolume);
+            PirateSettings.Save();
+            base.Exit();
+        }
+
+        /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
         /// </summary>
@@ -92,7 +154,7 @@ namespace PirateSpadesGame {
         /// all content.
         /// </summary>
         protected override void UnloadContent() {
-            // TODO: Unload any non ContentManager content here
+            this.Content.Unload();
         }
 
         /// <summary>
@@ -104,6 +166,8 @@ namespace PirateSpadesGame {
             // Allows the game to exit
             if(GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+
+            Active = this.IsActive;
 
             if(settingname && (State == GameState.JoinGame || State == GameState.CreateGame)) {
                 if(ok.Update(gameTime)) {
@@ -117,12 +181,15 @@ namespace PirateSpadesGame {
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Switch between the different GameStates and update the current GameMode
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         private void GameMode(GameTime gameTime) {
             switch(State) {
                 case GameState.StartUp:
                     if(!(gameMode is StartUp)) {
                         gameMode = startUp;
-                        gameMode.LoadContent(this.Content);
                     }
                     gameMode.Update(gameTime);
                     break;
@@ -164,6 +231,10 @@ namespace PirateSpadesGame {
             }
         }
 
+        /// <summary>
+        /// Helper method for taking action upon a button press
+        /// </summary>
+        /// <param name="b">The button that has been pressed</param>
         private void ButtonAction(Button b) {
             if(b == null) {
                 return;
@@ -181,6 +252,9 @@ namespace PirateSpadesGame {
             }
         }
 
+        /// <summary>
+        /// Helper method for setting a name if none has been specified yet
+        /// </summary>
         private void SetName() {
             settingname = true;
             namePopUp = new Sprite();
@@ -203,7 +277,7 @@ namespace PirateSpadesGame {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
-            GraphicsDevice.Clear(Color);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
             background.Draw(spriteBatch);
@@ -220,6 +294,9 @@ namespace PirateSpadesGame {
         }
     }
 
+    /// <summary>
+    /// Class used for describing the state of the game
+    /// </summary>
     public enum GameState {
         StartUp, InGame, JoinGame, CreateGame, Exit
     }

@@ -1,24 +1,67 @@
-﻿namespace PirateSpades.GameLogic {
+﻿// <copyright file="Player.cs">
+//      ahal@itu.dk
+// </copyright>
+// <summary>
+//      A representation of a player in the Pirate Spades Game.
+// </summary>
+// <author>Andreas Hallberg Kjeldsen (ahal@itu.dk)</author>
+
+namespace PirateSpades.GameLogic {
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Linq;
 
+    /// <summary>
+    /// A representation of a player in the Pirate Spades Game.
+    /// </summary>
     public class Player {
+        /// <summary>
+        /// The game the player is playing in.
+        /// </summary>
         public Game Game { get; private set; }
+
+        /// <summary>
+        /// The name of the player.
+        /// </summary>
         public string Name { get; protected set; }
+
+        /// <summary>
+        /// The amount the player bet.
+        /// </summary>
         public int Bet { get; private set; }
+
+        /// <summary>
+        /// Whether or not the player is the current dealer.
+        /// </summary>
         public bool IsDealer { get; set; }
+
+        /// <summary>
+        /// The card the player wishes to play.
+        /// </summary>
         public Card CardToPlay { get; private set; }
 
+        /// <summary>
+        /// The hand of the player.
+        /// </summary>
         public IList<Card> Hand { get; protected set; }
+
+        /// <summary>
+        /// The cards on hand of the player, sorted 2, 3 -> King, Ace and Diamonds, Clubs, Hearts, Spades.
+        /// </summary>
         protected SortedSet<Card> Cards { get; set; }
 
+        /// <summary>
+        /// Amount of cards on hand.
+        /// </summary>
         public int CardsOnHand {
             get {
                 return Hand.Count;
             }
         }
 
+        /// <summary>
+        /// Amount of tricks in the current round.
+        /// </summary>
         public int Tricks {
             get {
                 return Game != null && Game.Started && Game.CurrentRound >= 1 && Game.GetRound(Game.CurrentRound).Started && Game.Round.PlayerTricks.ContainsKey(this)
@@ -27,9 +70,28 @@
             }
         }
 
+        /// <summary>
+        /// Delegate for when a card has been played.
+        /// </summary>
+        /// <param name="c">The card played.</param>
         protected delegate void CardPlayedDelegate(Card c);
+
+        /// <summary>
+        /// Delegate for when a card has been dealt.
+        /// </summary>
+        /// <param name="p">The receiving players.</param>
+        /// <param name="c">The card dealt.</param>
         protected delegate void CardDealtDelegate(Player p, Card c);
+
+        /// <summary>
+        /// Delegate for when a bet has been set.
+        /// </summary>
+        /// <param name="bet">The bet set.</param>
         protected delegate void BetSetDelegate(int bet);
+
+        /// <summary>
+        /// Event 
+        /// </summary>
         protected event CardPlayedDelegate CardPlayed;
         protected event CardDealtDelegate CardDealt;
         protected event BetSetDelegate BetSet;
