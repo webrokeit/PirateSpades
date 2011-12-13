@@ -1,4 +1,4 @@
-// <copyright file="Textbox.cs">
+// <copyright file="PSGame.cs">
 //      mche@itu.dk
 // </copyright>
 // <summary>

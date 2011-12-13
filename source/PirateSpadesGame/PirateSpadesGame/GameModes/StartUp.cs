@@ -1,5 +1,4 @@
-﻿//Helena
-// <copyright file="StartUp.cs">
+﻿// <copyright file="StartUp.cs">
 //      mche@itu.dk, hclk@itu.dk
 // </copyright>
 // <summary>
