@@ -1,12 +1,24 @@
-﻿namespace PirateSpadesGame.IngameFunc {
+﻿// <copyright file="TableSprite.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      Class used for drawing the players in the game and the played cards
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
+
+namespace PirateSpadesGame.IngameFunc {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using PirateSpades.GameLogic;
     using Game = PirateSpades.GameLogic.Game;
 
+    /// <summary>
+    /// Class used for drawing the players in the game and the played cards
+    /// </summary>
     public class TableSprite {
         private Game playingGame;
         private PsGame game;
@@ -38,13 +50,23 @@
                 }
         };
 
+        /// <summary>
+        /// The constructor for tablesprite takes a PsGame, PirateSpades.GameLogic.Game and a rectangle
+        /// </summary>
+        /// <param name="game">The PsGame currently running</param>
+        /// <param name="playingGame">The current game being played</param>
+        /// <param name="rect">The rectangle used to specify the size of the texture tablesprite draws</param>
         public TableSprite(PsGame game, Game playingGame, Rectangle rect) {
+            Contract.Requires(game != null && playingGame != null);
             this.game = game;
             this.playingGame = playingGame;
             this.rect = rect;
             this.SetUp();
         }
 
+        /// <summary>
+        /// Set up this tablesprite
+        /// </summary>
         private void SetUp() {
             cardsOnTable = new List<CardSprite>();
             playingGame.RoundFinished += OnRoundFinished;
@@ -52,11 +74,19 @@
             ourIndex = playingGame.PlayerIndex(game.Client);
         }
 
+        /// <summary>
+        /// Load the content for this tablesprite
+        /// </summary>
+        /// <param name="contentManager">The ContentManager used to load the content</param>
         public void LoadContent(ContentManager contentManager) {
             playingGround = contentManager.Load<Texture2D>(playingGame.Players.Count + "_player");
             font = contentManager.Load<SpriteFont>("font2");
         }
 
+        /// <summary>
+        /// Update this tablesprite
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Update(GameTime gameTime) {
             if(playingGame.Started && playingGame.Round.BoardCards.Pile.Count > 0) {
                 var cards = CardPlacements[playingGame.Players.Count];
@@ -74,6 +104,10 @@
             }
         }
 
+        /// <summary>
+        /// Draw this tablesprite on the given SpriteBatch
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(playingGround, rect, Color.White);
             if(cardsOnTable.Count > 0) {
@@ -94,7 +128,12 @@
             
         }
 
+        /// <summary>
+        /// Handler method for event RoundFinished and RoundNewPile when the round is finished
+        /// </summary>
+        /// <param name="g">The game</param>
         private void OnRoundFinished(Game g) {
+            Contract.Ensures(cardsOnTable.Count == 0);
             cardsOnTable.Clear();
             winner = g.Round.LastTrick.Winner;
             roundOver = DateTime.Now;

@@ -1,13 +1,29 @@
-﻿// Helena
+﻿// <copyright file="CreateGame.cs">
+//      mche@itu.dk, hclk@itu.dk
+// </copyright>
+// <summary>
+//      Class used for making create game screen
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
+// <author>Helena Charlotte Lyn Krüger (hclk@itu.dk)</author>
+
 namespace PirateSpadesGame.GameModes {
+    using System.Diagnostics.Contracts;
+
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
     using System.Linq;
     using PirateSpades.Network;
+
+    using PirateSpadesGame.Misc;
+
     using Game = PirateSpades.GameLogic.Game;
 
+    /// <summary>
+    /// Class used for making create game screen
+    /// </summary>
     public class CreateGame : IGameMode {
         private PsGame game;
         private Sprite backGround;
@@ -18,18 +34,25 @@ namespace PirateSpadesGame.GameModes {
         private Vector2 namePos;
         private Vector2 playersPos;
         private SpriteFont font;
-
         private List<Button> buttons;
 
+        /// <summary>
+        /// The constructor for CreateGame takes a PsGame
+        /// </summary>
+        /// <param name="game">The currently running PsGame</param>
         public CreateGame(PsGame game) {
+            Contract.Requires(game != null);
             this.game = game;
-            this.SetUp(game.Window);
+            this.SetUp();
         }
 
-        private void SetUp(GameWindow window) {
+        /// <summary>
+        /// Set up the create game screen
+        /// </summary>
+        private void SetUp() {
             backGround = new Sprite { Color = Color.White };
-            var x = window.ClientBounds.Width / 2 - 400 / 2;
-            var y = window.ClientBounds.Height / 2 - 400 / 2;
+            var x = game.Window.ClientBounds.Width / 2 - 400 / 2;
+            var y = game.Window.ClientBounds.Height / 2 - 400 / 2;
             backGround.Position = new Vector2(x, y);
 
             var cgX = x;
@@ -54,6 +77,10 @@ namespace PirateSpadesGame.GameModes {
             buttons = new List<Button> { this.cancel, this.createGame };
         }
 
+        /// <summary>
+        /// Load the content for this create game screen
+        /// </summary>
+        /// <param name="contentManager">The ContentManager to load the content</param>
         public void LoadContent(ContentManager contentManager) {
             backGround.LoadContent(contentManager, "creategamewindow");
             font = contentManager.Load<SpriteFont>("font");
@@ -63,6 +90,10 @@ namespace PirateSpadesGame.GameModes {
             numberOfPlayers.LoadContent(contentManager);
         }
 
+        /// <summary>
+        /// Update this create game screen
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Update(GameTime gameTime) {
             foreach(var b in this.buttons.Where(b => b.Update(gameTime))) {
                 this.ButtonAction(b);
@@ -71,10 +102,14 @@ namespace PirateSpadesGame.GameModes {
             serverName.Update(gameTime);
         }
 
+        /// <summary>
+        /// Helper method for taking action upon a button press
+        /// </summary>
+        /// <param name="b">The button that has been pressed</param>
         private void ButtonAction(Button b) {
-            if(b == null) {
-                return;
-            }
+            Contract.Requires(b != null);
+            Contract.Ensures((PirateHost.IsValidGameName(serverName.Text) ? (game.Host != null && game.Client != null && game.PlayingGame != null && game.State == GameState.InGame) : game.State == GameState.CreateGame)
+                || game.State == GameState.StartUp);
             var str = b.Name;
             switch(str) {
                 case "creategame":
@@ -102,6 +137,10 @@ namespace PirateSpadesGame.GameModes {
             }
         }
 
+        /// <summary>
+        /// Draw this create game screen on the given SpriteBatch
+        /// </summary>
+        /// <param name="spriteBatch">The SpriteBatch</param>
         public void Draw(SpriteBatch spriteBatch) {
             backGround.Draw(spriteBatch);
             cancel.Draw(spriteBatch);
