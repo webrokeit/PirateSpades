@@ -1,4 +1,12 @@
-﻿namespace PirateSpadesGame.GameModes {
+﻿// <copyright file="JoinGame.cs">
+//      mche@itu.dk
+// </copyright>
+// <summary>
+//      Class used for making the join game screen
+// </summary>
+// <author>Morten Chabert Eskesen (mche@itu.dk)</author>
+
+namespace PirateSpadesGame.GameModes {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
@@ -35,6 +43,10 @@
         private bool refreshing = false;
         private delegate IList<PirateScanner.GameInfo> ScanForGamesDelegate(int port, int timeout);
 
+        /// <summary>
+        /// The constructor for JoinGame takes a PsGame
+        /// </summary>
+        /// <param name="game">The currently running PsGame</param>
         public JoinGame(PsGame game) {
             Contract.Requires(game != null);
             servers = new List<ServerSprite>();
@@ -45,6 +57,9 @@
             this.Refresh();
         }
 
+        /// <summary>
+        /// Set up the screen
+        /// </summary>
         private void SetUp() {
             backGround = new Sprite() { Color = Color.White };
             var x = game.Window.ClientBounds.Width / 2 - 800 / 2;
@@ -69,6 +84,9 @@
             buttons = new List<Button> { this.xButton, this.refreshButton, this.joinGameButton, this.back };
         }
 
+        /// <summary>
+        /// Set up the servers
+        /// </summary>
         private void SetUpServers() {
             var width = serversRectangle.Width / 3;
             var height = 30;
@@ -79,6 +97,10 @@
             ipSize = new Rectangle(x, serversRectangle.Y, width, height);
         }
 
+        /// <summary>
+        /// Load the content of this join game screen
+        /// </summary>
+        /// <param name="contentManager">The ContentManger used to load the content</param>
         public void LoadContent(ContentManager contentManager) {
             backGround.LoadContent(contentManager, "findgame");
             xButton.LoadContent(contentManager);
@@ -88,6 +110,10 @@
             font = contentManager.Load<SpriteFont>("font");
         }
 
+        /// <summary>
+        /// Update the join game screen
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Update(GameTime gameTime) {
             foreach(var b in this.buttons.Where(b => b.Update(gameTime))) {
                 this.ButtonAction(b);
@@ -103,6 +129,10 @@
             }
         }
 
+        /// <summary>
+        /// Helper method for taking action upon a button press
+        /// </summary>
+        /// <param name="b">The button that has been pressed</param>
         private void ButtonAction(Button b) {
             Contract.Requires(b != null);
             var str = b.Name;
@@ -122,6 +152,9 @@
             }
         }
 
+        /// <summary>
+        /// Refresh and find new servers
+        /// </summary>
         private void Refresh() {
             if(refreshing) return;
             servers.Clear();
@@ -136,6 +169,10 @@
             del.BeginInvoke(Port, Timeout, RefreshDone, del);
         }
 
+        /// <summary>
+        /// Done refreshing
+        /// </summary>
+        /// <param name="ar">An asynchronous result</param>
         private void RefreshDone(IAsyncResult ar) {
             var del = (ScanForGamesDelegate)ar.AsyncState;
             var res = del.EndInvoke(ar);
@@ -145,6 +182,10 @@
             refreshing = false;
         }
 
+        /// <summary>
+        /// Helper method for the event GameFound
+        /// </summary>
+        /// <param name="gameInfo">The information about the game</param>
         private void GameFound(PirateScanner.GameInfo gameInfo) {
             lock(servers) {
                 numberOfServers++;
@@ -155,6 +196,9 @@
             }
         }
 
+        /// <summary>
+        /// Join the selected server
+        /// </summary>
         private void JoinSelectedGame() {
             foreach(var s in servers.Where(s => s.Selected)) {
                 this.JoinThisGame(s);
@@ -162,6 +206,10 @@
             }
         }
 
+        /// <summary>
+        /// Join the server represented by this serversprite
+        /// </summary>
+        /// <param name="s">The serversprite</param>
         private void JoinThisGame(ServerSprite s) {
             Contract.Requires(s != null && Regex.IsMatch(game.PlayerName, @"^[a-zA-Z0-9]{3,12}$"));
             Contract.Ensures(game.Client != null && game.PlayingGame != null && game.Host == null && game.State == GameState.InGame);
@@ -173,11 +221,14 @@
             game.Client.NameRequested += this.OnNameRequest;
             game.PlayingGame = playingGame;
             game.Client.SetGame(playingGame);
-            game.Client.Game.RoundStarted += this.OnRoundStart;
             game.Client.InitConnection();
             game.State = GameState.InGame;
         }
 
+        /// <summary>
+        /// Draw this join game screen on the given SpriteBatch
+        /// </summary>
+        /// <param name="spriteBatch">The SpriteBatch</param>
         public void Draw(SpriteBatch spriteBatch) {
             backGround.Draw(spriteBatch);
             xButton.Draw(spriteBatch);
@@ -206,14 +257,14 @@
             }
         }
 
+        /// <summary>
+        /// Helper method for the event NameRequested
+        /// </summary>
+        /// <param name="pclient">The client</param>
         private void OnNameRequest(PirateClient pclient) {
             Contract.Ensures(pclient.Name == game.PlayerName);
             var playerName = game.PlayerName;
             pclient.SetName(playerName);
-        }
-
-        private void OnRoundStart(Game g) {
-            
         }
     }
 }

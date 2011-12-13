@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <setting>
+    <name>playername</name>
+    <value></value>
+  </setting>
+  <setting>
+    <name>musicvolume</name>
+    <value>0.50</value>
+  </setting>
+</settings>
