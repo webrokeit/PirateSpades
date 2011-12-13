@@ -1,9 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace PirateSpadesGame {
+﻿namespace PirateSpadesGame {
     using Microsoft.Xna.Framework.Input;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
     /// the buttons in the menu is defined in this class
@@ -63,11 +62,12 @@ namespace PirateSpadesGame {
                     State = BState.Down;
                     Color = Color.GhostWhite;
                     return false;
-                } else if(!mpressed && prevmpressed && State == BState.Down) {
-                    State = BState.JustReleased;
+                }
+                if(!this.mpressed && this.prevmpressed && this.State == BState.Down) {
+                    this.State = BState.JustReleased;
                 } else {
-                    State = BState.Hover;
-                    Color = Color.White;
+                    this.State = BState.Hover;
+                    this.Color = Color.White;
                     return false;
                 }
             } else {
