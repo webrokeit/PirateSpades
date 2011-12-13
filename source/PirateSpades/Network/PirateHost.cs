@@ -524,15 +524,25 @@ namespace PirateSpades.Network {
             UpdateBroadcastInfo();
         }
 
+        /// <summary>
+        /// Get the players.
+        /// </summary>
+        /// <returns>An enumerable of players.</returns>
         public IEnumerable<PirateClient> GetPlayers() {
             return this.Clients.Values;
         }
 
+        /// <summary>
+        /// Start the game.
+        /// </summary>
         public void StartGame() {
             Contract.Requires(Game != null && !Game.Started);
             PirateHostCommands.StartGame(this);
         }
 
+        /// <summary>
+        /// New game.
+        /// </summary>
         private void NewGame() {
             if (Game != null) {
                 Game.RoundStarted -= RoundStarted;
@@ -549,31 +559,59 @@ namespace PirateSpades.Network {
             Game.RoundNewPile += this.RoundNewPile;
         }
 
+        /// <summary>
+        /// Update broadcast information.
+        /// </summary>
         private void UpdateBroadcastInfo() {
             var msg = new PirateMessage(PirateMessageHead.Bcst, PirateMessage.ConstructHostInfo(this));
             this.Broadcaster.Message = msg.GetBytes();
         }
 
+        /// <summary>
+        /// Round started.
+        /// </summary>
+        /// <param name="game">The game.</param>
         private void RoundStarted(Game game) {
             PirateHostCommands.NewRound(this);
         }
 
+        /// <summary>
+        /// Round begun.
+        /// </summary>
+        /// <param name="game">The game.</param>
         private void RoundBegun(Game game) {
             PirateHostCommands.RequestCard(this, Clients[game.Round.CurrentPlayer]);
         }
 
+        /// <summary>
+        /// New pile has been created.
+        /// </summary>
+        /// <param name="game">The game.</param>
         private void RoundNewPile(Game game) {
             PirateHostCommands.NewPile(this);
         }
 
+        /// <summary>
+        /// Round finished.
+        /// </summary>
+        /// <param name="game">The game.</param>
         private void RoundFinished(Game game) {
             PirateHostCommands.RoundFinished(this);
         }
 
+        /// <summary>
+        /// Game finished.
+        /// </summary>
+        /// <param name="game">The game.</param>
         private void GameFinished(Game game) {
             PirateHostCommands.GameFinished(this);
         }
 
+        /// <summary>
+        /// Whether or not the game name specified is valid.
+        /// </summary>
+        /// <param name="gameName">The game name to test for.</param>
+        /// <returns>True if it is valid, false if not.</returns>
         public static bool IsValidGameName(string gameName) {
             Contract.Requires(!string.IsNullOrEmpty(gameName));
             return Regex.IsMatch(gameName, @"^[a-zA-Z0-9]{1,12}$");
