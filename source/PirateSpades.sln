@@ -10,11 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndreasTest", "AndreasTest\AndreasTest.csproj", "{D6BAA5E0-182A-4A9C-8C87-6050C71F843A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3C2DFBF9-D262-4A12-9B69-1F708B5DBB10}"
-	ProjectSection(SolutionItems) = preProject
-		Local.testsettings = Local.testsettings
-		PirateSpades.vsmdi = PirateSpades.vsmdi
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution

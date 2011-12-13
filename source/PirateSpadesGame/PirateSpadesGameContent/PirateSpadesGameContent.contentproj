@@ -582,8 +582,35 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="devils_dance_floor.mp3">
+    <Compile Include="audio\devils_dance_floor.mp3">
       <Name>devils_dance_floor</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="audio\drunken_lullabies.mp3">
+      <Name>drunken_lullabies</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="audio\requiem_for_a_dying_song.mp3">
+      <Name>requiem_for_a_dying_song</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="audio\salty_dog.mp3">
+      <Name>salty_dog</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="audio\hes_a_pirate_tiesto.mp3">
+      <Name>hes_a_pirate_tiesto</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="audio\pirates_of_the_caribbean.mp3">
+      <Name>pirates_of_the_caribbean</Name>
       <Importer>Mp3Importer</Importer>
       <Processor>SongProcessor</Processor>
     </Compile>

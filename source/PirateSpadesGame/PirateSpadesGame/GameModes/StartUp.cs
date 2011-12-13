@@ -9,6 +9,8 @@ namespace PirateSpadesGame.GameModes {
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Media;
 
+    using PirateSpadesGame.Music;
+
     public class StartUp : IGameMode {
         private List<Button> buttons;
         private const int numberOfButtons = 5;
@@ -32,6 +34,7 @@ namespace PirateSpadesGame.GameModes {
         private string menuKey = "Press ESC to show menu when ingame";
         private Vector2 menuPos;
         private List<Button> settingsButton;
+        private SongPlayer songPlayer;
 
         public StartUp(PsGame game) {
             this.game = game;
@@ -107,10 +110,9 @@ namespace PirateSpadesGame.GameModes {
                 b.LoadContent(contentManager);
             }
 
-            Song song = contentManager.Load<Song>("devils_dance_floor");  // Put the name of your song here instead of "song_title"
-            MediaPlayer.Play(song);
-            MediaPlayer.Volume = 50f;
-            MediaPlayer.IsRepeating = true;
+            songPlayer = SongPlayer.GetInstance(contentManager);
+            songPlayer.Start();
+            songPlayer.PlayList.ShuffleList = true;
         }
 
         public void Update(GameTime gameTime) {

@@ -16,7 +16,7 @@ namespace PirateSpades.Misc
         private static readonly Random R = new Random();
 
         public static void FisherYatesShuffle<T>(List<T> list) {
-            Contract.Requires(list != null && list.Count > 0);
+            Contract.Requires(list != null);
             Contract.Ensures(list.Count == Contract.OldValue(list.Count));
 
             if(list.Count < 2) return;
