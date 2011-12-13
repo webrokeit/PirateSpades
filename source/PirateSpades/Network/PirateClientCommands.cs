@@ -14,7 +14,15 @@ namespace PirateSpades.Network {
 
     using PirateSpades.GameLogic;
 
+    /// <summary>
+    /// Various commands used by the PirateClientt to communicate with its host (PirateHost).
+    /// </summary>
     public class PirateClientCommands {
+        /// <summary>
+        /// Check if host is available.
+        /// </summary>
+        /// <param name="socket">The socket to communicate through.</param>
+        /// <returns>True if host is available, false if not.</returns>
         public static bool KnockKnock(Socket socket) {
             Contract.Requires(socket != null);
             var knock = new PirateMessage(PirateMessageHead.Knck, "");
@@ -24,6 +32,11 @@ namespace PirateSpades.Network {
             return read > 4 && PirateMessage.GetMessages(buffer, read).Any(msg => msg.Head == PirateMessageHead.Knck);
         }
 
+        /// <summary>
+        /// Receive an error message.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="msg">Message to send.</param>
         public static void ErrorMessage(PirateClient pclient, PirateMessage msg) {
             Contract.Requires(pclient != null && msg != null && msg.Head == PirateMessageHead.Erro);
             var err = PirateMessage.GetError(msg.Body);
@@ -47,24 +60,42 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Initialize connection.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
         public static void InitConnection(PirateClient pclient) {
             Contract.Requires(pclient != null);
             var msg = new PirateMessage(PirateMessageHead.Init, "");
             pclient.SendMessage(msg);
         }
 
+        /// <summary>
+        /// Verify connection with host.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">Data received from host.</param>
         public static void VerifyConnection(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Init);
             var msg = new PirateMessage(PirateMessageHead.Verf, data.Body);
             pclient.SendMessage(msg);
         }
 
+        /// <summary>
+        /// Send player information.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
         public static void SendPlayerInfo(PirateClient pclient) {
             Contract.Requires(pclient != null);
             var msg = new PirateMessage(PirateMessageHead.Pnfo, pclient.ToString());
             pclient.SendMessage(msg);
         }
 
+        /// <summary>
+        /// Get players in game.
+        /// </summary>
+        /// <param name="pclient">Client receiving the data.</param>
+        /// <param name="data">Data received from host.</param>
         public static void GetPlayersInGame(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Pigm);
 
@@ -81,6 +112,11 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Game has been started,
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">Data received from host.</param>
         public static void GameStarted(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Gstr);
 
@@ -92,6 +128,11 @@ namespace PirateSpades.Network {
             pclient.Game.Start(pclient.Game.PlayerIndex(startPlayer));
         }
 
+        /// <summary>
+        /// Game has finished.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">Data received from host.</param>
         public static void GameFinished(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Gfin);
 
@@ -104,6 +145,11 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Play a card.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="card">Card to be played.</param>
         public static void PlayCard(PirateClient pclient, Card card) {
             Contract.Requires(pclient != null && card != null);
             var body = PirateMessage.ConstructBody(pclient.ToString(), card.ToString());
@@ -111,6 +157,11 @@ namespace PirateSpades.Network {
             pclient.SendMessage(msg);
         }
 
+        /// <summary>
+        /// Receive a card played.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">Data received from host.</param>
         public static void GetPlayedCard(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Pcrd);
 
@@ -128,6 +179,12 @@ namespace PirateSpades.Network {
             Console.WriteLine(player.Name + " plays " + card.ToShortString());
         }
 
+        /// <summary>
+        /// Deal card to player.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="receiver">Receiving player.</param>
+        /// <param name="card">Card dealt.</param>
         public static void DealCard(PirateClient pclient, Player receiver, Card card) {
             Contract.Requires(pclient != null && receiver != null && card != null);
             var body = PirateMessage.ConstructBody(PirateMessage.ConstructPlayerName(receiver.Name), card.ToString());
@@ -137,6 +194,11 @@ namespace PirateSpades.Network {
             pclient.SendMessage(msg);
         }
 
+        /// <summary>
+        /// Get dealt card.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">Data received from host.</param>
         public static void GetCard(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Xcrd);
             var card = Card.FromString(data.Body);
@@ -148,6 +210,11 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Set the bet.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="bet">Bet to use.</param>
         public static void SetBet(PirateClient pclient, int bet) {
             Contract.Requires(pclient != null & bet >= 0);
 
@@ -155,6 +222,11 @@ namespace PirateSpades.Network {
             pclient.SendMessage(msg);
         }
 
+        /// <summary>
+        /// A new round has been started.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">Data received from host.</param>
         public static void NewRound(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Nrnd);
 
@@ -170,6 +242,11 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// A round has begun.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">Data received from host.</param>
         public static void BeginRound(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Bgrn);
             var bets = PirateMessage.GetPlayerBets(data);
@@ -189,6 +266,11 @@ namespace PirateSpades.Network {
             pclient.Game.Round.Begin();
         }
 
+        /// <summary>
+        /// A new pile has been created.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">Data received from host.</param>
         public static void NewPile(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Trdn);
 
@@ -202,6 +284,11 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// A round has finished.
+        /// </summary>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">Data received from host.</param>
         public static void FinishRound(PirateClient pclient, PirateMessage data) {
             Contract.Requires(pclient != null && data != null && data.Head == PirateMessageHead.Frnd);
             var scores = PirateMessage.GetPlayerScores(data);
