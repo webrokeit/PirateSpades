@@ -132,29 +132,6 @@ namespace PirateSpadesGame.IngameFunc {
             }
         }
 
-        public bool HitAlpha(Rectangle rectangle, Texture2D texture, int x, int y) {
-            return HitAlpha(0, 0, texture, texture.Width * (x - rectangle.X) /
-                rectangle.Width, texture.Height * (y - rectangle.Y) / rectangle.Height);
-        }
-
-        private bool HitAlpha(float tx, float ty, Texture2D texture, int x, int y) {
-            if(this.Hit(tx, ty, texture, x, y)) {
-                var data = new uint[texture.Width * texture.Height];
-                texture.GetData<uint>(data);
-                if((x - (int)tx) + (y - (int)ty) * texture.Width < texture.Width * texture.Height) {
-                    return ((data[(x - (int)tx) + (y - (int)ty) * texture.Width] & 0xFF000000) >> 24) > 20;
-                }
-            }
-            return false;
-        }
-
-        private bool Hit(float tx, float ty, Texture2D texture, int x, int y) {
-            return (x >= tx &&
-                x <= tx + texture.Width &&
-                y >= ty &&
-                y <= ty + texture.Height);
-        }
-
         /// <summary>
         /// Draw this cardsprite on the given SpriteBatch
         /// </summary>
