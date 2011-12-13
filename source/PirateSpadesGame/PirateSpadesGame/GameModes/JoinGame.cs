@@ -1,11 +1,17 @@
 ﻿namespace PirateSpadesGame.GameModes {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
+    using System.Text.RegularExpressions;
+
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using PirateSpades.Network;
+
+    using PirateSpadesGame.Misc;
+
     using Game = PirateSpades.GameLogic.Game;
 
     public class JoinGame : IGameMode {
@@ -30,18 +36,19 @@
         private delegate IList<PirateScanner.GameInfo> ScanForGamesDelegate(int port, int timeout);
 
         public JoinGame(PsGame game) {
+            Contract.Requires(game != null);
             servers = new List<ServerSprite>();
             this.game = game;
-            this.SetUp(game.Window);
+            this.SetUp();
             content = game.Content;
             scanner = new PirateScanner();
             this.Refresh();
         }
 
-        private void SetUp(GameWindow window) {
+        private void SetUp() {
             backGround = new Sprite() { Color = Color.White };
-            var x = window.ClientBounds.Width / 2 - 800 / 2;
-            var y = window.ClientBounds.Height / 2 - 500 / 2;
+            var x = game.Window.ClientBounds.Width / 2 - 800 / 2;
+            var y = game.Window.ClientBounds.Height / 2 - 500 / 2;
             backGround.Position = new Vector2(x, y);
 
             var serversX = x + 75;
@@ -51,9 +58,9 @@
             this.SetUpServers();
 
 
-            xButton = new Button("X", x + 650, window.ClientBounds.Height / 2 - 500 / 2 - 10);
+            xButton = new Button("X", x + 650, game.Window.ClientBounds.Height / 2 - 500 / 2 - 10);
             var buttonx = x + 650;
-            var buttony = window.ClientBounds.Height / 2 + 200;
+            var buttony = game.Window.ClientBounds.Height / 2 + 200;
             back = new Button("backjoingame", buttonx, buttony);
             buttonx -= Button.Width;
             refreshButton = new Button("refresh", buttonx, buttony);
@@ -97,9 +104,7 @@
         }
 
         private void ButtonAction(Button b) {
-            if(b == null) {
-                return;
-            }
+            Contract.Requires(b != null);
             var str = b.Name;
             switch(str) {
                 case "jointhisgame":
@@ -137,12 +142,6 @@
 
             scanner.GameFound += GameFound;
 
-            // Dette burde være unødvendigt, så det skal lige testes om det skal med eller ej
-            lock(servers) {
-                //servers.Clear();
-                //servers.AddRange(res.Select(gameInfo => new ServerSprite(gameInfo.Ip, gameInfo.GameName, gameInfo.Players, gameInfo.MaxPlayers, serversRectangle)));
-            }
-
             refreshing = false;
         }
 
@@ -164,6 +163,8 @@
         }
 
         private void JoinThisGame(ServerSprite s) {
+            Contract.Requires(s != null && Regex.IsMatch(game.PlayerName, @"^[a-zA-Z0-9]{3,12}$"));
+            Contract.Ensures(game.Client != null && game.PlayingGame != null && game.Host == null && game.State == GameState.InGame);
             var client = new PirateClient(game.PlayerName, s.Ip, 4939);
             var playingGame = new Game();
             game.GameName = s.ServerName;
@@ -206,6 +207,7 @@
         }
 
         private void OnNameRequest(PirateClient pclient) {
+            Contract.Ensures(pclient.Name == game.PlayerName);
             var playerName = game.PlayerName;
             pclient.SetName(playerName);
         }

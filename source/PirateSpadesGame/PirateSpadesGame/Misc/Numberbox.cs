@@ -1,12 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+﻿namespace PirateSpadesGame.Misc {
+    using System.Diagnostics.Contracts;
 
-namespace PirateSpadesGame {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
+
     using System;
     using System.Linq;
 
@@ -25,6 +24,7 @@ namespace PirateSpadesGame {
         private int maxNumber;
 
         public Numberbox(Rectangle rect, string name, int maxNumber) {
+            Contract.Requires(name != null && maxNumber > 0);
             box = rect;
             this.name = name;
             this.maxNumber = maxNumber;
@@ -43,10 +43,10 @@ namespace PirateSpadesGame {
 
         public void Update(GameTime gameTime) {
             MouseState state = Mouse.GetState();
-            if(state.LeftButton == ButtonState.Pressed) {
+            if(state.LeftButton == ButtonState.Pressed && PsGame.Active && state.X >= 0 && state.X < PsGame.Width && state.Y >= 0 && state.Y < PsGame.Height) {
                 typable = true;
             }
-            if(state.LeftButton == ButtonState.Pressed && (state.X < box.X || state.X > (box.X + box.Width) || state.Y < box.Y || state.Y > (box.Y + box.Height))) {
+            if(state.LeftButton == ButtonState.Pressed && (state.X < box.X || state.X > (box.X + box.Width) || state.Y < box.Y || state.Y > (box.Y + box.Height)) && (PsGame.Active && state.X >= 0 && state.X < PsGame.Width && state.Y >= 0 && state.Y < PsGame.Height)) {
                 typable = false;
             }
             
@@ -62,6 +62,7 @@ namespace PirateSpadesGame {
         }
 
         private bool CheckKey(Keys k) {
+            Contract.Ensures(Contract.Result<bool>() == (this.lastKeyboardState.IsKeyDown(k) && this.currentKeyboardState.IsKeyUp(k)));
             return lastKeyboardState.IsKeyDown(k) && currentKeyboardState.IsKeyUp(k);
         }
 

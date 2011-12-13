@@ -2,12 +2,15 @@
 namespace PirateSpadesGame.GameModes {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Text.RegularExpressions;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Media;
+
+    using PirateSpadesGame.Misc;
 
     public class StartUp : IGameMode {
         private List<Button> buttons;
@@ -34,16 +37,17 @@ namespace PirateSpadesGame.GameModes {
         private List<Button> settingsButton;
 
         public StartUp(PsGame game) {
+            Contract.Requires(game != null);
             this.game = game;
-            this.SetUp(game.Window);
+            this.SetUp();
         }
 
-        private void SetUp(GameWindow window) {
-            this.SetUpRules(window);
-            this.SetUpSettings(window);
+        private void SetUp() {
+            this.SetUpRules();
+            this.SetUpSettings();
 
-            var x = window.ClientBounds.Width / 2 - Button.Width / 2;
-            var y = window.ClientBounds.Height / 2 - numberOfButtons / 2 * Button.Height - (numberOfButtons % 2) * Button.Height / 2;
+            var x = game.Window.ClientBounds.Width / 2 - Button.Width / 2;
+            var y = game.Window.ClientBounds.Height / 2 - numberOfButtons / 2 * Button.Height - (numberOfButtons % 2) * Button.Height / 2;
 
             buttons = new List<Button>();
             buttons.Add(new Button("joingame", x, y));
@@ -57,21 +61,21 @@ namespace PirateSpadesGame.GameModes {
             buttons.Add(new Button("exit", x, y));
         }
 
-        public void SetUpRules(GameWindow window) {
+        public void SetUpRules() {
             rules = new Sprite { Color = Color.White };
-            int rulesX = window.ClientBounds.Width / 2 - 450 / 2;
-            int rulesY = window.ClientBounds.Height / 2 - 588 / 2;
+            int rulesX = game.Window.ClientBounds.Width / 2 - 450 / 2;
+            int rulesY = game.Window.ClientBounds.Height / 2 - 588 / 2;
             rules.Position = new Vector2(rulesX, rulesY);
             int backX = (rulesX + 450) / 2 + Button.Width / 2;
             int backY = (rulesY + 515);
             back = new Button("back", backX, backY);
         }
 
-        private void SetUpSettings(GameWindow window) {
+        private void SetUpSettings() {
             settingsButton = new List<Button>();
             settings = new Sprite { Color = Color.White };
-            int settingsX = window.ClientBounds.Width / 2 - 600 / 2;
-            int settingsY = window.ClientBounds.Height / 2 - 468 / 2;
+            int settingsX = game.Window.ClientBounds.Width / 2 - 600 / 2;
+            int settingsY = game.Window.ClientBounds.Height / 2 - 468 / 2;
             settings.Position = new Vector2(settingsX, settingsY);
             int cancelX = settingsX + 425;
             int cancelY = settingsY + 400;
@@ -132,9 +136,7 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void ButtonAction(Button b) {
-            if(b == null) {
-                return;
-            }
+            Contract.Requires(b != null);
             var str = b.Name;
             switch(str) {
                 case "joingame":
@@ -169,6 +171,7 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void CancelChanges() {
+            Contract.Ensures(playername.Text == game.PlayerName);
             playername.Text = game.PlayerName;
             var a = (int)Math.Round(game.MusicVolume);
             volume.Number = a * 100;
@@ -176,6 +179,7 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private bool ApplyChanges() {
+            Contract.Ensures(Regex.IsMatch(playername.Text, @"^[a-zA-Z0-9]{3,12}$") ? (game.PlayerName == playername.Text && game.MusicVolume == volume.ParseInputToFloat()) : false);
             if(Regex.IsMatch(playername.Text, @"^[a-zA-Z0-9]{3,12}$")) {
                 game.PlayerName = playername.Text;
                 game.MusicVolume = volume.ParseInputToFloat();

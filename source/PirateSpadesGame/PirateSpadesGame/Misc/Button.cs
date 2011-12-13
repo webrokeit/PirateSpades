@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+﻿namespace PirateSpadesGame.Misc {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Graphics;
 
-namespace PirateSpadesGame {
+    using System.Diagnostics.Contracts;
+
     using Microsoft.Xna.Framework.Input;
 
     /// <summary>
@@ -18,6 +20,7 @@ namespace PirateSpadesGame {
         private bool prevmpressed = false;
 
         public Button(string name, int x, int y) {
+            Contract.Requires(name != null);
             this.name = name;
             Timer = 0.0;
             State = BState.Up;
@@ -25,15 +28,16 @@ namespace PirateSpadesGame {
             Rectangle = new Rectangle(x, y, Width, Height);
         }
 
-        public string Name { get { return name; } }
+        public string Name { get { Contract.Ensures(name != null); return name; } }
 
-        public static int Width { get { return width; } }
+        public static int Width { get {
+            Contract.Ensures(Width > 0); return width; } }
 
-        public static int Height { get { return height; } }
+        public static int Height { get { Contract.Ensures(Height > 0); return height; } }
 
         public double Timer { get; set; }
 
-        public Texture2D Tex { get { return buttonTexture; } }
+        public Texture2D Tex { get { Contract.Ensures(Tex != null); return buttonTexture; } }
 
         public BState State { get; set; }
 
@@ -50,12 +54,13 @@ namespace PirateSpadesGame {
         }
 
         public bool Update(GameTime gameTime) {
+            Contract.Ensures(Contract.Result<bool>() == (State == BState.JustReleased));
             frametime = gameTime.ElapsedGameTime.Milliseconds / 1000.0;
             MouseState mouseState = Mouse.GetState();
             int mx = mouseState.X;
             int my = mouseState.Y;
             prevmpressed = mpressed;
-            mpressed = mouseState.LeftButton == ButtonState.Pressed;
+            mpressed = mouseState.LeftButton == ButtonState.Pressed && PsGame.Active && mouseState.X >= 0 && mouseState.X < PsGame.Width && mouseState.Y >= 0 && mouseState.Y < PsGame.Height;
 
             if(HitAlpha(Rectangle, Tex, mx, my)) {
                 Timer = 0.0;

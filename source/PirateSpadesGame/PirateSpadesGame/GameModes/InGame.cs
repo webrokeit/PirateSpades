@@ -1,30 +1,26 @@
 ﻿//Helena
 namespace PirateSpadesGame.GameModes {
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
-
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
-
     using PirateSpades.Misc;
-    using PirateSpades.GameLogic;
     using PirateSpades.Network;
 
     using PirateSpadesGame.IngameFunc;
+    using PirateSpadesGame.Misc;
 
     using Game = PirateSpades.GameLogic.Game;
 
     public class InGame : IGameMode {
-        private Vector2 screenCenter;
-        private Dictionary<string, Dictionary<string, int>> score;
         private bool playing = false;
         private bool showMenu = false;
         private bool showScoreboard = false;
         private PirateClient client;
         private PirateHost host;
-        private Game playingGame;
         private bool hosting;
         private Sprite menu;
         private Sprite inJoinbackGround;
@@ -51,11 +47,11 @@ namespace PirateSpadesGame.GameModes {
         private Rectangle cardSize;
         private Numberbox betBox;
         private bool hasBet = false;
-        private Texture2D cardback;
         private Rectangle scoreRectangle;
         private SpriteFont font2;
         private Texture2D scoreOverlay;
         private Rectangle scoreOverlayRect;
+        private Texture2D board;
         private TableSprite playingGround;
         private Rectangle ingameBottom;
         private Texture2D bottom;
@@ -63,6 +59,7 @@ namespace PirateSpadesGame.GameModes {
         private bool finished = false;
 
         public InGame(PsGame game) {
+            Contract.Requires(game != null);
             this.game = game;
             this.SetUp();
         }
@@ -75,7 +72,6 @@ namespace PirateSpadesGame.GameModes {
                 hosting = true;
             }
             client = game.Client;
-            playingGame = game.PlayingGame;
             gameName = game.GameName;
             maxPlayers = game.MaxPlayers;
 
@@ -87,7 +83,7 @@ namespace PirateSpadesGame.GameModes {
 
             cards = new List<CardSprite>();
 
-            inJoinbackGround = new Sprite() { Color = Color.White };
+            inJoinbackGround = new Sprite { Color = Color.White };
             var x = game.Window.ClientBounds.Width / 2 - 400 / 2;
             var y = game.Window.ClientBounds.Height / 2 - 500 / 2;
             inJoinbackGround.Position = new Vector2(x, y);
@@ -106,7 +102,7 @@ namespace PirateSpadesGame.GameModes {
 
             namesRectangle = new Rectangle(x + 5, y + 150, 200, 30);
 
-            menu = new Sprite() { Color = Color.White };
+            menu = new Sprite { Color = Color.White };
             var menuX = game.Window.ClientBounds.Width / 2 - 300 / 2;
             var menuY = game.Window.ClientBounds.Height / 2 - 420 / 2;
             menu.Position = new Vector2(menuX, menuY);
@@ -117,15 +113,14 @@ namespace PirateSpadesGame.GameModes {
             menuleaveGame = new Button("leavegame", menuX, menuY);
             menuY += Button.Height;
             exitGame = new Button("exitgame", menuX, menuY);
-            menuButtons = new List<Button>() { this.menuleaveGame, this.resumeGame, this.exitGame };
+            menuButtons = new List<Button> { this.menuleaveGame, this.resumeGame, this.exitGame };
+          
 
             var rect = new Rectangle(900, 520, 100, 50);
             betBox = new Numberbox(rect, "bettingbox", 2) { Limit = 10, Number = 0 };
             betBox.Text = betBox.Number.ToString();
 
-            var betX = 860;
-            var betY = 565;
-            bet = new Button("bet", betX, betY);
+            bet = new Button("bet", 860,  565);
 
             cardSize = new Rectangle(5, 615, 100, 120);
 
@@ -148,8 +143,9 @@ namespace PirateSpadesGame.GameModes {
             leaveGame.LoadContent(contentManager);
             font = contentManager.Load<SpriteFont>("font");
             font2 = contentManager.Load<SpriteFont>("font2");
+            //board = contentManager.Load<Texture2D>("Scoreboard");
             bet.LoadContent(contentManager);
-            cardback = contentManager.Load<Texture2D>("cardback");
+            contentManager.Load<Texture2D>("cardback");
             betBox.LoadContent(contentManager);
             scoreOverlay = contentManager.Load<Texture2D>("scoreoverlay");
             bottom = contentManager.Load<Texture2D>("bottom");
@@ -157,7 +153,7 @@ namespace PirateSpadesGame.GameModes {
 
         public void Update(GameTime gameTime) {
             if(finished) {
-                leaveGame = new Button("leavegame", game.Window.ClientBounds.Width / 2 - Button.Width / 2, game.Window.ClientBounds.Height - 50);
+                leaveGame = new Button("leavegame", game.Window.ClientBounds.Width / 2 - Button.Width / 2, game.Window.ClientBounds.Height - Button.Width);
                 leaveGame.LoadContent(game.Content);
                 if(leaveGame.Update(gameTime)) {
                     this.ButtonAction(leaveGame);
@@ -176,7 +172,7 @@ namespace PirateSpadesGame.GameModes {
 
             } else {
                 if(playingGround == null) {
-                    playingGround = new TableSprite(game, playingGame, new Rectangle(0,0,1024,615));
+                    playingGround = new TableSprite(game, client.Game, new Rectangle(0,0,1024,615));
                     playingGround.LoadContent(game.Content);
                 }
                 currentKeyboardState = Keyboard.GetState();
@@ -207,10 +203,11 @@ namespace PirateSpadesGame.GameModes {
                         }
                     }
                     if(cardToPlay != null && cardRequested && client.CardPlayable(cardToPlay.Card, client.Game.Round.BoardCards.FirstCard)) {
-                        client.PlayCard(cardToPlay.Card);
-                        cards.Remove(cardToPlay);
-                        cardToPlay = null;
-                        cardRequested = false;
+                        //client.PlayCard(cardToPlay.Card);
+                        //cards.Remove(cardToPlay);
+                        //cardToPlay = null;
+                        //cardRequested = false;
+                        this.PlayCard();
                     }
                 } else if(client.Hand.Count == client.Game.CardsToDeal && cards.Count == 0) {
                     betBox.Limit = client.Hand.Count;
@@ -228,14 +225,22 @@ namespace PirateSpadesGame.GameModes {
             }
         }
 
+        private void PlayCard() {
+            Contract.Requires(cardToPlay.Card != null && cardToPlay != null && cards.Contains(cardToPlay) && client.HasCard(cardToPlay.Card));
+            Contract.Ensures(!client.HasCard(Contract.OldValue(cardToPlay.Card)) && !cards.Contains(cardToPlay) && cardToPlay == null && cardRequested == false);
+            client.PlayCard(cardToPlay.Card);
+            cards.Remove(cardToPlay);
+            cardToPlay = null;
+            cardRequested = false;
+        }
+
         private bool CheckEscape() {
+            Contract.Ensures(Contract.Result<bool>() == lastKeyboardState.IsKeyDown(Keys.Escape) && currentKeyboardState.IsKeyUp(Keys.Escape));
             return lastKeyboardState.IsKeyDown(Keys.Escape) && currentKeyboardState.IsKeyUp(Keys.Escape);
         }
 
         private void ButtonAction(Button b) {
-            if(b == null) {
-                return;
-            }
+            Contract.Requires(b != null);
             var str = b.Name;
             switch(str) {
                 case "startgame":
@@ -276,7 +281,9 @@ namespace PirateSpadesGame.GameModes {
         public void Draw(SpriteBatch spriteBatch) {
             if(this.finished) {
                 this.DrawScoreboard(spriteBatch);
-                leaveGame.Draw(spriteBatch);
+                if(leaveGame != null) {
+                    leaveGame.Draw(spriteBatch);
+                }
                 return;
             }
             if(!playing) {
@@ -309,7 +316,7 @@ namespace PirateSpadesGame.GameModes {
                 betBox.Draw(spriteBatch);
                 bet.Draw(spriteBatch);
                 if(showScoreboard) {
-                    spriteBatch.DrawString(font, "HEJ SCOREBOARD", new Vector2(game.Window.ClientBounds.Width - 500, game.Window.ClientBounds.Height - 300), Color.Black);
+                    this.DrawScoreboard(spriteBatch);
                 }
                 if(showMenu) {
                     menu.Draw(spriteBatch);
@@ -319,9 +326,50 @@ namespace PirateSpadesGame.GameModes {
                 }
             }
         }
-
+        
         private void DrawScoreboard(SpriteBatch spriteBatch) {
+            var rectX = game.Window.ClientBounds.Width / 2 - 500 / 2;
+            var rectY = game.Window.ClientBounds.Height / 2 - 500 / 2;
+            var rect = new Rectangle(rectX, rectY, 700, 650);
+            spriteBatch.Draw(board, rect, Color.White);
             
+            int playerCount = 1+client.Game.Players.Count;
+            var rectWidths = rect.Width / playerCount;
+            var rectHeight = rect.Height / 22;
+            var nameRect = new Rectangle(rect.X, rect.Y, rectWidths, rectHeight);
+            var scores = client.Game.GetScoreTable();
+            spriteBatch.DrawString(font2, "Round", new Vector2(nameRect.X + 5, nameRect.Y +5), Color.Black);
+            var tempX = nameRect.X + rectWidths;
+            var tempY = nameRect.Y + rectHeight;
+            foreach (var play in scores[1].Keys) {
+                //write play.name
+                spriteBatch.DrawString(font2, play.Name, new Vector2(tempX, nameRect.Y + 5), Color.Black );
+                tempX += rectWidths;
+            }
+
+            tempY = nameRect.Y + 5 + rectHeight;
+
+            foreach (var round in scores) {
+                tempX = nameRect.X + 5;
+                //Write round.key/int
+                spriteBatch.DrawString(font2, round.Key.ToString(), new Vector2(tempX, tempY), Color.Black );
+                tempX += rectWidths;
+                foreach (var s in round.Value) {
+                    //Write s
+                    spriteBatch.DrawString(font2, s.Value.ToString(), new Vector2(tempX, tempY), Color.BurlyWood );
+                    tempX += rectWidths;
+                }
+                tempY += rectHeight;
+            }
+            
+            //Total points of a player
+            spriteBatch.DrawString(font2, "Total:", new Vector2(nameRect.X + 5, nameRect.Y +5 + (21*rectHeight)), Color.Black);
+            tempX = nameRect.X + 5;
+            //foreach(var p in scores[1].Keys) {
+            //    spriteBatch.DrawString(font2, client.Game.Get , new Vector2(tempX, nameRect.Y +5 + (21*rectHeight)), Color.Black);
+            //    tempX += rectWidths;
+            //}
+    
         }
 
         private void DrawRoundScore(SpriteBatch spriteBatch) {
@@ -343,6 +391,7 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void OnGameFinished(Game g) {
+            Contract.Ensures(g.Finished ? finished && showScoreboard : !finished && !showScoreboard);
             if(g.Finished) {
                 showScoreboard = true;
                 finished = true;
@@ -350,12 +399,14 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void OnGameStarted(Game g) {
+            Contract.Ensures(g.Started ? playing : !playing);
             if(g.Started) {
                 playing = true;
             }
         }
 
         private void OnDisconnected(PirateClient pc) {
+            Contract.Ensures(!hosting ? game.State == GameState.StartUp : game.State == GameState.InGame);
             if(!hosting) {
                 game.State = GameState.StartUp;
             }
@@ -372,10 +423,11 @@ namespace PirateSpadesGame.GameModes {
 
         private void OnCardRequest(PirateClient pc) {
             if(cardToPlay != null && cardToPlay.Card != null && client.CardPlayable(cardToPlay.Card)) {
-                client.PlayCard(cardToPlay.Card);
-                cards.Remove(cardToPlay);
-                cardToPlay = null;
-                cardRequested = false;
+                //client.PlayCard(cardToPlay.Card);
+                //cards.Remove(cardToPlay);
+                //cardToPlay = null;
+                //cardRequested = false;
+                this.PlayCard();
             } else {
                 cardRequested = true;
             }

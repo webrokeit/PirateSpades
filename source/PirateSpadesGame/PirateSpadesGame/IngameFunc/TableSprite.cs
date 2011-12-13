@@ -2,6 +2,7 @@
 namespace PirateSpadesGame.IngameFunc {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
 
     using Microsoft.Xna.Framework;
@@ -47,6 +48,7 @@ namespace PirateSpadesGame.IngameFunc {
         };
 
         public TableSprite(PsGame game, Game playingGame, Rectangle rect) {
+            Contract.Requires(game != null && playingGame != null);
             this.game = game;
             this.playingGame = playingGame;
             this.rect = rect;
@@ -103,6 +105,7 @@ namespace PirateSpadesGame.IngameFunc {
         }
 
         private void OnRoundFinished(Game g) {
+            Contract.Ensures(cardsOnTable.Count == 0);
             cardsOnTable.Clear();
             winner = g.Round.LastTrick.Winner;
             roundOver = DateTime.Now;

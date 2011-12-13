@@ -1,15 +1,17 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Input;
+namespace PirateSpadesGame.IngameFunc {
+    using System.Diagnostics.Contracts;
 
-namespace PirateSpadesGame {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Input;
+
     using System;
 
     using Microsoft.Xna.Framework.Graphics;
 
     using PirateSpades.GameLogic;
 
-    using PirateSpadesGame.GameModes;
+    using PirateSpadesGame.Misc;
 
     public class CardSprite {
         private Texture2D cardSprite;
@@ -19,9 +21,9 @@ namespace PirateSpadesGame {
         private double frametime;
 
         public CardSprite(Card card, Rectangle rect) {
+            Contract.Requires(card != null);
             this.Card = card;
             this.Rect = rect;
-            Scale = 1;
             Color = Color.White;
         }
 
@@ -43,8 +45,6 @@ namespace PirateSpadesGame {
 
         public Rectangle Rect { get; private set; }
 
-        public int Scale { get; set; }
-
         private int clickCount = 0;
 
         private DateTime lastClick = DateTime.Now;
@@ -63,7 +63,7 @@ namespace PirateSpadesGame {
             var mx = state.X;
             var my = state.Y;
             prevmousepressed = mousepressed;
-            mousepressed = state.LeftButton == ButtonState.Pressed;
+            mousepressed = state.LeftButton == ButtonState.Pressed && PsGame.Active && state.X >= 0 && state.X < PsGame.Width && state.Y >= 0 && state.Y < PsGame.Height;
 
             if(HitAlpha(Rect, cardSprite, mx, my)) {
                 timer = 0.0;
@@ -91,19 +91,6 @@ namespace PirateSpadesGame {
                     clickCount = 0;
                 }
                 lastClick = curClick;
-
-                /*var wasSelected = Selected;
-                lock(InGame.Cardsprites) {
-                    foreach(var c in InGame.Cardsprites) {
-                        c.Selected = false;
-                    }
-                }
-                if(wasSelected) {
-                    DoubleClick = true;
-                } else {
-                    Color = Color.Green;
-                    Selected = true;
-                }*/
             }
         }
 
@@ -131,7 +118,7 @@ namespace PirateSpadesGame {
         }
 
         public void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(this.cardSprite, new Rectangle(Rect.X, Rect.Y, Rect.Width * Scale, Rect.Height * Scale), Color.White);
+            spriteBatch.Draw(this.cardSprite, this.Rect, Color.White);
         }
     }
 }

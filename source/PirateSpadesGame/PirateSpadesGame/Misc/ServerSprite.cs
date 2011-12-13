@@ -1,6 +1,6 @@
 ﻿
-namespace PirateSpadesGame {
-    using System.Collections.Generic;
+namespace PirateSpadesGame.Misc {
+    using System.Diagnostics.Contracts;
     using System.Net;
 
     using Microsoft.Xna.Framework;
@@ -29,6 +29,7 @@ namespace PirateSpadesGame {
         private double time;
 
         public ServerSprite(IPAddress ip, string name, int players, int maxPlayers, Rectangle rect, int serverNumber) {
+            Contract.Requires(ip != null && name != null && players > 0 && maxPlayers > 0 && serverNumber > 0);
             this.ip = ip;
             this.name = name;
             this.players = players;
@@ -61,9 +62,9 @@ namespace PirateSpadesGame {
 
         public IPAddress Ip { get { return ip; } }
 
-        public string ServerName { get { return name; } }
+        public string ServerName { get { Contract.Ensures(ServerName != null); return name; } }
 
-        public int MaxPlayers { get { return maxPlayers; } }
+        public int MaxPlayers { get { Contract.Ensures(MaxPlayers > 0); return maxPlayers; } }
 
         public bool DoubleClick { get; set; }
 
@@ -86,7 +87,7 @@ namespace PirateSpadesGame {
             int mx = state.X;
             int my = state.Y;
             prevmousepressed = mousepressed;
-            mousepressed = state.LeftButton == ButtonState.Pressed;
+            mousepressed = state.LeftButton == ButtonState.Pressed && PsGame.Active && state.X >= 0 && state.X < PsGame.Width && state.Y >= 0 && state.Y < PsGame.Height;
 
             if(HitAlpha(wholeServer, tex, mx, my)) {
                 Timer = 0.0;

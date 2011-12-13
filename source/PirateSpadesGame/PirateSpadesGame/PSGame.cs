@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace PirateSpadesGame {
+    using System.Diagnostics.Contracts;
     using System.Text.RegularExpressions;
 
     using Microsoft.Xna.Framework.Audio;
@@ -13,6 +14,7 @@ namespace PirateSpadesGame {
 
 
     using PirateSpadesGame.GameModes;
+    using PirateSpadesGame.Misc;
 
     /// <summary>
     /// This is the main type for your game
@@ -40,6 +42,13 @@ namespace PirateSpadesGame {
             MusicVolume = 1.0f;
             PlayerName = "";
         }
+
+        public static int Width { get {
+            Contract.Ensures(Width > 0); return 1024; } }
+
+        public static int Height { get { Contract.Ensures(Height > 0); return 720; } }
+
+        public static bool Active { get; private set; }
 
         public PirateHost Host { get; set; }
 
@@ -97,7 +106,6 @@ namespace PirateSpadesGame {
         /// all content.
         /// </summary>
         protected override void UnloadContent() {
-            // TODO: Unload any non ContentManager content here
             this.Content.Unload();
         }
 
@@ -110,6 +118,8 @@ namespace PirateSpadesGame {
             // Allows the game to exit
             if(GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+
+            Active = this.IsActive;
 
             if(settingname && (State == GameState.JoinGame || State == GameState.CreateGame)) {
                 if(ok.Update(gameTime)) {
@@ -128,7 +138,6 @@ namespace PirateSpadesGame {
                 case GameState.StartUp:
                     if(!(gameMode is StartUp)) {
                         gameMode = startUp;
-                        //gameMode.LoadContent(this.Content);
                     }
                     gameMode.Update(gameTime);
                     break;

@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+﻿namespace PirateSpadesGame.GameModes {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Graphics;
 
-namespace PirateSpadesGame {
     public interface IGameMode {
         void LoadContent(ContentManager contentManager);
 

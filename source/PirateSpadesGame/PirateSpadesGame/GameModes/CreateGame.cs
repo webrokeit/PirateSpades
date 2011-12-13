@@ -1,11 +1,16 @@
 ﻿// Helena
 namespace PirateSpadesGame.GameModes {
+    using System.Diagnostics.Contracts;
+
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using System.Collections.Generic;
     using System.Linq;
     using PirateSpades.Network;
+
+    using PirateSpadesGame.Misc;
+
     using Game = PirateSpades.GameLogic.Game;
 
     public class CreateGame : IGameMode {
@@ -18,19 +23,19 @@ namespace PirateSpadesGame.GameModes {
         private Vector2 namePos;
         private Vector2 playersPos;
         private SpriteFont font;
-        private ContentManager content;
+
         private List<Button> buttons;
 
         public CreateGame(PsGame game) {
+            Contract.Requires(game != null);
             this.game = game;
-            this.content = game.Content;
-            this.SetUp(game.Window);
+            this.SetUp();
         }
 
-        private void SetUp(GameWindow window) {
+        private void SetUp() {
             backGround = new Sprite { Color = Color.White };
-            var x = window.ClientBounds.Width / 2 - 400 / 2;
-            var y = window.ClientBounds.Height / 2 - 400 / 2;
+            var x = game.Window.ClientBounds.Width / 2 - 400 / 2;
+            var y = game.Window.ClientBounds.Height / 2 - 400 / 2;
             backGround.Position = new Vector2(x, y);
 
             var cgX = x;
@@ -73,9 +78,9 @@ namespace PirateSpadesGame.GameModes {
         }
 
         private void ButtonAction(Button b) {
-            if(b == null) {
-                return;
-            }
+            Contract.Requires(b != null);
+            Contract.Ensures((PirateHost.IsValidGameName(serverName.Text) ? (game.Host != null && game.Client != null && game.PlayingGame != null && game.State == GameState.InGame) : game.State == GameState.CreateGame)
+                || game.State == GameState.StartUp);
             var str = b.Name;
             switch(str) {
                 case "creategame":
