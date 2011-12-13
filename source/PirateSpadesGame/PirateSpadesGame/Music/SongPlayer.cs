@@ -12,6 +12,12 @@ namespace PirateSpadesGame.Music {
     class SongPlayer {
         private static SongPlayer me = null;
 
+        public bool IsPlaying {
+            get {
+                return MediaPlayer.State == MediaState.Playing;
+            }
+        }
+
         public PlayList PlayList { get; private set; }
 
         public bool Playing { get; private set; }
@@ -23,7 +29,7 @@ namespace PirateSpadesGame.Music {
                 new []
                     {
                         "audio/pirates_of_the_caribbean", "audio/devils_dance_floor", "audio/hes_a_pirate_tiesto",
-                        "audio/requiem_for_a_dying_song", "audio/salty_dog"
+                        "audio/requiem_for_a_dying_song", "audio/salty_dog", "audio/drunken_lullabies"
                     });
 
             MediaPlayer.MediaStateChanged += this.MediaStateChange;

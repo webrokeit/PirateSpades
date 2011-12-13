@@ -89,8 +89,8 @@ namespace PirateSpadesGame.GameModes {
             playername.MoveText(45);
             playerNamePos = new Vector2(settingsX+100, settingsY + 125);
             var volumeRect = new Rectangle(settingsX + (600 - 325) + 100, settingsY + 185, 100, 50);
-            var a = (int)Math.Round(game.MusicVolume);
-            volume = new Numberbox(volumeRect, "volumebox", 3) { Number = a * 100, Limit = 100 };
+            var a = (int)(game.MusicVolume * 100);
+            volume = new Numberbox(volumeRect, "volumebox", 3) { Number = a, Limit = 100 };
             volume.Text = volume.Number.ToString();
             volumePos = new Vector2(settingsX + 100, settingsY + 200);
             scoreboardPos = new Vector2(settingsX + 100, settingsY + 250);
@@ -110,9 +110,14 @@ namespace PirateSpadesGame.GameModes {
                 b.LoadContent(contentManager);
             }
 
-            songPlayer = SongPlayer.GetInstance(contentManager);
-            songPlayer.Start();
-            songPlayer.PlayList.ShuffleList = true;
+            if(songPlayer == null) {
+                MediaPlayer.Volume = game.MusicVolume;
+                songPlayer = SongPlayer.GetInstance(contentManager);
+                songPlayer.Start();
+                songPlayer.PlayList.ShuffleList = true;
+            } else if(!songPlayer.IsPlaying) {
+                songPlayer.Start();
+            }
         }
 
         public void Update(GameTime gameTime) {
@@ -181,6 +186,7 @@ namespace PirateSpadesGame.GameModes {
             if(Regex.IsMatch(playername.Text, @"^[a-zA-Z0-9]{3,12}$")) {
                 game.PlayerName = playername.Text;
                 game.MusicVolume = volume.ParseInputToFloat();
+                MediaPlayer.Volume = game.MusicVolume;
                 return true;
             }
             return false;

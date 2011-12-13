@@ -72,7 +72,6 @@ namespace PirateSpadesGame {
             if(Number > Limit) {
                 Number = Limit;
                 Text = Number.ToString();
-                return Limit / (float)Limit;
             }
             return Number /(float)Limit;
         }

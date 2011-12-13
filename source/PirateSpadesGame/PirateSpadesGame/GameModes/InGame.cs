@@ -1,6 +1,7 @@
 ﻿//Helena
 namespace PirateSpadesGame.GameModes {
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Diagnostics.Contracts;
     using System.Linq;
     using Microsoft.Xna.Framework;
@@ -233,6 +234,7 @@ namespace PirateSpadesGame.GameModes {
                 case "startgame":
                     if(host.Game.Players.Count >= Game.MinPlayersInGame && host.Game.Players.Count <= Game.MaxPlayersInGame) {
                         host.StartGame();
+                        
                     }
                     break;
                 case "bet":

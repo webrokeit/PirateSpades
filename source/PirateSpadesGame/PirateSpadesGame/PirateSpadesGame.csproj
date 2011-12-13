@@ -124,10 +124,14 @@
     <Compile Include="Misc\ServerSprite.cs" />
     <Compile Include="Misc\Sprite.cs" />
     <Compile Include="Misc\Textbox.cs" />
+    <Compile Include="Settings\PirateSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
     <Content Include="GameThumbnail.png" />
+    <Content Include="piratesettings.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\PirateSpades\PirateSpades.csproj">

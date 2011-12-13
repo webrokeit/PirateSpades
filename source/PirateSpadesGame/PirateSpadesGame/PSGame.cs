@@ -6,13 +6,12 @@ using Microsoft.Xna.Framework.Input;
 namespace PirateSpadesGame {
     using System.Text.RegularExpressions;
 
-    using Microsoft.Xna.Framework.Audio;
-
     using PirateSpades.GameLogic;
     using PirateSpades.Network;
 
 
     using PirateSpadesGame.GameModes;
+    using PirateSpadesGame.Settings;
 
     /// <summary>
     /// This is the main type for your game
@@ -37,8 +36,8 @@ namespace PirateSpadesGame {
             Content.RootDirectory = "Content";
             State = GameState.StartUp;
             Color = Color.CornflowerBlue;
-            MusicVolume = 1.0f;
-            PlayerName = "";
+            MusicVolume = PirateSettings.GetFloat("musicvolume");
+            PlayerName = PirateSettings.GetString("playername");
         }
 
         public PirateHost Host { get; set; }
@@ -76,6 +75,13 @@ namespace PirateSpadesGame {
             gameMode = startUp;
 
             base.Initialize();
+        }
+
+        protected new void Exit() {
+            PirateSettings.Set("playername", PlayerName);
+            PirateSettings.Set("musicvolume", MusicVolume);
+            PirateSettings.Save();
+            base.Exit();
         }
 
         /// <summary>
