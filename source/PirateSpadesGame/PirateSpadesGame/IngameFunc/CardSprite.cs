@@ -1,15 +1,10 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Input;
-
 namespace PirateSpadesGame {
     using System;
-
     using Microsoft.Xna.Framework.Graphics;
-
     using PirateSpades.GameLogic;
-
-    using PirateSpadesGame.GameModes;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Input;
 
     public class CardSprite {
         private Texture2D cardSprite;

@@ -1,17 +1,15 @@
 //Helena
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-
 namespace PirateSpadesGame {
     using System.Text.RegularExpressions;
-
     using PirateSpades.GameLogic;
     using PirateSpades.Network;
-
-
     using PirateSpadesGame.GameModes;
     using PirateSpadesGame.Settings;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
+
+    using Game = PirateSpades.GameLogic.Game;
 
     /// <summary>
     /// This is the main type for your game

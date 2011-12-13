@@ -1,18 +1,10 @@
-﻿
-namespace PirateSpadesGame.IngameFunc {
+﻿namespace PirateSpadesGame.IngameFunc {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
-    using Microsoft.Xna.Framework.Input;
-
-    using PirateSpades.Misc;
     using PirateSpades.GameLogic;
-    using PirateSpades.Network;
-
     using Game = PirateSpades.GameLogic.Game;
 
     public class TableSprite {
@@ -26,7 +18,7 @@ namespace PirateSpadesGame.IngameFunc {
         private SpriteFont font;
         private int ourIndex;
 
-        private static readonly Dictionary<int, List<Vector2>> CardPlacements = new Dictionary<int, List<Vector2>>() {
+        private static readonly Dictionary<int, List<Vector2>> CardPlacements = new Dictionary<int, List<Vector2>> {
             { 2, new List<Vector2> { new Vector2(425, 400), new Vector2(425, 305) } },
             { 3, new List<Vector2> { new Vector2(425, 400), new Vector2(295, 330), new Vector2(545, 340) } },
             {

@@ -1,5 +1,4 @@
 ﻿// Helena 
-
 namespace PirateSpades.Misc
 {
     using System;
