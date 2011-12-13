@@ -62,9 +62,8 @@ namespace PirateSpadesGame.Music {
         /// <summary>
         /// Delegate used for events.
         /// </summary>
-        /// <param name="previous">The song that was just played.</param>
-        /// <param name="next">The next song to be played.</param>
-        public delegate void SongDelegate(Song previous, Song next);
+        /// <param name="song">The song to be played.</param>
+        public delegate void SongDelegate(Song song);
 
         /// <summary>
         /// Fires when the Next() method has been called.
@@ -119,9 +118,8 @@ namespace PirateSpadesGame.Music {
             if(ShuffleList) {
                 songName = SongNames[ShuffledList[CurrentPlaying]];
             }
-            var curSong = SongPlaying;
             SongPlaying = ContentManager.Load<Song>(songName);
-            if (NextSong != null) NextSong(curSong, SongPlaying);
+            if (NextSong != null) NextSong(SongPlaying);
         }
 
         /// <summary>

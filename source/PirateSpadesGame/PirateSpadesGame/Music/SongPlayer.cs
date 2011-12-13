@@ -90,11 +90,8 @@ namespace PirateSpadesGame.Music {
         /// <summary>
         /// Event used as a handler for PlayList.NextSong.
         /// </summary>
-        /// <param name="previous">The song that was previously playing.</param>
-        /// <param name="next">The song to be played.</param>
-        private void NextSong(Song previous, Song next) {
-            MediaPlayer.Stop();
-            if(previous != null) previous.Dispose();
+        /// <param name="song">The song to be played.</param>
+        private void NextSong(Song song) {
             this.UpdateState();
         }
 

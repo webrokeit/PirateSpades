@@ -20,12 +20,15 @@ namespace PirateSpades.GameLogic {
             get {
                 Contract.Requires(CardsPlayed.Count > 0 && FirstCard != null);
                 Player winner = null;
+                Card card = null;
                 foreach(var key in CardsPlayed.Keys) {
                     if (winner == null) {
                         winner = key;
+                        card = CardsPlayed[key];
                     } else if (CardsPlayed[key].SameSuit(FirstCard) || CardsPlayed[key].Suit == Suit.Spades) {
-                        if (CardsPlayed[key].HigherThan(FirstCard)) {
+                        if (CardsPlayed[key].HigherThan(card)) {
                             winner = key;
+                            card = CardsPlayed[key];
                         }
                     }
                 }
