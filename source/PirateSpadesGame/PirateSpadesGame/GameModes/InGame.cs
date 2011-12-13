@@ -7,14 +7,8 @@ namespace PirateSpadesGame.GameModes {
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
-    using PirateSpades.Misc;
     using PirateSpades.Network;
-<<<<<<< HEAD
-=======
-
     using PirateSpadesGame.IngameFunc;
-
->>>>>>> f1de359ae965d948403163a4e94d5ca2bb90d43f
     using Game = PirateSpades.GameLogic.Game;
 
     public class InGame : IGameMode {
@@ -54,16 +48,13 @@ namespace PirateSpadesGame.GameModes {
         private SpriteFont font2;
         private Texture2D scoreOverlay;
         private Rectangle scoreOverlayRect;
-<<<<<<< HEAD
         private Texture2D board;
-=======
         private TableSprite playingGround;
         private Rectangle ingameBottom;
         private Texture2D bottom;
         private bool cardRequested;
         private bool finished = false;
 
->>>>>>> f1de359ae965d948403163a4e94d5ca2bb90d43f
         public InGame(PsGame game) {
             this.game = game;
             this.SetUp();
@@ -133,10 +124,7 @@ namespace PirateSpadesGame.GameModes {
 
             scoreOverlayRect = new Rectangle(1024-177, 0, 177, 520);
 
-<<<<<<< HEAD
-=======
             ingameBottom = new Rectangle(0,615, 1024, 120);
->>>>>>> f1de359ae965d948403163a4e94d5ca2bb90d43f
         }
 
         public void LoadContent(ContentManager contentManager) {
@@ -180,7 +168,7 @@ namespace PirateSpadesGame.GameModes {
 
             } else {
                 if(playingGround == null) {
-                    playingGround = new TableSprite(game, playingGame, new Rectangle(0,0,1024,615));
+                    playingGround = new TableSprite(game, client.Game, new Rectangle(0,0,1024,615));
                     playingGround.LoadContent(game.Content);
                 }
                 currentKeyboardState = Keyboard.GetState();
@@ -357,18 +345,19 @@ namespace PirateSpadesGame.GameModes {
                     tempX += rectWidths;
                 }
                 tempY += rectHeight;
+                
+                //Total points of a player
+                spriteBatch.DrawString(font2, "Total:", new Vector2(nameRect.X + 5, nameRect.Y + 5 + (21*rectHeight)), Color.DarkRed);
+                tempX = nameRect.X + 5;
+                foreach (var s in round.Value)
+                {
+                    spriteBatch.DrawString(font2, s.Value.ToString(), new Vector2(tempX, nameRect.Y + 5 + (21 * rectHeight)), Color.DarkRed);
+                    tempX += rectWidths;
+                }
             }
             
-            //Total points of a player
-            spriteBatch.DrawString(font2, "Total:", new Vector2(nameRect.X + 5, nameRect.Y +5 + (21*rectHeight)), Color.Black);
-            tempX = nameRect.X + 5;
-            foreach(var p in scores[1].Keys) {
-                spriteBatch.DrawString(font2, client.Game.Get , new Vector2(tempX, nameRect.Y +5 + (21*rectHeight)), Color.Black);
-                tempX += rectWidths;
-            }
+            
     
-        }
-            
         }
 
         private void DrawRoundScore(SpriteBatch spriteBatch) {
