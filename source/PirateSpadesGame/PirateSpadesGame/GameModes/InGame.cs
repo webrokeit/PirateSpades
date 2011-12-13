@@ -365,20 +365,16 @@ namespace PirateSpadesGame.GameModes {
             }
         }
         
-<<<<<<< HEAD
-
         /// <summary>
         /// Draws the scoreboard when the user press' the tab button. Writes the score for each player and round if and only if the 
         /// round is finished or the game is finished. 
         /// </summary>
         /// <param name="spriteBatch"></param>
-=======
         /// <summary>
         /// Draw the scoreboard on the given SpriteBatch
         /// The points for each player
         /// </summary>
         /// <param name="spriteBatch">The SpriteBatch</param>
->>>>>>> f9bb06c1b7b6cafa03844a7db456f8c53804bb89
         private void DrawScoreboard(SpriteBatch spriteBatch) {
             //Create rectangle
             var rectX = game.Window.ClientBounds.Width / 2 - 375 / 2;

@@ -18,10 +18,6 @@ namespace PirateSpadesGame {
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
-<<<<<<< HEAD
-=======
-
->>>>>>> f9bb06c1b7b6cafa03844a7db456f8c53804bb89
     using Game = PirateSpades.GameLogic.Game;
 
     /// <summary>
