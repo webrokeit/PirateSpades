@@ -366,49 +366,53 @@ namespace PirateSpadesGame.GameModes {
         }
         
         /// <summary>
+        /// Draws the scoreboard when the user press' the tab button. Writes the score for each player and round if and only if the 
+        /// round is finished or the game is finished. 
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <summary>
         /// Draw the scoreboard on the given SpriteBatch
         /// The points for each player
         /// </summary>
         /// <param name="spriteBatch">The SpriteBatch</param>
         private void DrawScoreboard(SpriteBatch spriteBatch) {
-            var rectX = game.Window.ClientBounds.Width / 2 - 650 / 2;
-            var rectY = game.Window.ClientBounds.Height / 2 - 700 / 2;
+            //Create rectangle
+            var rectX = game.Window.ClientBounds.Width / 2 - 700 / 2;
+            var rectY = game.Window.ClientBounds.Height / 2 - 650 / 2;
             var rect = new Rectangle(rectX, rectY, 700, 650);
             spriteBatch.Draw(board, rect, Color.White);
             
+            //How many players should be written on the scoreboard and the width of the name field
             int playerCount = 1+client.Game.Players.Count;
             var rectWidths = rect.Width / playerCount;
             var rectHeight = rect.Height / 22;
             var nameRect = new Rectangle(rect.X, rect.Y, rectWidths, rectHeight);
-            var scores = client.Game.GetScoreTable();
-            
+           
             spriteBatch.DrawString(font2, "Round", new Vector2(nameRect.X + 5, nameRect.Y +5), Color.Black);
             
             var tempX = nameRect.X + rectWidths;
             var tempY = nameRect.Y + rectHeight;
-          
+            //get the dictionary from client.game
+            var scores = client.Game.GetScoreTable();
             foreach (var play in scores[1].Keys) {
-                //write play.name
+                //write the players name (play.name)
                 spriteBatch.DrawString(font2, play.Name, new Vector2(tempX, nameRect.Y + 5), Color.Black );
                 tempX += rectWidths;
             }
+            
             tempY = nameRect.Y + 5 + rectHeight;
-
             foreach (var round in scores) {
                 if (client.Game.CurrentRound > round.Key || client.Game.Finished) {
-
+                    //We reset the tempX
                     tempX = nameRect.X + 5;
-                    //Write round.key/int
+                    //Write the number of the round (round.key)
                     spriteBatch.DrawString(font2, round.Key.ToString(), new Vector2(tempX, tempY), Color.DarkRed);
                     tempX += rectWidths;
+
                     var roundScore = client.Game.GetRoundScore(round.Key);
                     foreach (var s in round.Value) {
                         //Write s
-                        spriteBatch.DrawString(
-                            font2,
-                            s.Value.ToString() + " (" + roundScore[s.Key] + ")",
-                            new Vector2(tempX, tempY),
-                            Color.DarkRed);
+                        spriteBatch.DrawString(font2, s.Value.ToString() + " (" + roundScore[s.Key] + ")", new Vector2(tempX, tempY), Color.DarkRed);
                         tempX += rectWidths;
                     }
                     tempY += rectHeight;

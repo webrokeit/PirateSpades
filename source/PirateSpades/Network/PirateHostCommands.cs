@@ -10,27 +10,49 @@ namespace PirateSpades.Network {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Diagnostics.Contracts;
 
     using PirateSpades.GameLogic;
     using PirateSpades.Misc;
 
+    /// <summary>
+    /// Various commands used by the PirateHost to communicate with its clients (PirateClient).
+    /// </summary>
     public class PirateHostCommands {
+        /// <summary>
+        /// A small text for identifying valid clients.
+        /// </summary>
         private const string WelcomePhrase = "YARRR!!";
 
+        /// <summary>
+        /// Reply to a knock.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="pclient">The client.</param>
         public static void KnockKnock(PirateHost host, PirateClient pclient) {
             Contract.Requires(host != null && pclient != null);
             var msg = new PirateMessage(PirateMessageHead.Knck, "");
             host.SendMessage(pclient, msg);
         }
 
+        /// <summary>
+        /// Reply to a connection initialization.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">The data received from the client.</param>
         public static void InitConnection(PirateHost host, PirateClient pclient, PirateMessage data) {
             Contract.Requires(host != null && pclient != null && data != null && data.Head == PirateMessageHead.Init);
             var msg = new PirateMessage(PirateMessageHead.Init, WelcomePhrase);
             host.SendMessage(pclient, msg);
         }
 
+        /// <summary>
+        /// Client verification.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">The data received from the client.</param>
         public static void VerifyConnection(PirateHost host, PirateClient pclient, PirateMessage data) {
             Contract.Requires(host != null && pclient != null && data != null && data.Head == PirateMessageHead.Verf);
             if(data.Body == WelcomePhrase) {
@@ -38,18 +60,35 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Send error message.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="pclient">The client.</param>
+        /// <param name="error">The error.</param>
         public static void ErrorMessage(PirateHost host, PirateClient pclient, PirateError error) {
             Contract.Requires(host != null && pclient != null && error != PirateError.Unknown);
             var msg = new PirateMessage(PirateMessageHead.Erro, error.ToString());
             host.SendMessage(pclient, msg);
         }
 
+        /// <summary>
+        /// Get player info.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="pclient">The client.</param>
         public static void GetPlayerInfo(PirateHost host, PirateClient pclient) {
             Contract.Requires(host != null && pclient != null);
             var msg = new PirateMessage(PirateMessageHead.Pnfo, "");
             host.SendMessage(pclient, msg);
         }
 
+        /// <summary>
+        /// Set player info.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="pclient">The client.</param>
+        /// <param name="data">The data received from client.</param>
         public static void SetPlayerInfo(PirateHost host, PirateClient pclient, PirateMessage data) {
             Contract.Requires(host != null && pclient != null && data != null && data.Head == PirateMessageHead.Pnfo);
             var player = PirateMessage.GetPlayerName(data);
@@ -68,6 +107,10 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Send player info.
+        /// </summary>
+        /// <param name="host">The host.</param>
         public static void SendPlayerInfo(PirateHost host) {
             Contract.Requires(host != null);
 
@@ -82,6 +125,10 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Start game.
+        /// </summary>
+        /// <param name="host">The game.</param>
         public static void StartGame(PirateHost host) {
             Contract.Requires(host != null && host.PlayerCount >= 2);
             host.StopAccepting();
@@ -97,6 +144,10 @@ namespace PirateSpades.Network {
             host.Game.Start(true, dealerIndex);
         }
 
+        /// <summary>
+        /// Game finished.
+        /// </summary>
+        /// <param name="host">The host.</param>
         public static void GameFinished(PirateHost host) {
             Contract.Requires(host != null);
 
@@ -111,6 +162,11 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Deal card.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="data">Data received from client.</param>
         public static void DealCard(PirateHost host, PirateMessage data) {
             Contract.Requires(host != null && data != null && data.Head == PirateMessageHead.Xcrd);
             var player = PirateMessage.GetPlayerName(data);
@@ -140,6 +196,11 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Request card from player.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="pclient">The player.</param>
         public static void RequestCard(PirateHost host, PirateClient pclient) {
             Contract.Requires(host != null && pclient != null);
             Console.WriteLine("Sending card request to " + pclient.Name);
@@ -147,6 +208,11 @@ namespace PirateSpades.Network {
             host.SendMessage(pclient, msg);
         }
 
+        /// <summary>
+        /// Play card from player.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="data">Data received from client.</param>
         public static void PlayCard(PirateHost host, PirateMessage data) {
             Contract.Requires(host != null && data != null && data.Head == PirateMessageHead.Pcrd);
             var playerName = PirateMessage.GetPlayerName(data);
@@ -179,6 +245,10 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Request bets from players.
+        /// </summary>
+        /// <param name="host">The host.</param>
         public static void RequestBets(PirateHost host) {
             Contract.Requires(host != null);
 
@@ -188,6 +258,12 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Receive bet from player.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="player">The client.</param>
+        /// <param name="msg">The data received from the client.</param>
         public static void ReceiveBet(PirateHost host, PirateClient player, PirateMessage msg) {
             Contract.Requires(host != null && player != null && msg != null && msg.Head == PirateMessageHead.Pbet && host.Game.Round.AwaitingBets);
 
@@ -205,6 +281,10 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// New round.
+        /// </summary>
+        /// <param name="host">The host.</param>
         public static void NewRound(PirateHost host) {
             Contract.Requires(host != null);
 
@@ -219,6 +299,10 @@ namespace PirateSpades.Network {
             Console.WriteLine("Starting new round: " + host.Game.CurrentRound);
         }
 
+        /// <summary>
+        /// Begin round.
+        /// </summary>
+        /// <param name="host">The host.</param>
         public static void BeginRound(PirateHost host) {
             Contract.Requires(host != null && host.Game.Round.BetsDone);
 
@@ -238,6 +322,10 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// New pile.
+        /// </summary>
+        /// <param name="host">The host.</param>
         public static void NewPile(PirateHost host) {
             Contract.Requires(host != null);
 
@@ -250,6 +338,10 @@ namespace PirateSpades.Network {
             }
         }
 
+        /// <summary>
+        /// Round finished.
+        /// </summary>
+        /// <param name="host">The host.</param>
         public static void RoundFinished(PirateHost host) {
             Contract.Requires(host != null);
 
