@@ -138,7 +138,7 @@ namespace PirateSpades.Network {
 
             var scores = PirateMessage.GetPlayerScores(data);
             var winner = PirateMessage.GetWinner(data);
-
+            pclient.Game.NewRound();
             Console.WriteLine("GAME FINISHED - Scores:");
             foreach (var kvp in scores) {
                 Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value + (kvp.Key == winner ? " [WINNER!!!]" : ""));

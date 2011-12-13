@@ -45,6 +45,7 @@
              box = rect;
              this.name = name;
              this.maxNumber = maxNumber;
+             Locked = false;
          }
 
          /// <summary>
@@ -52,6 +53,12 @@
          /// Set the Limit of the numberbox
          /// </summary>
          public int Limit { get; set; }
+
+         /// <summary>
+         /// Set the numberbox to locked
+         /// Is the numberbox locked?
+         /// </summary>
+         public bool Locked { get; set; }
 
          /// <summary>
          /// What number does the numberbox specify
@@ -78,7 +85,7 @@
          /// <param name="gameTime">Provides a snapshot of timing values.</param>
          public void Update(GameTime gameTime) {
              MouseState state = Mouse.GetState();
-             if(state.LeftButton == ButtonState.Pressed && PsGame.Active && state.X >= 0 && state.X < PsGame.Width && state.Y >= 0 && state.Y < PsGame.Height) {
+             if(!Locked && state.LeftButton == ButtonState.Pressed && PsGame.Active && state.X >= 0 && state.X < PsGame.Width && state.Y >= 0 && state.Y < PsGame.Height) {
                  typable = true;
              }
              if(state.LeftButton == ButtonState.Pressed && (state.X < box.X || state.X > (box.X + box.Width) || state.Y < box.Y || state.Y > (box.Y + box.Height)) && (PsGame.Active && state.X >= 0 && state.X < PsGame.Width && state.Y >= 0 && state.Y < PsGame.Height)) {
