@@ -1,0 +1,84 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_26 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src26" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateMessageTest.GetMaxPlayersInGame.g.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+// &lt;auto-generated&gt;
+// This file contains automatically generated unit tests.
+// Do NOT modify this file manually.
+// 
+// When Pex is invoked again,
+// it might remove or update any previously generated unit tests.
+// 
+// If the contents of this file becomes outdated, e.g. if it does not
+// compile anymore, you may delete this file and invoke Pex again.
+// &lt;/auto-generated&gt;
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Pex.Framework.Generated;
+using Microsoft.Pex.Engine.Exceptions;
+
+namespace PirateSpades.Network
+{
+    public partial class PirateMessageTest {
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void GetMaxPlayersInGame955()
+{
+    PirateMessage pirateMessage;
+    int i;
+    pirateMessage =
+      new PirateMessage(PirateMessageHead.Fail, &quot;players_ingamemax: 0&quot;);
+    i = this.GetMaxPlayersInGame(pirateMessage);
+    Assert.AreEqual&lt;int&gt;(0, i);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void GetMaxPlayersInGameThrowsContractException371()
+{
+    try
+    {
+      PirateMessage pirateMessage;
+      int i;
+      pirateMessage = new PirateMessage(PirateMessageHead.Fail, &quot;&quot;);
+      i = this.GetMaxPlayersInGame(pirateMessage);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void GetMaxPlayersInGameThrowsContractException226()
+{
+    try
+    {
+      int i;
+      i = this.GetMaxPlayersInGame((PirateMessage)null);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src26', RANGES_26)
+		</script>
+	</body>
+</html>

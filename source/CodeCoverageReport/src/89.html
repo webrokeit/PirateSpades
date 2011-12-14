@@ -1,0 +1,187 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_89 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src89" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateBroadcasterTest.Constructor01.g.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+// &lt;auto-generated&gt;
+// This file contains automatically generated unit tests.
+// Do NOT modify this file manually.
+// 
+// When Pex is invoked again,
+// it might remove or update any previously generated unit tests.
+// 
+// If the contents of this file becomes outdated, e.g. if it does not
+// compile anymore, you may delete this file and invoke Pex again.
+// &lt;/auto-generated&gt;
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Pex.Framework.Generated;
+using Microsoft.Pex.Engine.Exceptions;
+
+namespace PirateSpades.Network
+{
+    public partial class PirateBroadcasterTest {
+[TestMethod]
+[PexGeneratedBy(typeof(PirateBroadcasterTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void Constructor01ThrowsContractException241()
+{
+    try
+    {
+      PirateBroadcaster pirateBroadcaster;
+      byte[] bs = new byte[0];
+      pirateBroadcaster = this.Constructor01(bs, 65537, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateBroadcasterTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void Constructor01ThrowsContractException417()
+{
+    try
+    {
+      PirateBroadcaster pirateBroadcaster;
+      byte[] bs = new byte[0];
+      pirateBroadcaster = this.Constructor01(bs, int.MinValue, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateBroadcasterTest))]
+public void Constructor01866()
+{
+    PirateBroadcaster pirateBroadcaster;
+    byte[] bs = new byte[0];
+    pirateBroadcaster = this.Constructor01(bs, 0, 1);
+    Assert.IsNotNull((object)pirateBroadcaster);
+    Assert.IsNotNull(pirateBroadcaster.Message);
+    Assert.AreEqual&lt;int&gt;(0, pirateBroadcaster.Message.Length);
+    Assert.AreEqual&lt;int&gt;(0, pirateBroadcaster.Port);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateBroadcasterTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void Constructor01ThrowsContractException906()
+{
+    try
+    {
+      PirateBroadcaster pirateBroadcaster;
+      byte[] bs = new byte[0];
+      pirateBroadcaster = this.Constructor01(bs, 0, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateBroadcasterTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void Constructor01ThrowsContractException88()
+{
+    try
+    {
+      PirateBroadcaster pirateBroadcaster;
+      pirateBroadcaster = this.Constructor01((byte[])null, 0, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateBroadcasterTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void ConstructorThrowsContractException564()
+{
+    try
+    {
+      PirateBroadcaster pirateBroadcaster;
+      pirateBroadcaster = this.Constructor(65537, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateBroadcasterTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void ConstructorThrowsContractException902()
+{
+    try
+    {
+      PirateBroadcaster pirateBroadcaster;
+      pirateBroadcaster = this.Constructor(int.MinValue, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateBroadcasterTest))]
+public void Constructor266()
+{
+    PirateBroadcaster pirateBroadcaster;
+    pirateBroadcaster = this.Constructor(0, 1);
+    Assert.IsNotNull((object)pirateBroadcaster);
+    Assert.IsNotNull(pirateBroadcaster.Message);
+    Assert.AreEqual&lt;int&gt;(0, pirateBroadcaster.Message.Length);
+    Assert.AreEqual&lt;int&gt;(0, pirateBroadcaster.Port);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateBroadcasterTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void ConstructorThrowsContractException848()
+{
+    try
+    {
+      PirateBroadcaster pirateBroadcaster;
+      pirateBroadcaster = this.Constructor(0, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src89', RANGES_89)
+		</script>
+	</body>
+</html>

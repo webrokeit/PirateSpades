@@ -1,0 +1,75 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_105 = [
+   [31,13,31,72,'dccv']
+, [31,13,31,72,'dccv']
+, [30,9,30,53,'dccv']
+, [30,54,30,55,'dccv']
+, [32,13,32,34,'dccv']
+, [33,13,33,55,'dccv']
+, [34,9,34,10,'dccv']
+, [42,13,42,62,'dccv']
+, [42,13,42,62,'dccv']
+, [41,9,41,72,'dccv']
+, [41,73,41,74,'dccv']
+, [43,13,43,34,'dccv']
+, [44,13,44,42,'dccv']
+, [45,9,45,10,'dccv']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src105" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateMessageObj.cs&quot;&gt;
+//      ahal@itu.dk
+// &lt;/copyright&gt;
+// &lt;summary&gt;
+//      Message object used for reading asynchonously.
+// &lt;/summary&gt;
+// &lt;author&gt;Andreas Hallberg Kjeldsen (ahal@itu.dk)&lt;/author&gt;
+
+namespace PirateSpades.Network {
+    using System.Diagnostics.Contracts;
+
+    /// &lt;summary&gt;
+    /// Message object used for reading asynchonously.
+    /// &lt;/summary&gt;
+    public class PirateMessageObj {
+        /// &lt;summary&gt;
+        /// Byte buffer.
+        /// &lt;/summary&gt;
+        public byte[] Buffer { get; private set; }
+
+        /// &lt;summary&gt;
+        /// The client.
+        /// &lt;/summary&gt;
+        public PirateClient Client { get; private set; }
+
+        /// &lt;summary&gt;
+        /// Constructor
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;client&quot;&gt;The client.&lt;/param&gt;
+        public PirateMessageObj(PirateClient client) {
+            Contract.Requires(client != null &amp;&amp; client.BufferSize &gt; 0);
+            this.Client = client;
+            this.Buffer = new byte[client.BufferSize];
+        }
+
+        /// &lt;summary&gt;
+        /// Constructor.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;client&quot;&gt;The client.&lt;/param&gt;
+        /// &lt;param name=&quot;msg&quot;&gt;The message to get the byte buffer from.&lt;/param&gt;
+        public PirateMessageObj(PirateClient client, PirateMessage msg) {
+            Contract.Requires(client != null &amp;&amp; msg != null);
+            this.Client = client;
+            this.Buffer = msg.GetBytes();
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src105', RANGES_105)
+		</script>
+	</body>
+</html>

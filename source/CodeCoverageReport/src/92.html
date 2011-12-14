@@ -1,0 +1,154 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_92 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src92" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateClientTest.Constructor02.g.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+// &lt;auto-generated&gt;
+// This file contains automatically generated unit tests.
+// Do NOT modify this file manually.
+// 
+// When Pex is invoked again,
+// it might remove or update any previously generated unit tests.
+// 
+// If the contents of this file becomes outdated, e.g. if it does not
+// compile anymore, you may delete this file and invoke Pex again.
+// &lt;/auto-generated&gt;
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Net.Sockets;
+using PirateSpades.GameLogic;
+using Microsoft.Pex.Framework.Generated;
+using Microsoft.Pex.Engine.Exceptions;
+
+namespace PirateSpades.Network
+{
+    public partial class PirateClientTest {
+[TestMethod]
+[PexGeneratedBy(typeof(PirateClientTest))]
+public void Constructor02370()
+{
+    PirateClient pirateClient;
+    pirateClient = this.Constructor02(&quot;4.2.2.0&quot;, &quot;4.2.2.0&quot;, 1);
+    Assert.IsNotNull((object)pirateClient);
+    Assert.IsNotNull(pirateClient.Socket);
+    Assert.AreEqual&lt;bool&gt;(true, pirateClient.Socket.Blocking);
+    Assert.AreEqual&lt;bool&gt;(false, pirateClient.Socket.UseOnlyOverlappedIO);
+    Assert.AreEqual&lt;AddressFamily&gt;
+        (AddressFamily.InterNetwork, pirateClient.Socket.AddressFamily);
+    Assert.AreEqual&lt;SocketType&gt;(SocketType.Stream, pirateClient.Socket.SocketType);
+    Assert.AreEqual&lt;ProtocolType&gt;
+        (ProtocolType.Tcp, pirateClient.Socket.ProtocolType);
+    Assert.AreEqual&lt;bool&gt;(false, pirateClient.Socket.IsBound);
+    Assert.AreEqual&lt;int&gt;(4096, pirateClient.BufferSize);
+    Assert.AreEqual&lt;bool&gt;(false, pirateClient.DebugMode);
+    Assert.AreEqual&lt;bool&gt;(false, pirateClient.VirtualPlayer);
+    Assert.AreEqual&lt;bool&gt;(true, pirateClient.IsDead);
+    Assert.IsNull(((Player)pirateClient).Game);
+    Assert.AreEqual&lt;string&gt;(&quot;4.2.2.0&quot;, ((Player)pirateClient).Name);
+    Assert.AreEqual&lt;int&gt;(0, ((Player)pirateClient).Bet);
+    Assert.AreEqual&lt;bool&gt;(false, ((Player)pirateClient).IsDealer);
+    Assert.IsNull(((Player)pirateClient).CardToPlay);
+    Assert.IsNotNull(((Player)pirateClient).Hand);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateClientTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void Constructor02ThrowsContractException338()
+{
+    try
+    {
+      PirateClient pirateClient;
+      pirateClient = this.Constructor02(&quot;&quot;, &quot;&quot;, 16777217);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateClientTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void Constructor02ThrowsContractException388()
+{
+    try
+    {
+      PirateClient pirateClient;
+      pirateClient = this.Constructor02(&quot;&quot;, &quot;&quot;, 1);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateClientTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void Constructor02ThrowsContractException498()
+{
+    try
+    {
+      PirateClient pirateClient;
+      pirateClient = this.Constructor02(&quot;&quot;, &quot;&quot;, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateClientTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void Constructor02ThrowsContractException386()
+{
+    try
+    {
+      PirateClient pirateClient;
+      pirateClient = this.Constructor02(&quot;&quot;, (string)null, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateClientTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void Constructor02ThrowsContractException677()
+{
+    try
+    {
+      PirateClient pirateClient;
+      pirateClient = this.Constructor02((string)null, (string)null, 0);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src92', RANGES_92)
+		</script>
+	</body>
+</html>

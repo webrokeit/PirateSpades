@@ -430,15 +430,29 @@ namespace PirateSpadesGame.GameModes {
             var betRect = new Rectangle(scoreRectangle.X, scoreRectangle.Y, 50, scoreRectangle.Height);
             var tricksRect = new Rectangle(scoreRectangle.X, scoreRectangle.Y, 50, scoreRectangle.Height);
             var y = scoreRectangle.Y + scoreRectangle.Height;
-            foreach(var p in client.Game.Players) {
-                var betted = client.Game.Round.PlayerBets[p];
-                var tricks = client.Game.Round.PlayerTricks[p].Count;
-                spriteBatch.DrawString(font2, p.Name, new Vector2(nameRect.X, y), p.Name == game.PlayerName ? Color.DarkBlue : Color.DarkRed);
-                y += scoreRectangle.Height;
-                spriteBatch.DrawString(font2, "Bet: " + (betted == -1 ? "?" : betted.ToString()), new Vector2(betRect.X, y), p.Name == game.PlayerName ? Color.DarkBlue : Color.DarkRed);
-                y += scoreRectangle.Height;
-                spriteBatch.DrawString(font2, "Tricks: " + tricks, new Vector2(tricksRect.X, y), p.Name == game.PlayerName ? Color.DarkBlue : Color.DarkRed);
-                y += 40;
+            lock(client.Game.Players) {
+                foreach (var p in client.Game.Players) {
+                    var betted = client.Game.Round.PlayerBets[p];
+                    var tricks = client.Game.Round.PlayerTricks[p].Count;
+                    spriteBatch.DrawString(
+                        font2,
+                        p.Name,
+                        new Vector2(nameRect.X, y),
+                        p.Name == game.PlayerName ? Color.DarkBlue : Color.DarkRed);
+                    y += scoreRectangle.Height;
+                    spriteBatch.DrawString(
+                        font2,
+                        "Bet: " + (betted == -1 ? "?" : betted.ToString()),
+                        new Vector2(betRect.X, y),
+                        p.Name == game.PlayerName ? Color.DarkBlue : Color.DarkRed);
+                    y += scoreRectangle.Height;
+                    spriteBatch.DrawString(
+                        font2,
+                        "Tricks: " + tricks,
+                        new Vector2(tricksRect.X, y),
+                        p.Name == game.PlayerName ? Color.DarkBlue : Color.DarkRed);
+                    y += 40;
+                }
             }
         }
 

@@ -1,0 +1,222 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_107 = [
+   [44,17,44,18,'dccv']
+, [46,17,46,44,'dccv']
+, [47,13,47,14,'dccv']
+, [45,17,45,68,'dccv']
+, [49,17,49,73,'dccv']
+, [49,17,49,73,'dccv']
+, [48,17,48,18,'dccv']
+, [50,17,50,45,'dccv']
+, [51,13,51,14,'dccv']
+, [58,17,58,18,'dccv']
+, [59,17,59,38,'dccv']
+, [60,13,60,14,'dccv']
+, [90,13,90,105,'dccv']
+, [90,13,90,105,'dccv']
+, [89,9,89,60,'dccv']
+, [89,61,89,62,'dccv']
+, [91,13,91,30,'dccv']
+, [92,13,92,46,'dccv']
+, [93,13,93,43,'dccv']
+, [94,13,94,43,'dccv']
+, [95,9,95,10,'dccv']
+, [104,13,104,124,'dccv']
+, [104,13,104,124,'dccv']
+, [103,9,103,99,'dccv']
+, [103,100,103,101,'dccv']
+, [105,13,105,36,'dccv']
+, [106,9,106,10,'dccv']
+, [112,13,112,47,'dccv']
+, [111,29,111,30,'dccv']
+, [113,13,113,102,'dccv']
+, [114,13,114,98,'dccv']
+, [115,13,115,71,'dccv']
+, [117,13,117,30,'dccv']
+, [118,13,118,27,'dccv']
+, [119,9,119,10,'dccv']
+, [125,13,125,46,'dccv']
+, [124,28,124,29,'dccv']
+, [126,13,126,26,'dccv']
+, [127,13,127,33,'dccv']
+, [128,9,128,10,'dccv']
+, [133,34,133,35,'dccv']
+, [134,17,134,18,'dccv']
+, [135,17,135,47,'dccv']
+, [136,17,136,60,'dccv']
+, [137,17,137,46,'dccv']
+, [137,47,137,71,'dccv']
+, [138,13,138,14,'dccv']
+, [141,9,141,10,'dccv']
+, [148,65,148,66,'dccv']
+, [149,13,149,30,'dccv']
+, [150,9,150,10,'dccv']
+, [135,48,135,73,'dcuc']
+, [138,15,138,34,'dcuc']
+, [138,35,138,36,'dcuc']
+, [139,17,139,39,'dcuc']
+, [140,13,140,14,'dcuc']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src107" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateBroadcaster.cs&quot;&gt;
+//      ahal@itu.dk
+// &lt;/copyright&gt;
+// &lt;summary&gt;
+//      Used for notifying searching clients that we&#39;re hosting a game.
+// &lt;/summary&gt;
+// &lt;author&gt;Andreas Hallberg Kjeldsen (ahal@itu.dk)&lt;/author&gt;
+
+namespace PirateSpades.Network {
+    using System;
+    using System.Diagnostics.Contracts;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Timers;
+
+    /// &lt;summary&gt;
+    /// Used for notifying searching clients that we&#39;re hosting a game.
+    /// &lt;/summary&gt;
+    public class PirateBroadcaster {
+        /// &lt;summary&gt;
+        /// The socket to use to broadcast.
+        /// &lt;/summary&gt;
+        private Socket Socket { get; set; }
+
+        /// &lt;summary&gt;
+        /// The endpoint to use when broadcasting.
+        /// &lt;/summary&gt;
+        private IPEndPoint EndPoint { get; set; }
+
+        /// &lt;summary&gt;
+        /// The bytes of the message to broadcast.
+        /// &lt;/summary&gt;
+        public byte[] Message { get; set; }
+
+        /// &lt;summary&gt;
+        /// The port to use when broadcasting.
+        /// &lt;/summary&gt;
+        public int Port { get; private set; }
+
+        /// &lt;summary&gt;
+        /// The interval to broadcast in.
+        /// &lt;/summary&gt;
+        public double Interval {
+            get {
+                Contract.Ensures(Contract.Result&lt;double&gt;() &gt; 0.00);
+                return this.Timer.Interval;
+            }
+            set {
+                Contract.Requires(value &gt; 0.00 &amp;&amp; value &lt; int.MaxValue);
+                this.Timer.Interval = value;
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Whether or not the broadcaster is enabled!
+        /// &lt;/summary&gt;
+        public bool Enabled {
+            get {
+                return Timer.Enabled;
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// The timer to execute the broadcast method.
+        /// &lt;/summary&gt;
+        private Timer Timer { get; set; }
+
+        /// &lt;summary&gt;
+        /// Delegate to be used for events involving the broadcaster.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;broadcaster&quot;&gt;The broadcaster.&lt;/param&gt;
+        public delegate void BroadcastEventDelegate(PirateBroadcaster broadcaster);
+
+        /// &lt;summary&gt;
+        /// Fires right before a broadcast is about to be send.
+        /// &lt;/summary&gt;
+        public event BroadcastEventDelegate BroadcastInitiated;
+
+        /// &lt;summary&gt;
+        /// Fires right after a broadcast has been sent.
+        /// &lt;/summary&gt;
+        public event BroadcastEventDelegate BroadcastExecuted;
+
+        /// &lt;summary&gt;
+        /// Constructor.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;port&quot;&gt;The port to broadcast on.&lt;/param&gt;
+        /// &lt;param name=&quot;interval&quot;&gt;The interval to broadcast in.&lt;/param&gt;
+        public PirateBroadcaster(int port, double interval) {
+            Contract.Requires(port &gt;= 0 &amp;&amp; port &lt;= 65536 &amp;&amp; interval &gt; 0.00 &amp;&amp; interval &lt; int.MaxValue);
+            this.Port = port;
+            this.Timer = new Timer(interval);
+            this.Timer.Elapsed += Trigger;
+            this.Message = new byte[] { };
+        }
+
+        /// &lt;summary&gt;
+        /// Constructor.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;message&quot;&gt;The message to broadcast.&lt;/param&gt;
+        /// &lt;param name=&quot;port&quot;&gt;The port to broadcast on.&lt;/param&gt;
+        /// &lt;param name=&quot;interval&quot;&gt;The interval to broadcast in.&lt;/param&gt;
+        public PirateBroadcaster(byte[] message, int port, double interval) : this(port, interval) {
+            Contract.Requires(message != null &amp;&amp; port &gt;= 0 &amp;&amp; port &lt;= 65536 &amp;&amp; interval &gt; 0.00 &amp;&amp; interval &lt; int.MaxValue);
+            this.Message = message;
+        }
+
+        /// &lt;summary&gt;
+        /// Start broadcasting.
+        /// &lt;/summary&gt;
+        public void Start() {
+            Contract.Requires(!Timer.Enabled);
+            this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            this.Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
+            this.EndPoint = new IPEndPoint(IPAddress.Broadcast, Port);
+
+            this.Broadcast();
+            Timer.Start();
+        }
+
+        /// &lt;summary&gt;
+        /// Stop broadcasting.
+        /// &lt;/summary&gt;
+        public void Stop() {
+            Contract.Requires(Timer.Enabled);
+            Timer.Stop();
+            this.Socket.Close();
+        }
+
+        /// &lt;summary&gt;
+        /// Do the broadcast.
+        /// &lt;/summary&gt;
+        private void Broadcast() {
+            try {
+                if(BroadcastInitiated != null) BroadcastInitiated(this);
+                this.Socket.SendTo(Message, this.EndPoint);
+                if(BroadcastExecuted != null) BroadcastExecuted(this);
+            } catch(Exception ex) {
+                Console.WriteLine(ex);
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Event being fired by the timer.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;sender&quot;&gt;The timer.&lt;/param&gt;
+        /// &lt;param name=&quot;e&quot;&gt;Event args.&lt;/param&gt;
+        private void Trigger(object sender, ElapsedEventArgs e) {
+            this.Broadcast();
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src107', RANGES_107)
+		</script>
+	</body>
+</html>

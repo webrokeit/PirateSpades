@@ -1,0 +1,137 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_99 = [
+   [33,13,33,45,'dccv']
+, [32,64,32,65,'dccv']
+, [36,13,36,32,'dccv']
+, [38,18,38,41,'dccv']
+, [38,54,38,55,'dccv']
+, [39,17,39,39,'dccv']
+, [41,17,41,39,'dccv']
+, [42,17,42,39,'dccv']
+, [43,17,43,31,'dccv']
+, [44,13,44,14,'dccv']
+, [38,49,38,52,'dccv']
+, [38,42,38,47,'dccv']
+, [45,9,45,10,'dccv']
+, [34,13,34,75,'dccv']
+, [86,56,86,57,'dccv']
+, [87,13,87,76,'dccv']
+, [88,9,88,10,'dccv']
+, [24,9,24,57,'dccv']
+, [36,33,36,40,'dcuc']
+, [54,13,54,75,'dcuc']
+, [54,13,54,75,'dcuc']
+, [53,66,53,67,'dcuc']
+, [55,13,55,52,'dcuc']
+, [56,9,56,10,'dcuc']
+, [65,13,65,84,'dcuc']
+, [65,13,65,84,'dcuc']
+, [64,66,64,67,'dcuc']
+, [66,13,66,52,'dcuc']
+, [67,9,67,10,'dcuc']
+, [76,13,76,75,'dcuc']
+, [76,13,76,75,'dcuc']
+, [75,59,75,60,'dcuc']
+, [77,13,77,57,'dcuc']
+, [78,9,78,10,'dcuc']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src99" class="dotCoverSource"><pre>// &lt;copyright file=&quot;CollectionFnc.cs&quot;&gt;
+//      ahal@itu.dk,
+//      hlck@itu.dk
+// &lt;/copyright&gt;
+// &lt;summary&gt;
+//      Contains useful functions for shuffling collections, picking random numbers.
+// &lt;/summary&gt;
+// &lt;author&gt;Andreas Hallberg Kjeldsen (ahal@itu.dk)&lt;/author&gt;
+// &lt;author&gt;Helena Charlotte Lyn Kr&#252;ger (hlck@itu.dk)&lt;/author&gt;
+
+namespace PirateSpades.Misc {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
+    using System.Linq;
+
+    /// &lt;summary&gt;
+    /// Contains useful functions for shuffling collections, picking random numbers
+    /// &lt;/summary&gt;
+    public static class CollectionFnc {
+        /// &lt;summary&gt;
+        /// The randomizer to get the pseudo random numbers from.
+        /// &lt;/summary&gt;
+        private static readonly Random R = new Random();
+        
+        /// &lt;summary&gt;
+        /// Shuffles a list of T, using the Fisher Yates algorithm.
+        /// http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+        /// &lt;/summary&gt;
+        /// &lt;typeparam name=&quot;T&quot;&gt;Anything.&lt;/typeparam&gt;
+        /// &lt;param name=&quot;list&quot;&gt;The list to shuffle.&lt;/param&gt;
+        public static void FisherYatesShuffle&lt;T&gt;(List&lt;T&gt; list) {
+            Contract.Requires(list != null);
+            Contract.Ensures(list.Count == Contract.OldValue(list.Count));
+
+            if (list.Count &lt; 2) return;
+
+            for (var i = list.Count - 1; i &gt; 0; i--) {
+                var index = R.Next(i);
+
+                var tmp = list[index];
+                list[index] = list[i];
+                list[i] = tmp;
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Pick a random object.
+        /// &lt;/summary&gt;
+        /// &lt;typeparam name=&quot;T&quot;&gt;Anything.&lt;/typeparam&gt;
+        /// &lt;param name=&quot;collection&quot;&gt;Collection to pick from.&lt;/param&gt;
+        /// &lt;returns&gt;A random object contained within the colleciton.&lt;/returns&gt;
+        public static T PickRandom&lt;T&gt;(ICollection&lt;T&gt; collection) {
+            Contract.Requires(collection != null &amp;&amp; collection.Count &gt; 0);
+            return PickRandom(collection.ToList());
+        }
+
+        /// &lt;summary&gt;
+        /// Pick a random object.
+        /// &lt;/summary&gt;
+        /// &lt;typeparam name=&quot;T&quot;&gt;Anything.&lt;/typeparam&gt;
+        /// &lt;param name=&quot;collection&quot;&gt;Collection to pick from.&lt;/param&gt;
+        /// &lt;returns&gt;A random object contained within the colleciton.&lt;/returns&gt;
+        public static T PickRandom&lt;T&gt;(IEnumerable&lt;T&gt; collection) {
+            Contract.Requires(collection != null &amp;&amp; collection.ToList().Count &gt; 0);
+            return PickRandom(collection.ToList());
+        }
+
+        /// &lt;summary&gt;
+        /// Pick a random object.
+        /// &lt;/summary&gt;
+        /// &lt;typeparam name=&quot;T&quot;&gt;Anything.&lt;/typeparam&gt;
+        /// &lt;param name=&quot;collection&quot;&gt;Collection to pick from.&lt;/param&gt;
+        /// &lt;returns&gt;A random object contained within the colleciton.&lt;/returns&gt;
+        public static T PickRandom&lt;T&gt;(List&lt;T&gt; collection) {
+            Contract.Requires(collection != null &amp;&amp; collection.Count &gt; 0);
+            return collection[R.Next(collection.Count)];
+        }
+
+        /// &lt;summary&gt;
+        /// Pick a random integer between min and max, both included.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;min&quot;&gt;Minimum number.&lt;/param&gt;
+        /// &lt;param name=&quot;max&quot;&gt;Maximum number.&lt;/param&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        public static int PickRandom(int min, int max) {
+            return max &lt; min ? PickRandom(max, min) : R.Next(min, max + 1);
+        }
+    }
+}</pre></code><script type="text/javascript">
+			applyranges('src99', RANGES_99)
+		</script>
+	</body>
+</html>

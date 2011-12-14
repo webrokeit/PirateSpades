@@ -1,0 +1,121 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_106 = [
+   [21,17,21,79,'dccv']
+, [21,17,21,79,'dccv']
+, [20,17,20,18,'dccv']
+, [22,17,22,38,'dccv']
+, [23,17,23,34,'dccv']
+, [24,17,24,24,'dccv']
+, [24,36,24,52,'dccv']
+, [24,25,24,32,'dccv']
+, [24,54,24,55,'dccv']
+, [25,21,25,40,'dccv']
+, [25,41,25,42,'dccv']
+, [26,25,26,38,'dccv']
+, [27,25,27,49,'dccv']
+, [28,21,28,22,'dccv']
+, [28,28,28,109,'dccv']
+, [28,110,28,111,'dccv']
+, [29,25,29,63,'dccv']
+, [29,64,29,65,'dccv']
+, [30,29,30,42,'dccv']
+, [31,29,31,53,'dccv']
+, [32,25,32,26,'dccv']
+, [33,21,33,22,'dccv']
+, [34,17,34,18,'dccv']
+, [24,33,24,35,'dccv']
+, [35,17,35,31,'dccv']
+, [36,13,36,14,'dccv']
+, [39,9,39,23,'dccv']
+, [39,24,39,25,'dccv']
+, [40,13,40,65,'dccv']
+, [41,13,41,31,'dccv']
+, [42,9,42,10,'dccv']
+, [44,35,44,36,'dccv']
+, [45,13,45,46,'dccv']
+, [46,9,46,10,'dccv']
+, [49,13,49,92,'dccv']
+, [49,13,49,92,'dccv']
+, [48,57,48,58,'dccv']
+, [50,13,50,34,'dccv']
+, [50,35,50,52,'dccv']
+, [51,13,51,43,'dccv']
+, [52,13,52,31,'dccv']
+, [53,9,53,10,'dccv']
+, [57,13,57,47,'dccv']
+, [56,46,56,47,'dccv']
+, [58,13,58,45,'dccv']
+, [59,9,59,10,'dccv']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src106" class="dotCoverSource"><pre>// &lt;copyright file=&quot;Trick.cs&quot;&gt;
+//      ahal@itu.dk
+// &lt;/copyright&gt;
+// &lt;summary&gt;
+//      A representation of a trick in the Pirate Spades Game.
+// &lt;/summary&gt;
+// &lt;author&gt;Andreas Hallberg Kjeldsen (ahal@itu.dk)&lt;/author&gt;
+
+namespace PirateSpades.GameLogic {
+    using System.Diagnostics.Contracts;
+
+    using PirateSpades.Misc;
+
+    public class Trick {
+        public ImmutableOrderedDictionary&lt;Player, Card&gt; Pile { get; private set; }
+        private OrderedDictionary&lt;Player, Card&gt; CardsPlayed { get; set; }
+        public Card FirstCard { get; private set; }
+
+        public Player Winner {
+            get {
+                Contract.Requires(CardsPlayed.Count &gt; 0 &amp;&amp; FirstCard != null);
+                Player winner = null;
+                Card card = null;
+                foreach(var key in CardsPlayed.Keys) {
+                    if (winner == null) {
+                        winner = key;
+                        card = CardsPlayed[key];
+                    } else if (CardsPlayed[key].SameSuit(FirstCard) || CardsPlayed[key].Suit == Suit.Spades) {
+                        if (CardsPlayed[key].HigherThan(card)) {
+                            winner = key;
+                            card = CardsPlayed[key];
+                        }
+                    }
+                }
+                return winner;
+            }
+        }
+
+        public Trick() {
+            CardsPlayed = new OrderedDictionary&lt;Player, Card&gt;();
+            this.UpdatePile();
+        }
+
+        private void UpdatePile() {
+            Pile = CardsPlayed.AsImmutable();
+        }
+
+        public void PlaceCard(Player player, Card card) {
+            Contract.Requires(player != null &amp;&amp; card != null &amp;&amp; !Pile.ContainsKey(player));
+            if(FirstCard == null) FirstCard = card;
+            CardsPlayed.Add(player, card);
+            this.UpdatePile();
+        }
+
+        [Pure]
+        public bool HasPlayed(Player player) {
+            Contract.Requires(player != null);
+            return Pile.ContainsKey(player);
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src106', RANGES_106)
+		</script>
+	</body>
+</html>

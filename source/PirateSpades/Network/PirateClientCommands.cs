@@ -102,12 +102,14 @@ namespace PirateSpades.Network {
             pclient.Game.ClearPlayers();
             var players = PirateMessage.GetPlayerNames(data);
             if(players.Count > 0) {
-               Console.WriteLine("Current players in game:");
+                if(!pclient.VirtualPlayer)
+                    Console.WriteLine("Current players in game:");
                foreach(var player in players) {
                    var p = pclient.Name == player ? pclient : new Player(player);
                    p.SetGame(pclient.Game);
                    pclient.Game.AddPlayer(p);
-                   Console.WriteLine("\t" + player + (pclient.Name == player ? " (YOU)" : ""));
+                   if(!pclient.VirtualPlayer)
+                       Console.WriteLine("\t" + player + (pclient.Name == player ? " (YOU)" : ""));
                }
             }
         }
@@ -138,10 +140,13 @@ namespace PirateSpades.Network {
 
             var scores = PirateMessage.GetPlayerScores(data);
             var winner = PirateMessage.GetWinner(data);
+            
             pclient.Game.NewRound();
-            Console.WriteLine("GAME FINISHED - Scores:");
-            foreach (var kvp in scores) {
-                Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value + (kvp.Key == winner ? " [WINNER!!!]" : ""));
+            if(!pclient.VirtualPlayer) {
+                Console.WriteLine("GAME FINISHED - Scores:");
+                foreach (var kvp in scores) {
+                    Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value + (kvp.Key == winner ? " [WINNER!!!]" : ""));
+                }
             }
         }
 
@@ -176,7 +181,8 @@ namespace PirateSpades.Network {
                 player.PlayCard(card);
             }
 
-            Console.WriteLine(player.Name + " plays " + card.ToShortString());
+            if(!pclient.VirtualPlayer)
+                Console.WriteLine(player.Name + " plays " + card.ToShortString());
         }
 
         /// <summary>
@@ -190,7 +196,8 @@ namespace PirateSpades.Network {
             var body = PirateMessage.ConstructBody(PirateMessage.ConstructPlayerName(receiver.Name), card.ToString());
             var msg = new PirateMessage(PirateMessageHead.Xcrd, body);
 
-            if(pclient.DebugMode) Console.WriteLine(pclient.Name + ": Dealing " + card.ToShortString() + " to " + receiver.Name);
+            if(!pclient.VirtualPlayer)
+                Console.WriteLine(pclient.Name + ": Dealing " + card.ToShortString() + " to " + receiver.Name);
             pclient.SendMessage(msg);
         }
 
@@ -204,7 +211,8 @@ namespace PirateSpades.Network {
             var card = Card.FromString(data.Body);
             if(card == null) return;
 
-            if (pclient.DebugMode) Console.WriteLine(pclient.Name + ": Received " + card.ToShortString());
+            if(!pclient.VirtualPlayer)
+                Console.WriteLine(pclient.Name + ": Received " + card.ToShortString());
             if (!pclient.IsDealer) {
                 pclient.GetCard(card);
             }
@@ -234,7 +242,8 @@ namespace PirateSpades.Network {
             var round = PirateMessage.GetRound(data);
 
             if (pclient.Game.CurrentRound + 1 != round) return;
-            Console.WriteLine("Starting new round: " + round + " - Dealer is " + dealerName);
+            if(!pclient.VirtualPlayer)
+                Console.WriteLine("Starting new round: " + round + " - Dealer is " + dealerName);
 
             pclient.Game.NewRound();
             if(dealerName == pclient.Name) {
@@ -254,14 +263,17 @@ namespace PirateSpades.Network {
 
             if (pclient.Game.CurrentRound != round) return;
 
-            Console.WriteLine("Player bets:");
+            if(!pclient.VirtualPlayer)
+                Console.WriteLine("Player bets:");
             foreach(var kvp in bets) {
                 pclient.Game.Round.PlayerBet(kvp.Key, kvp.Value);
-                Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value);
+                if(!pclient.VirtualPlayer)
+                    Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value);
             }
 
             if (!pclient.Game.Round.BetsDone) return;
-            Console.WriteLine("Round " + round + " has begun.");
+            if(!pclient.VirtualPlayer)
+                Console.WriteLine("Round " + round + " has begun.");
 
             pclient.Game.Round.Begin();
         }
@@ -277,10 +289,12 @@ namespace PirateSpades.Network {
             var winner = PirateMessage.GetWinner(data);
             var tricks = PirateMessage.GetPlayerTricks(data);
 
-            Console.WriteLine((winner == pclient.Name ? "You" : winner) + " won the trick!");
-            Console.WriteLine("Tricks:");
-            foreach(var kvp in tricks) {
-                Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value);
+            if(!pclient.VirtualPlayer) {
+                Console.WriteLine((winner == pclient.Name ? "You" : winner) + " won the trick!");
+                Console.WriteLine("Tricks:");
+                foreach (var kvp in tricks) {
+                    Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value);
+                }
             }
         }
 
@@ -296,10 +310,11 @@ namespace PirateSpades.Network {
             if (!pclient.Game.Round.Finished) {
                 return;
             }
-
-            Console.WriteLine("Round " + pclient.Game.CurrentRound + " finished - Scores:");
-            foreach(var kvp in scores) {
-                Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value);
+            if(!pclient.VirtualPlayer) {
+                Console.WriteLine("Round " + pclient.Game.CurrentRound + " finished - Scores:");
+                foreach (var kvp in scores) {
+                    Console.WriteLine("\t" + kvp.Key + ": " + kvp.Value);
+                }
             }
         }
     }

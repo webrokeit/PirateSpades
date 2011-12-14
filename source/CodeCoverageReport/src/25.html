@@ -1,0 +1,98 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_25 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src25" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateMessageTest.AppendBody.g.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+// &lt;auto-generated&gt;
+// This file contains automatically generated unit tests.
+// Do NOT modify this file manually.
+// 
+// When Pex is invoked again,
+// it might remove or update any previously generated unit tests.
+// 
+// If the contents of this file becomes outdated, e.g. if it does not
+// compile anymore, you may delete this file and invoke Pex again.
+// &lt;/auto-generated&gt;
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Pex.Framework.Generated;
+using Microsoft.Pex.Engine.Exceptions;
+
+namespace PirateSpades.Network
+{
+    public partial class PirateMessageTest {
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void AppendBody604()
+{
+    string s;
+    string[] ss = new string[0];
+    s = this.AppendBody(&quot;\0&quot;, ss);
+    Assert.AreEqual&lt;string&gt;(&quot;\0\n&quot;, s);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void AppendBody136()
+{
+    string s;
+    string[] ss = new string[2];
+    s = this.AppendBody(&quot;&quot;, ss);
+    Assert.AreEqual&lt;string&gt;(&quot;\n&quot;, s);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+public void AppendBody214()
+{
+    string s;
+    string[] ss = new string[0];
+    s = this.AppendBody(&quot;&quot;, ss);
+    Assert.AreEqual&lt;string&gt;(&quot;&quot;, s);
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void AppendBodyThrowsContractException943()
+{
+    try
+    {
+      string s;
+      s = this.AppendBody(&quot;&quot;, (string[])null);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[TestMethod]
+[PexGeneratedBy(typeof(PirateMessageTest))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void AppendBodyThrowsContractException475()
+{
+    try
+    {
+      string s;
+      s = this.AppendBody((string)null, (string[])null);
+      throw 
+        new AssertFailedException(&quot;expected an exception of type ContractException&quot;);
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src25', RANGES_25)
+		</script>
+	</body>
+</html>

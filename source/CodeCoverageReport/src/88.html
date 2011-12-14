@@ -1,0 +1,69 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_88 = [
+  ];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src88" class="dotCoverSource"><pre>// &lt;copyright file=&quot;PirateBroadcasterTest.cs&quot;&gt;Copyright �  2011&lt;/copyright&gt;
+
+using System;
+using Microsoft.Pex.Framework;
+using Microsoft.Pex.Framework.Validation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PirateSpades.Network;
+
+namespace PirateSpades.Network
+{
+    [TestClass]
+    [PexClass(typeof(PirateBroadcaster))]
+    [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]
+    [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
+    public partial class PirateBroadcasterTest
+    {
+        [PexMethod]
+        public void Stop([PexAssumeUnderTest]PirateBroadcaster target) {
+            target.Stop();
+            // TODO: add assertions to method PirateBroadcasterTest.Stop(PirateBroadcaster)
+        }
+        [PexMethod]
+        public void Start([PexAssumeUnderTest]PirateBroadcaster target) {
+            target.Start();
+            // TODO: add assertions to method PirateBroadcasterTest.Start(PirateBroadcaster)
+        }
+        [PexMethod]
+        public void IntervalSet([PexAssumeUnderTest]PirateBroadcaster target, double value) {
+            target.Interval = value;
+            // TODO: add assertions to method PirateBroadcasterTest.IntervalSet(PirateBroadcaster, Double)
+        }
+        [PexMethod]
+        public double IntervalGet([PexAssumeUnderTest]PirateBroadcaster target) {
+            double result = target.Interval;
+            return result;
+            // TODO: add assertions to method PirateBroadcasterTest.IntervalGet(PirateBroadcaster)
+        }
+        [PexMethod]
+        public PirateBroadcaster Constructor01(
+            byte[] message,
+            int port,
+            double interval
+        ) {
+            PirateBroadcaster target = new PirateBroadcaster(message, port, interval);
+            return target;
+            // TODO: add assertions to method PirateBroadcasterTest.Constructor01(Byte[], Int32, Double)
+        }
+        [PexMethod]
+        public PirateBroadcaster Constructor(int port, double interval) {
+            PirateBroadcaster target = new PirateBroadcaster(port, interval);
+            return target;
+            // TODO: add assertions to method PirateBroadcasterTest.Constructor(Int32, Double)
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src88', RANGES_88)
+		</script>
+	</body>
+</html>
